@@ -2,19 +2,19 @@
 	
 	class Akses_model extends CI_model {
 	
-		public function getByMasa($bulan, $tahun, $start='', $limit='') {
+		public function getByMasa($tahun, $start='', $limit='') {
 			return $this->db->from('akses')
 							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+							->where(['tahun'=>$tahun])
 							->limit($limit, $start)
 							->order_by('id_akses', 'ASC')
 							->get()->result_array();
 		}
 	
-		public function countAkses($bulan, $tahun) {
+		public function countAkses($tahun) {
 			return $this->db->from('akses')
 							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+							->where(['tahun'=>$tahun])
 							->count_all_results();
 		}
 	

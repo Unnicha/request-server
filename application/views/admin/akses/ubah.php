@@ -59,33 +59,33 @@
 
                 <!-- Klien -->
                 <div class="form-group row mt-4">
-                    <label for="klien" class="col-sm-5 col-form-label">Klien</label> 
+                    <label for="klien" class="col-sm-4 col-form-label">Klien</label> 
                     <div class="col-sm">
-                        <?php 
-                            $id = explode(",",$akses['klien']);
-                            foreach($klien as $k) :
-                                if($id == null) {
-                                    $pilih = "";
-                                } else {
-                                    foreach($id as $i => $value) :
-                            if($value == $k['id_klien']) {
-                                $pilih="checked"; break;
-                            } else {
-                                $pilih="";
-                            }
-                                    endforeach; 
-                                }
-                        ?>
-                        <div class="row">
-                            <div class="col">
-                                <input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>" <?=$pilih?>>
-                                <label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>">
-                                    <?= $k['nama_klien'] ?>
-                                </label>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                        <small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
+						<div class="overflow-auto container-akses">
+							<?php 
+								$id = explode(",",$akses['klien']);
+								foreach($klien as $k) :
+									if($id == null) {
+										$pilih = "";
+									} else {
+										foreach($id as $i => $value) :
+								if($value == $k['id_klien']) {
+									$pilih="checked"; break;
+								} else {
+									$pilih="";
+								}
+										endforeach; 
+									}
+							?>
+							<div class="form-group form-check mb-2">
+								<input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>" <?=$pilih?>>
+								<label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>">
+									<?= $k['nama_klien'] ?>
+								</label>
+							</div>
+							<?php endforeach; ?>
+						</div>
+						<small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
                     </div>
                 </div>
                 

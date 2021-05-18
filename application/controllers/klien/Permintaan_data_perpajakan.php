@@ -4,54 +4,69 @@
 		
 		public function __construct() {
 			parent::__construct();
+			$this->load->library('notif');
 			$this->load->library('form_validation');
 			
 			$this->load->model('M_Permintaan_perpajakan');
 			$this->load->model('M_Pengiriman_perpajakan');
+			$this->load->model('Klien_model');
 		} 
 		
 		public function index() {
+			$data['judul']	= "Permintaan Data Perpajakan";
+			$data['masa']	= $this->Klien_model->getMasa();
 			
-			$data['judul'] = "Permintaan Data Perpajakan";
-			$data['masa'] = $this->M_Permintaan_perpajakan->masa();
-			$data['pengiriman'] = $this->M_Pengiriman_perpajakan->getAllPengiriman();
-
 			$this->libtemplate->main('klien/permintaan_perpajakan/tampil', $data);
 		}
 		
-		public function isi() {
-
-			$bulan = $_POST['bulan'];
-			$tahun = $_POST['tahun'];
-			$klien_id = $this->session->userdata('id_user');
-			
-			$data['pengiriman'] = $this->M_Pengiriman_perpajakan->getAllPengiriman();
-			$permintaan = $this->M_Permintaan_perpajakan->getPerKlien($bulan, $tahun, $klien_id);
-			
+		public function page() {
+			$bulan	= $_POST['bulan'];
+			$tahun	= $_POST['tahun'];
+			$klien	= $this->session->userdata('id_user');
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
-
-			//tidak menampilkan data yang sudah dikirim
-			foreach($data['pengiriman'] as $b) {
-				foreach($permintaan as $a => $key) {
-					if ($key['id_permintaan'] == $b['id_permintaan']) {
-						unset($permintaan[$a]);
-					}
+			
+			$limit		= $_POST['length'];
+			$offset		= $_POST['start'];
+			$countData	= $this->M_Permintaan_perpajakan->countForKlien($bulan, $tahun, $klien); 
+			$permintaan	= $this->M_Permintaan_perpajakan->getForKlien($bulan, $tahun, $klien, $offset, $limit);
+			
+			$data		= [];
+			foreach($permintaan as $k) { 
+				if( $this->M_Permintaan_perpajakan->getPengiriman($k['id_permintaan']) ) {
+					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Diterima"></i>';
+				} else {
+					$status = '<i class="bi bi-hourglass-split icon-status" style="color:red" data-toggle="tooltip" data-placement="bottom" title="Belum Diterima"></i>';
 				}
-			}
-			$data['permintaan'] = $permintaan;
 
-			if($permintaan == null) {
-				$this->session->set_flashdata('empty', 'Belum ada permintaan');
-				$this->load->view('empty');
-			} else {
-				$this->load->view('klien/permintaan_perpajakan/isi', $data);
+				$row	= [];
+				$row[]	= ++$offset.'.';
+				$row[]	= $k['jenis_data'];
+				$row[]	= $k['request'];
+				$row[]	= $k['format_data'];
+				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= '
+					<a class="btn btn-sm btn-info btn-detail_permintaan" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
+						<i class="bi bi-info-circle"></i>
+					</a>
+					<a class="btn btn-sm btn-success" href="permintaan_data_perpajakan/kirim/'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Kirim Data">
+						<i class="bi bi-file-earmark-arrow-up"></i>
+					</a>';
+
+				$data[] = $row;
 			}
+			$callback	= [
+				'draw'			=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'	=> $countData,
+				'recordsFiltered'=>$countData,
+				'data'			=> $data,
+			];
+			echo json_encode($callback);
 		}
 		
 		public function kirim($id_permintaan) {
 			
-			$data['judul'] = "Form Pengiriman Data"; // judul halaman
+			$data['judul'] = "Form Pengiriman Data"; 
 			$data['header'] = "Kirim Data";
 			$data['permintaan'] = $this->M_Permintaan_perpajakan->getById($id_permintaan);
 			
@@ -59,7 +74,7 @@
 			$this->form_validation->set_rules('format_data', 'Format Data', 'required');
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');
-			$this->form_validation->set_rules('keterangan', 'Keterangan', ''); 
+			$this->form_validation->set_rules('keterangan', 'Keterangan', '');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('klien/permintaan_perpajakan/kirim', $data);
@@ -71,11 +86,9 @@
 		}
 
 		public function detail() {
-
-			$id_permintaan = $this->input->post('id_permintaan', true);
-
-			$data['judul'] = 'Detail Permintaan Data ';
-			$data['permintaan'] = $this->M_Permintaan_perpajakan->getById($id_permintaan);
+			$data['judul']		= 'Detail Permintaan Data ';
+			$id_permintaan		= $this->input->post('permintaan', true);
+			$data['permintaan']	= $this->M_Permintaan_perpajakan->getById($id_permintaan);
 			
 			$this->load->view('klien/permintaan_perpajakan/detail', $data);
 		}

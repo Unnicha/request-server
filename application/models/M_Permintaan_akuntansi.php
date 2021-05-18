@@ -12,7 +12,7 @@
 		}
 
 		public function getByMasa($bulan, $tahun, $klien='', $start, $limit) {
-			if($klien) {
+			if($klien != 'all') {
 				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
 			return $this->db->from('permintaan_akuntansi')
@@ -26,6 +26,19 @@
 		}
 
 		public function countPermintaan($bulan, $tahun, $klien='') {
+			if($klien != 'all') {
+				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
+			}
+			return $this->db->from('permintaan_akuntansi')
+							->join('jenis_data', 'permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
+							->join('user', 'permintaan_akuntansi.id_pengirim = user.id_user', 'left')
+							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->count_all_results();
+		}
+
+		// TANPA PENGIRIMAN
+		public function getForKlien($bulan, $tahun, $klien='', $start, $limit) {
 			if($klien) {
 				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
@@ -34,6 +47,27 @@
 							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_akuntansi.id_pengirim = user.id_user', 'left')
 							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where("NOT EXISTS (SELECT * FROM pengiriman_akuntansi 
+								WHERE pengiriman_akuntansi.id_permintaan = permintaan_akuntansi.id_permintaan
+								)")
+							->limit($limit, $start)	
+							->order_by('id_permintaan', 'ASC')
+							->get()->result_array();
+		}
+
+		// TANPA PENGIRIMAN
+		public function countForKlien($bulan, $tahun, $klien='') {
+			if($klien) {
+				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
+			}
+			return $this->db->from('permintaan_akuntansi')
+							->join('jenis_data', 'permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
+							->join('user', 'permintaan_akuntansi.id_pengirim = user.id_user', 'left')
+							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where("NOT EXISTS (SELECT * FROM pengiriman_akuntansi 
+								WHERE pengiriman_akuntansi.id_permintaan = permintaan_akuntansi.id_permintaan
+								)")
 							->count_all_results();
 		}
 

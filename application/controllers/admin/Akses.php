@@ -35,11 +35,13 @@
 					$get		= $this->Klien_model->getById($id);
 					$klien[]	= $get['nama_klien'];
 				}
-				
+				$bulan = $this->Klien_model->getMasa($k['masa']);
+
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama'];
-				$row[]	= '<a>Details</a>';
+				$row[]	= $bulan['nama_bulan']; // menampilkan nama bulan
+				$row[]	= '<a href="#">Details</a>';
 				$row[]	= $klien;
 				$row[]	= '
 					<a class="btn btn-sm btn-info" href="akses/ubah/'.$k['id_akses'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
@@ -63,9 +65,9 @@
 
 		public function tambah() {
 			$data['judul']		= 'Form Tambah Akses'; 
+			$data['masa']		= $this->Klien_model->getMasa();
 			$data['klien']		= $this->Klien_model->getAllKlien();
 			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan('akuntan');
-			$data['masa']		= $this->Akses_model->getMasa();
 			
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');

@@ -29,10 +29,12 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+			if($klien == null) 
+				{ $klien = 'all'; }
 			$countData	= $this->M_Permintaan_perpajakan->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan_perpajakan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
-			$data		= [];
+			$data = [];
 			foreach($permintaan as $k) { 
 				if( $this->M_Permintaan_perpajakan->getPengiriman($k['id_permintaan']) ) {
 					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Diterima"></i>';

@@ -44,7 +44,9 @@
 		
 		public function getMasa($masa='') {
 			if($masa){
-				return $this->db->get_where('bulan', ['nama_bulan' => $masa])->row_array();
+				return $this->db->where(['id_bulan' => $masa])
+								->or_where(['nama_bulan' => $masa])
+								->get('bulan')->row_array();
 			} else {
 				return $this->db->get('bulan')->result_array();
 			}

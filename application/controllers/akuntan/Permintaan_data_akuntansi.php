@@ -10,11 +10,11 @@
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
 			$this->load->model('Jenis_data_model');
-		} 
-		 
+		}
+		
 		public function index() {
 			
-			$data['judul'] = "Permintaan Data Akuntansi";
+			$data['judul']	= "Permintaan Data Akuntansi";
 			$data['masa']	= $this->Klien_model->getMasa();
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			
@@ -31,9 +31,15 @@
 			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
-				$akses		= $this->Akses_model->getByAkuntan($id_akuntan, $bulan, $tahun);
+				$masa		= $this->Klien_model->getMasa($bulan);
+				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 				if( $akses ) {
-					$klien = explode(',', $akses['klien']);
+					if($masa['id_bulan'] < $akses['masa']) {
+						$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+					}
+					if( $akses ) {
+						$klien = explode(',', $akses['klien']);
+					}
 				}
 			}
 			
@@ -42,7 +48,7 @@
 			$countData	= $this->M_Permintaan_akuntansi->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 
-			$data		= [];
+			$data = [];
 			foreach($permintaan as $k) { 
 				if( $this->M_Permintaan_akuntansi->getPengiriman($k['id_permintaan']) ) {
 					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Diterima"></i>';
@@ -76,18 +82,22 @@
 
 		public function klien() {
 			
-			$bulan	= $this->input->post('bulan', true);
-			$tahun	= $this->input->post('tahun', true);
-			
+			$bulan		= $this->input->post('bulan', true);
+			$tahun		= $this->input->post('tahun', true);
 			$id_akuntan	= $this->session->userdata('id_user');
-			$akses		= $this->Akses_model->getByAkuntan($id_akuntan, $bulan, $tahun);
+			
+			$bulan		= $this->Klien_model->getMasa($bulan);
+			$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+			if($bulan['id_bulan'] < ($akses['masa'])) {
+				$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+			}
 			if($akses == null) {
-				$lists	= "<option value=''>--Tidak ada akses--</option>";
+				$lists = "<option value=''>--Tidak ada akses--</option>";
 			} else {
-				$lists	= "<option value=''>--Pilih Klien--</option>";
+				$lists		= "<option value=''>--Semua Klien--</option>";
 				$id_klien	= explode(",", $akses['klien']);
 				foreach($id_klien as $id) {
-					$klien = $this->Klien_model->getById($id);
+					$klien	= $this->Klien_model->getById($id);
 					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 
 				} 
 			}

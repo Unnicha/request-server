@@ -48,28 +48,6 @@
                     </div>
                 </div>
 
-                <!-- Masa -->
-                <div class="form-group row">
-                    <label for="masa" class="col-sm-4 col-form-label">
-                        Masa
-                    </label> 
-                    <div class="col-sm">
-                        <select name="masa" class="form-control" id="masa" required>
-                            <?php
-                                $bulan = date('m');
-                                foreach($masa as $m) : 
-                                    if($m['id_bulan'] == $bulan) { $pilih = "selected"; } 
-									else { $pilih = ""; }
-                            ?>
-                            <option value="<?=$m['nama_bulan'];?>" <?=$pilih;?>>
-								<?=$m['nama_bulan'];?>
-							</option>
-                            <?php endforeach ?>
-                        </select>
-                        <small class="form-text text-danger"><?= form_error('masa', '<p class="mb-0">', '</p>') ?></small>
-                    </div>
-                </div>
-
                 <!-- Tahun -->
                 <div class="form-group row">
                     <label for="tahun" class="col-sm-4 col-form-label">
@@ -87,23 +65,45 @@
                         <small class="form-text text-danger"><?= form_error('tahun', '<p class="mb-0">', '</p>') ?></small>
                     </div>
                 </div>
-                
-                <!-- Klien -->
+
+                <!-- Masa -->
                 <div class="form-group row">
-                    <label for="klien" class="col-sm-5 col-form-label">Klien</label> 
+                    <label for="masa" class="col-sm-4 col-form-label">
+                        Bulan Mulai
+                    </label> 
                     <div class="col-sm">
-                        <?php 
-                            foreach ($klien as $k) : 
-                        ?>
-                        <div class="row">
-                            <input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>">
-                            <label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></label>
-                        </div>
-                        <?php endforeach ?>
-                        <small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
+                        <select name="masa" class="form-control" id="masa" required>
+                            <?php
+                                $bulan = date('m');
+                                foreach($masa as $m) : 
+                                    if($m['id_bulan'] == $bulan) { $pilih = "selected"; } 
+									else { $pilih = ""; }
+                            ?>
+                            <option value="<?=$m['id_bulan']?>" <?=$pilih?>>
+								<?=$m['nama_bulan'];?>
+							</option>
+                            <?php endforeach ?>
+                        </select>
+                        <small class="form-text text-danger"><?= form_error('masa', '<p class="mb-0">', '</p>') ?></small>
                     </div>
                 </div>
-                
+				
+				<!-- Klien -->
+				<div class="form-group row">
+					<label for="klien" class="col-sm-4 col-form-label">Klien</label> 
+					<div class="col-sm">
+						<div class="overflow-auto container-akses">
+							<?php foreach ($klien as $k) : ?>
+							<div class="form-group form-check mb-2">
+								<input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>">
+								<label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></label>
+							</div>
+							<?php endforeach ?>
+						</div>
+						<small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
                 <div class="row mt-3">
                     <div class="col">
                         <button type="submit" name="tambah" class="btn btn-primary mr-2">
@@ -118,5 +118,5 @@
 </div>
 
 <script>
-		$('#menu1').collapse('show');
+	$('#menu1').collapse('show');
 </script>

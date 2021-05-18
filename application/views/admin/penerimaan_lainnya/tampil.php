@@ -1,11 +1,11 @@
 <div class="container-fluid"> 
 
 	<!-- Judul Table-->
-	<h2 class="mb-4" align="center"> <?= $judul; ?> </h2>
+	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
 	 
-	<!-- Form Ganti Isi Tabel -->
+	<!-- Form Ganti Tampilan -->
 	<form action="<?=base_url()?>admin/penerimaan_data_lainnya/cetak" method="post" target="_blank">
-		<div class="form-group row form-inline">
+		<div class="row form-inline">
 			<div class="col-12 col-sm">
 				<!-- Ganti Bulan -->
 				<select name='bulan' class="form-control" id="bulan">
@@ -15,12 +15,12 @@
 						if($sess_bulan) {$bulan = $sess_bulan;}
 
 						foreach ($masa as $m) : 
-							if ($m['id'] == $bulan || $m['value'] == $bulan) 
+							if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
 								{ $pilih="selected"; } 
 							else 
 								{ $pilih=""; }
 					?>
-					<option value="<?= $m['value']; ?>" <?=$pilih?>> <?= $m['value'] ?> </option>
+					<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 					<?php endforeach ?>
 				</select>
 				
@@ -56,7 +56,7 @@
 			</div>
 				
 			<div class="col-12 col-sm-4 col-lg-3">
-				<div class="row float-sm-right pr-3">
+				<div class="row float-sm-right">
 					<button type="submit" name="xls" class="btn btn-success mr-1">
 						<i class="bi bi-download"></i>
 						Excel
@@ -70,42 +70,87 @@
 		</div>
 	</form>
 	
-	<div id="show">
-		<!-- Isi Table -->
+	<div class="mt-2 mb-4">
+		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
+			<thead class="text-center">
+				<tr>
+					<th scope="col">No.</th>
+					<th scope="col">Nama Klien</th>
+					<th scope="col">Jenis Data</th>
+					<th scope="col">Jenis Pengiriman</th>
+					<th scope="col">Tanggal Pengiriman</th>
+					<th scope="col">Detail</th>
+				</tr>
+			</thead>
+
+			<tbody class="text-center">
+			</tbody>
+		</table>
 	</div>
 </div>
 
+<!-- Modal untuk Detail Pengiriman -->
+<div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:600px">
+		<div class="modal-content" id="showDetailPengiriman">
+			<!-- Tampilkan Data Klien-->
+		</div>
+	</div>
+</div>
 
+<script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
+<script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('#menu3').collapse('show');
-
-		function ganti() {
-			var klien = $('#klien').val();
-			var bulan = $('#bulan').val();
-			var tahun = $('#tahun').val();
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/penerimaan_data_lainnya/ganti',
-				data: {'bulan':bulan, 'klien': klien, 'tahun': tahun},
-				success: function(data) {
-					$("#show").html(data);
-				}
-			})
-		}
-
-		ganti();
+		
+		var table = $('#myTable').DataTable({
+			'processing'	: true,
+			'serverSide'	: true,
+			'ordering'		: false,
+			'lengthChange'	: false,
+			'searching'		: false,
+			'language'		: {
+				emptyTable	: "Belum ada data diterima"
+			},
+			//'pageLength': 9,
+			'ajax'		: {
+				'url'	: '<?=base_url()?>admin/penerimaan_data_lainnya/page',
+				'type'	: 'post',
+				'data'	: function (e) { 
+					e.klien = $('#klien').val(); 
+					e.bulan = $('#bulan').val(); 
+					e.tahun = $('#tahun').val();
+				},
+			},
+		});
 		
 		$("#klien").change(function() { 
-			ganti();
+			table.draw();
 		})
-		$("#bulan").change(function() { 
-			ganti();
+		$('#bulan').change(function() {
+			table.draw();
 		})
-		$("#tahun").change(function() { 
-			ganti();
+		$('#tahun').change(function() {
+			table.draw();
+		})
+
+		// Detail Pengiriman
+		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
+			var pengiriman = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/penerimaan_data_lainnya/detail',
+				data	: 'action='+ pengiriman,
+				success	: function(data) {
+					$("#detailPengiriman").modal('show');
+					$("#showDetailPengiriman").html(data);
+				},
+			})
+		})
+		$('#myTable tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
+			$(this).tooltip();
 		})
 	});
+
 </script>
-<!--
--->

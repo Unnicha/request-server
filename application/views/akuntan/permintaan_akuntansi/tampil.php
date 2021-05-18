@@ -109,9 +109,9 @@
 			$.ajax({
 				type: 'POST',
 				url: '<?= base_url(); ?>akuntan/permintaan_data_akuntansi/klien',
-				data: {
+				data: { 
 					'bulan' : $('#bulan').val(), 
-					'tahun' : $('#tahun').val(),
+					'tahun' : $('#tahun').val(), 
 					},
 				success: function(data) {
 					$("#klien").html(data);

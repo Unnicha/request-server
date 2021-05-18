@@ -156,6 +156,12 @@ a:hover {
 .container, .container-fluid {
     font-size: .925rem;
 }
+.container-akses {
+    padding: 7px;
+    max-height: 250px;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
 .container-login {
     margin-top: 3rem;
     max-width: 90%;

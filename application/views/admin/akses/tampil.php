@@ -20,23 +20,6 @@
 		<div class="col col-sm">
 			<form action="" method="post">
 				<div class="row form-inline form-group float-right mb-2">
-						<!-- Ganti Bulan -->
-						<select name='bulan' class="form-control mr-2" id="bulan">
-							<?php 
-								$bulan = date('m');
-								$sess_bulan = $this->session->userdata('bulan');
-								if($sess_bulan) {$bulan = $sess_bulan;}
-	
-								foreach ($masa as $m) : 
-									if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-										{ $pilih="selected"; } 
-									else 
-										{ $pilih=""; }
-							?>
-							<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-							<?php endforeach ?>
-						</select>
-						
 						<!-- Ganti Tahun -->
 						<select name='tahun' class="form-control" id="tahun">
 							<?php 
@@ -48,7 +31,7 @@
 									else 
 										{ $pilih=""; }
 							?>
-							<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+							<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
 							<?php endfor ?>
 						</select>
 				</div>
@@ -62,6 +45,7 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Akuntan</th>
+					<th scope="col">Mulai akses</th>
 					<th scope="col">Klien</th>
 					<th scope="col">Detail</th>
 					<th scope="col">Action</th>
@@ -92,7 +76,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			//'pageLength': 9,
+			//'pageLength'	: 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>admin/akses/page',
 				'type'	: 'post',
@@ -103,11 +87,11 @@
 			},
 			'columnDefs'	: [
 				{
-					'targets'	: 3,
+					'targets'	: 4,
 					'visible'	: false,
 				},
 				{
-					'targets'	: 2,
+					'targets'	: 3,
 					'className'	: 'detail_klien',
 				}
 			]
@@ -115,8 +99,8 @@
 		
 		//add row child
 		function format ( d ) { // `d` is the original data object for the row
-			var child = '<table class="table-bordered table-striped my-1" cellpadding="5" cellspacing="0" width=80% style="margin-right:18%">';
-			var n = d[3];
+			var child = '<table class="table-bordered table-striped my-1" cellpadding="5" cellspacing="0" width=99%>';
+			var n = d[4];
 			for (var i = 0; i < n.length; i++) {
 				var j = i+1;
 				child += '<tr><td>Klien '+j+'</td><td>'+n[i]+'</td></tr>';

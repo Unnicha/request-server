@@ -25,14 +25,15 @@
 							->order_by('id_akses', 'ASC')
 							->get()->row_array();
 		}
-	
-		public function getByAkuntan($id_akuntan, $bulan, $tahun) {
+		
+		public function getByAkuntan($tahun, $id_akuntan) {
 			return $this->db->from('akses')
 							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun, 'id_akuntan' => $id_akuntan])
+							->where(['tahun' => $tahun, 'id_akuntan' => $id_akuntan])
 							->get()->row_array();
 		}
-	
+		
+		//delsoon
 		public function getByKlien($id_klien, $bulan, $tahun) {
 			return $this->db->from('akses')
 							->join('user', 'user.id_user = akses.id_akuntan', 'left')
@@ -41,20 +42,10 @@
 							->order_by('id_akses', 'ASC')
 							->get()->result_array();
 		}
-		
-		public function getMasa($masa='') {
-			if($masa){
-				return $this->db->get_where('bulan', ['nama_bulan' => $masa])->row_array();
-			} else {
-				return $this->db->get('bulan')->result_array();
-			}
-		}
 
 		public function tambahAkses() {
-			$bulan		= $this->getMasa( $this->input->post('masa', true) );
-			$masa		= sprintf('%02s', $bulan['id_bulan']);
 			$tahun		= substr($this->input->post('tahun', true), 2, 2);
-			$id_akses	= "{$tahun}{$masa}{$this->input->post('id_akuntan', true)}";
+			$id_akses	= "{$tahun}{$this->input->post('id_akuntan', true)}";
 			
 			$cek = $this->getById($id_akses);
 			if($cek == null) {

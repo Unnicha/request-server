@@ -1,11 +1,11 @@
 <div class="container-fluid"> 
 
 	<!-- Judul Table-->
-	<h2 class="mb-4" align="center"> <?= $judul; ?> </h2>
+	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
 	 
-	<!-- Form Ganti Isi Tabel -->
+	<!-- Form Ganti Tampilan -->
 	<form action="<?=base_url()?>admin/penerimaan_data_akuntansi/cetak" method="post" target="_blank">
-		<div class="form-group row form-inline">
+		<div class="row form-inline">
 			<div class="col-12 col-sm">
 				<!-- Ganti Bulan -->
 				<select name='bulan' class="form-control" id="bulan">
@@ -110,6 +110,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
+			'language'		: {
+				emptyTable	: "Belum ada data diterima"
+			},
 			//'pageLength': 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>admin/penerimaan_data_akuntansi/page',
@@ -136,10 +139,10 @@
 		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
 			var pengiriman = $(this).data('nilai');
 			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/penerimaan_data_akuntansi/detail',
-				data: 'action='+ pengiriman,
-				success: function(data) {
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/penerimaan_data_akuntansi/detail',
+				data	: 'action='+ pengiriman,
+				success	: function(data) {
 					$("#detailPengiriman").modal('show');
 					$("#showDetailPengiriman").html(data);
 				},

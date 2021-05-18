@@ -148,12 +148,13 @@
 <script>
     $(document).ready(function() {
         function getKlien() {
-            var bulan = $('#masa').find(':selected').val();
-            var tahun = $('#tahun').find(':selected').val();
             $.ajax({
                 type : 'POST',
                 url : '<?=base_url()?>akuntan/permintaan_data_akuntansi/klien',
-                data : {bulan : bulan, tahun : tahun},
+                data : {
+					bulan : $('#masa').find(':selected').val(), 
+					tahun : $('#tahun').find(':selected').val(),
+					},
                 success : function(data) {
                     $('#id_klien').html(data);
                 }

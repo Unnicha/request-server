@@ -19,11 +19,11 @@
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datatables.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/dataTables.bootstrap4.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/responsive.bootstrap.min.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datepicker.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/timepicker.min.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/timepicker-tiny.css') ?>">
 		<!--
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/buttons.dataTables.min.css') ?>">
-			<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datepicker.css') ?>">
-			<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/timepicker.min.css') ?>">
-			<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/timepicker-tiny.css') ?>">
 		-->
 		
 		<title><?= $judul; ?></title>
@@ -50,8 +50,7 @@
 				<div class="col-md-9 col-lg-10 ml-sm-auto px-0 pt-3">
 					<?=$content?>
 					<!--
-					<div class="container-fluid">
-					</div>
+					<div class="container-fluid"></div>
 					-->
 				</div>
 			</div>

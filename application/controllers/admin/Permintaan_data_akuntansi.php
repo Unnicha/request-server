@@ -29,6 +29,8 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+			if($klien == null) 
+				{ $klien = 'all'; }
 			$countData	= $this->M_Permintaan_akuntansi->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			

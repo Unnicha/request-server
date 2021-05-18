@@ -14,7 +14,7 @@
 		public function index() {
 			$data['judul']	= "Akses Klien";
 			$data['klien']	= $this->Klien_model->getKlien();
-			$data['masa']	= $this->Akses_model->getMasa();
+			$data['masa']	= $this->Klien_model->getMasa();
 			
 			$this->libtemplate->main('admin/akses/tampil', $data);
 		}
@@ -67,8 +67,8 @@
 		public function tambah() {
 			$data['judul']		= 'Form Tambah Akses'; 
 			$data['klien']		= $this->Klien_model->getAllKlien();
+			$data['masa']		= $this->Klien_model->getMasa();
 			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan('akuntan');
-			$data['masa']		= $this->Akses_model->getMasa();
 			
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');

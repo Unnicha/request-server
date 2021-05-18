@@ -10,7 +10,7 @@
 			$this->load->model('M_Permintaan_akuntansi');
 			$this->load->model('Klien_model');
 		}
-
+		
 		public function index() {
 			$data['judul']	= "Penerimaan Data Akuntansi";
 			$data['klien']	= $this->Klien_model->getAllKlien();
@@ -29,28 +29,24 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+			if($klien == null) 
+				{ $klien = 'all'; }
 			$countData	= $this->M_Pengiriman_akuntansi->countPengiriman($bulan, $tahun, $klien); 
 			$pengiriman	= $this->M_Pengiriman_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
-			$data		= [];
+			$data = [];
 			foreach($pengiriman as $k) {
-				if($k['pembetulan'] > 0) {
-					$rev = 'Revisi '.$k['pembetulan'];
-				} else {
-					$rev = 'Pertama';
-				}
-
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
 				$row[]	= $k['jenis_data'];
-				$row[]	= $rev;
+				$row[]	= "Pengiriman ke-".($k['pembetulan'] + 1);
 				$row[]	= $k['tanggal_pengiriman'];
 				$row[]	= '
 					<a class="btn btn-sm btn-primary btn-detail_pengiriman" data-toggle="tooltip" data-nilai="'.$k['id_pengiriman'].'" data-placement="bottom" title="Detail Pengiriman">
 						<i class="bi bi-info-circle"></i>
 					</a>';
-
+					
 				$data[] = $row;
 			}
 			$callback	= [
@@ -66,7 +62,7 @@
 			$id_pengiriman	= $this->input->post('action', true);
 			$peng			= $this->M_Pengiriman_akuntansi->getById($id_pengiriman);
 
-			$data['lokasi']	= "asset/uploads/{$peng['nama_klien']}/{$peng['tahun']}/{$peng['masa']}";
+			$data['lokasi']	= "asset/uploads/".$peng['nama_klien']."/".$peng['tahun']."/".$peng['masa'];
 			$data['judul']	= 'Detail Pengiriman Data';
 			$data['pengiriman'] = $peng;
 			
@@ -76,13 +72,13 @@
 				$this->load->view('admin/penerimaan_akuntansi/detail_pembetulan', $data);
 			}
 		}
-
+		
 		public function cetak() {
 			$data['bulan']	= $this->input->post('bulan', true);
 			$data['tahun']	= $this->input->post('tahun', true);
 			$data['klien']	= $this->input->post('klien', true);
 
-			$data['filename']	= 'Permintaan Data Akuntansi '.$data['bulan'].' '.$data['tahun'];
+			$data['filename']	= "Permintaan Data Akuntansi ".$data['bulan']." ".$data['tahun'];
 			$data['judul']		= "Permintaan Data Akuntansi";
 			$data['klien']		= $this->Klien_model->getAllKlien();
 			foreach($data['klien'] as $k) {
@@ -90,7 +86,7 @@
 				$permintaan[$k['id_klien']] = $perklien;
 			}
 			$data['permintaan'] = $permintaan;
-
+			
 			if($this->input->post('xls', true))
 				return $this->exportpengiriman->exportExcel($data);
 			elseif($this->input->post('pdf', true))

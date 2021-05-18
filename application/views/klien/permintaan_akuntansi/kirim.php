@@ -103,9 +103,6 @@
                         Keterangan
                     </label> 
                     <div class="col-sm">
-                        <!--
-                        <input type="text" name="keterangan" class="form-control" id="keterangan" placeholder="Masukkan Keterangan" value="<?= set_value('keterangan') ?>">
-                        -->
                         <textarea name="keterangan" class="form-control" id="keterangan" placeholder="Masukkan Keterangan" value="<?= set_value('keterangan') ?>"></textarea>
                         <small class="form-text text-danger"><?= form_error('keterangan', '<p class="mb-0">', '</p>') ?></small>
                     </div>
@@ -132,11 +129,11 @@
 <script>
 		$(document).ready(function () {
 			bsCustomFileInput.init();
-                    
-            //memanggil date picker
-            const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
-                autoHide: true,
-                format: 'dd-mm-yyyy',
-            });
+			
+			//memanggil date picker
+			const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
+				autoHide: true,
+				format: 'dd-mm-yyyy',
+			});
 		})
 </script>

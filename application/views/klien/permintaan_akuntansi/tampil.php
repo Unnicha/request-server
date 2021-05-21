@@ -6,45 +6,39 @@
 	<!-- Judul -->
 	<h2 class="text-center"> <?= $judul; ?> </h2>
 	
-	<div class="row">
-		<div class="col-sm">
-			<form action="" method="post">
-				<div class="row form-inline">
-					<div class="col px-0">
-						<!-- Ganti Bulan -->
-						<select name='bulan' class="form-control" id="bulan">
-							<?php 
-								$bulan = date('m');
-								$sess_bulan = $this->session->userdata('bulan');
-								if($sess_bulan != null) {$bulan = $sess_bulan;}
+	<div class="row form-inline">
+		<div class="col">
+			<!-- Ganti Bulan -->
+			<select name='bulan' class="form-control" id="bulan">
+				<?php 
+					$bulan = date('m');
+					$sess_bulan = $this->session->userdata('bulan');
+					if($sess_bulan != null) {$bulan = $sess_bulan;}
 
-								foreach ($masa as $m) : 
-									if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-										{ $pilih="selected"; } 
-									else 
-										{ $pilih=""; }
-							?>
-							<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-							<?php endforeach ?>
-						</select>
-						
-						<!-- Ganti Tahun -->
-						<select name='tahun' class="form-control" id="tahun">
-							<?php 
-								$tahun = date('Y');
-								$sess_tahun = $this->session->userdata('tahun');
-								for($i=$tahun; $i>=2010; $i--) :
-									if ($i == $sess_tahun) 
-									{ $pilih="selected"; } 
-									else 
-									{ $pilih=""; }
-									?>
-							<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-							<?php endfor ?>
-						</select>
-					</div>
-				</div>
-			</form>
+					foreach ($masa as $m) : 
+						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
+							{ $pilih="selected"; } 
+						else 
+							{ $pilih=""; }
+				?>
+				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
+			<!-- Ganti Tahun -->
+			<select name='tahun' class="form-control" id="tahun">
+				<?php 
+					$tahun = date('Y');
+					$sess_tahun = $this->session->userdata('tahun');
+					for($i=$tahun; $i>=2010; $i--) :
+						if ($i == $sess_tahun) 
+						{ $pilih="selected"; } 
+						else 
+						{ $pilih=""; }
+				?>
+				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+				<?php endfor ?>
+			</select>
 		</div>
 	</div>
 	

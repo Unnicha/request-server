@@ -13,7 +13,7 @@
 
 		public function getByMasa($bulan, $tahun, $klien='', $start, $limit) {
 			if($klien != 'all') {
-				$this->db->where('permintaan_akuntansi.id_klien', $klien);
+				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
 			return $this->db->from('pengiriman_akuntansi')
 							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_permintaan', 'left')
@@ -27,7 +27,7 @@
 
 		public function countPengiriman($bulan, $tahun, $klien='') {
 			if($klien != 'all') {
-				$this->db->where('permintaan_akuntansi.id_klien', $klien);
+				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
 			return $this->db->from('pengiriman_akuntansi')
 							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_permintaan', 'left')
@@ -43,57 +43,84 @@
 							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
 							->join('jenis_data', 'permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis', 'left')
 							->where('id_pengiriman', $id_pengiriman)
-							->order_by('id_pengiriman', 'ASC')
 							->get()->row_array();
 		}
 
-		//delsoon
-		public function getPerMasa($bulan, $tahun) {
-			$q = "SELECT * FROM (pengiriman_akuntansi 
-				LEFT JOIN ((permintaan_akuntansi 
-				LEFT JOIN jenis_data ON permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis) 
-				LEFT JOIN klien ON permintaan_akuntansi.id_klien = klien.id_klien) 
-				ON permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_permintaan) 
-				WHERE masa = '$bulan' AND tahun = '$tahun' 
-				ORDER BY id_pengiriman ASC";
-			return $this->db->query($q)->result_array();
-		}
-
-		//delsoon
-		public function getPerKlien($bulan, $tahun, $klien) {
-			$q = "SELECT * FROM (pengiriman_akuntansi 
-				LEFT JOIN ((permintaan_akuntansi 
-				LEFT JOIN jenis_data ON permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis) 
-				LEFT JOIN klien ON permintaan_akuntansi.id_klien = klien.id_klien) 
-				ON permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_permintaan) 
-				WHERE permintaan_akuntansi.masa = '$bulan' 
-				AND permintaan_akuntansi.tahun = '$tahun' 
-				AND permintaan_akuntansi.id_klien = '$klien' 
-				ORDER BY id_pengiriman ASC";
-			return $this->db->query($q)->result_array();
-		}
-
 		public function getMax($id_permintaan) { //fungsi untuk membuat id baru dengan autoincrement
-			/*$q		= "SELECT max(id_pengiriman) as maxId FROM pengiriman_akuntansi 
-						WHERE id_permintaan = '$id_permintaan' ";
-			$max	= $this->db->query($q)->row_array(); */
-			$max	 = $this->db->select_max('id_pengiriman')
-								->where('id_permintaan', $id_permintaan)
-								->get('pengiriman_akuntansi')->row_array();
-			$kodeMax = $max['maxId']; //masukkan max id ke variabel
+			$max = $this->db->select_max('id_pengiriman')
+							->where('id_permintaan', $id_permintaan)
+							->get('pengiriman_akuntansi')->row_array();
+			$kodeMax = $max['id_pengiriman']; //masukkan max id ke variabel
 
 			if($kodeMax == null) {
 				$id_pengiriman = $id_permintaan."0";
 			} else {
 				//ambil kode pembetulan => substr(dari $kodeMax, index ke, sebanyak x char) 
 				//jadikan integer => (int) 
-				$tambah = (int) substr($kodeMax, -1);
-				$tambah++; //kode pembetulan +1
-
-				$id_pengiriman = $id_permintaan . $pembetulan; //tambahkan kode pembetulan baru
+				$revisi = (int) substr($kodeMax, -1);
+				if($revisi == 9) {
+					$id_pengiriman = $id_permintaan;
+				} else {
+					$id_pengiriman	= $id_permintaan . ++$revisi; //tambahkan kode pembetulan baru
+				}
 			}
 			
 			return $id_pengiriman;
+		}
+		
+		public function kirim() {
+
+			$id_permintaan	= $this->input->post('id_permintaan', true);
+			$masa			= $this->input->post('masa', true);
+			$tahun			= $this->input->post('tahun', true);
+			
+			$redirect		= "klien/permintaan_data_akuntansi/kirim/".$id_permintaan;
+			$id_pengiriman	= $this->getMax($id_permintaan); //ambil id_pengiriman terbesar yang sudah ada
+			if($id_pengiriman == $id_permintaan) {
+				$this->session->set_flashdata('flash', 'Revisi sudah mencapai batas maksimal. Silahkan hubungi accounting');
+				redirect("klien/pengiriman_data_akuntansi/pembetulan/".$id_permintaan);
+			} else {
+				$pembetulan		= substr($id_pengiriman, -1); //mengambil kode pembetulan dari id_pengiriman
+				if($pembetulan > 0) { // error handler
+					$redirect	= "klien/pengiriman_data_akuntansi/pembetulan/".$id_permintaan;
+				}
+				
+				$nama_klien		= $this->session->userdata('nama');
+				$format_data	= $this->input->post('format_data', true);
+				$fileDikirim	= "";
+				
+				if($format_data == "Softcopy") {
+					//cek apakah field File diisi
+					if(basename($_FILES['file']['name']) == null) { 
+						$this->session->set_flashdata('flash', 'Kolom <b>File</b> harus diisi');
+						redirect($redirect); 
+					} else {
+						$fileDikirim = $this->proses_file($nama_klien, $masa, $tahun);
+						if($fileDikirim == null) {
+							$this->session->set_flashdata('flash','Format file yang di izinkan hanya <b>XLS</b> dan <b>PDF</b>');
+							redirect($redirect); 
+						}
+					}
+				}
+				
+				if($format_data == "Hardcopy") {
+					if($this->input->post('tanggal_ambil', true) == null) {
+						$this->session->set_flashdata('flash', 'Kolom <b>Tanggal Ambil</b> harus diisi');
+						redirect($redirect); 
+					}
+				}
+				
+				$data = [
+					'id_pengiriman'		=> $id_pengiriman,
+					'tanggal_pengiriman'=> $this->input->post('tanggal_pengiriman', true),
+					'pembetulan'		=> $pembetulan,
+					'file'				=> $fileDikirim,
+					'tanggal_ambil'		=> $this->input->post('tanggal_ambil', true),
+					'keterangan2'		=> $this->input->post('keterangan', true),
+					'id_permintaan'		=> $this->input->post('id_permintaan', true),
+				];
+				$this->db->insert('pengiriman_akuntansi', $data);
+			}
 		}
 		
 		public function proses_file($nama_klien, $masa, $tahun) {
@@ -127,56 +154,6 @@
 				$upload		= move_uploaded_file($fileData['tmp_name'], $folderUpload.$newName);
 			}
 			return $newName;
-		}
-		
-		public function kirim() {
-
-			$id_permintaan	= $this->input->post('id_permintaan', true);
-			$masa	= $this->input->post('masa', true);
-			$tahun	= $this->input->post('tahun', true);
-			
-			$redirect		= "klien/permintaan_data_akuntansi/kirim/".$id_permintaan;
-			$id_pengiriman	= $this->getMax($id_permintaan); //ambil id_pengiriman terbesar yang sudah ada
-			$pembetulan		= substr($id_pengiriman, -1); //mengambil kode pembetulan dari id_pengiriman
-			if($pembetulan > 0) { // error handler
-				$redirect	= "klien/pengiriman_data_akuntansi/pembetulan/".$id_permintaan;
-			}
-			
-			$nama_klien		= $this->session->userdata('nama');
-			$format_data	= $this->input->post('format_data', true);
-			$fileDikirim	= "";
-			
-			if($format_data == "Softcopy") {
-				//cek apakah field File diisi
-				if(basename($_FILES['file']['name']) == null) { 
-					$this->session->set_flashdata('flash', 'Kolom <b>File</b> harus diisi');
-					redirect($redirect); 
-				} else {
-					$fileDikirim = $this->proses_file($nama_klien, $masa, $tahun);
-					if($fileDikirim == null) {
-						$this->session->set_flashdata('flash','Format file yang di izinkan hanya <b>XLS</b> dan <b>PDF</b>');
-						redirect($redirect); 
-					}
-				}
-			}
-			
-			if($format_data == "Hardcopy") {
-				if($this->input->post('tanggal_ambil', true) == null) {
-					$this->session->set_flashdata('flash', 'Kolom <b>Tanggal Ambil</b> harus diisi');
-					redirect($redirect); 
-				}
-			}
-			
-			$data = [
-				'id_pengiriman'		=> $id_pengiriman,
-				'tanggal_pengiriman'=> $this->input->post('tanggal_pengiriman', true),
-				'pembetulan'		=> $pembetulan,
-				'file'				=> $fileDikirim,
-				'tanggal_ambil'		=> $this->input->post('tanggal_ambil', true),
-				'keterangan2'		=> $this->input->post('keterangan', true),
-				'id_permintaan'		=> $this->input->post('id_permintaan', true),
-			];
-			$this->db->insert('pengiriman_akuntansi', $data);
 		}
 		
 		public function hapusPengiriman($id_pengiriman) {

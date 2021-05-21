@@ -26,8 +26,9 @@
 		}
 
 		public function getMax($kategori) {
-			$q = "SELECT MAX(kode_jenis) as maxId FROM jenis_data WHERE kategori = '$kategori' ";
-			$max = $this->db->query($q)->row_array();
+			$max = $this->db->select_max('kode_jenis', 'maxId')
+							->where('kategori', $kategori)
+							->get('jenis_data')->row_array();
 			$kodeMax = $max['maxId']; 
 			
 			// ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 3 char) 
@@ -39,7 +40,7 @@
 			$kategori_data	= $this->kategori();
 			$id_kategori	= array_search($kategori, $kategori_data);
 			
-			return $kode_baru = "{$id_kategori}{$baru}";
+			return $kode_baru = $id_kategori . $baru;
 		}
 
 		public function kategori() {

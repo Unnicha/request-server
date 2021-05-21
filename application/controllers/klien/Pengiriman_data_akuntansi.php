@@ -6,42 +6,67 @@
 			parent::__construct();
 			$this->load->library('form_validation');
 			
+			$this->load->model('Klien_model');
 			$this->load->model('M_Permintaan_akuntansi');
 			$this->load->model('M_Pengiriman_akuntansi');
 		} 
 		
 		public function index() {
 			
-			$data['judul'] = "Pengiriman Data Akuntansi"; 
-			$data['masa'] = $this->M_Pengiriman_akuntansi->masa();
-			$data['lokasi'] = "asset/uploads";
+			$data['judul']	= "Pengiriman Data Akuntansi"; 
+			$data['masa']	= $this->Klien_model->getMasa();
+			$data['lokasi']	= "asset/uploads";
 
 			$this->libtemplate->main('klien/pengiriman_akuntansi/tampil', $data);
 		}
 		
-		public function isi() {
-
-			$bulan = $_POST['bulan'];
-			$tahun = $_POST['tahun'];
-			$klien_id = $this->session->userdata('id_user');
-			
-			$pengiriman			= $this->M_Pengiriman_akuntansi->getPerKlien($bulan, $tahun, $klien_id);
-			$data['pengiriman']	= $pengiriman;
-			
+		public function page() {
+			$bulan	= $_POST['bulan'];
+			$tahun	= $_POST['tahun'];
+			$klien	= $this->session->userdata('id_user');
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
+			//$this->session->set_flashdata('klien', $klien);
+			
+			$limit		= $_POST['length'];
+			$offset		= $_POST['start'];
+			$countData	= $this->M_Pengiriman_akuntansi->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 
-			if($pengiriman == null) {
-				$this->session->set_flashdata('empty', 'Belum ada pengiriman');
-				$this->load->view('empty');
-			} else {
-				$this->load->view('klien/pengiriman_akuntansi/isi', $data);
+			$data = [];
+			foreach($pengiriman as $k) {
+				$btn	= '
+					<a href="#" class="btn btn-sm btn-info btn-detail_pengiriman" data-nilai="'.$k['id_pengiriman'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Pengiriman">
+						<i class="bi bi-info-circle"></i>
+					</a>';
+				if($k['pembetulan'] == 0) {
+					$btn .= '
+						<a href="pengiriman_data_akuntansi/pembetulan/'.$k['id_permintaan'].'" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="bottom" title="Kirim Revisi">
+							<i class="bi bi-file-earmark-arrow-up"></i>
+						</a>';
+				}
+
+				$row	= [];
+				$row[]	= ++$offset.'.';
+				$row[]	= $k['jenis_data'];
+				$row[]	= "Pengiriman ke-".($k['pembetulan'] + 1);
+				$row[]	= $k['tanggal_pengiriman'];
+				$row[]	= $btn;
+					
+				$data[] = $row;
 			}
+			$callback	= [
+				'draw'			=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'	=> $countData,
+				'recordsFiltered'=>$countData,
+				'data'			=> $data,
+			];
+			echo json_encode($callback);
 		}
 		
 		public function pembetulan($id_permintaan) {
-			$data['judul']		= "Form Kirim Pembetulan"; // judul halaman
-			$data['masa']		= $this->M_Pengiriman_akuntansi->masa();
+			$data['judul']		= "Form Kirim Revisi"; // judul halaman
+			$data['masa']		= $this->Klien_model->getMasa();
 			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
 						
 			$this->form_validation->set_rules('tanggal_pengiriman', 'Tanggal Pengiriman', 'required');
@@ -61,19 +86,15 @@
 		}
 		
 		public function detail() {
+			$id_pengiriman	= $_POST['action'];
+			$pengiriman		= $this->M_Pengiriman_akuntansi->getById($id_pengiriman);
 
-			$id_pengiriman = $this->input->post('action', true); //data yang dikirim dari Js
-			$pengiriman = $this->M_Pengiriman_akuntansi->getById($id_pengiriman);
-
-			$data['lokasi'] = "asset/uploads/{$pengiriman['nama_klien']}/{$pengiriman['tahun']}/{$pengiriman['masa']}"; //path folder penyimpanan data
-			$data['judul'] = 'Detail Pengiriman Data';
-			$data['pengiriman'] = $pengiriman;
+			//path folder penyimpanan data
+			$data['lokasi'] = 'asset/uploads/'.$pengiriman['nama_klien'].'/'.$pengiriman['tahun'].'/'.$pengiriman['masa']; 
+			$data['judul']		= 'Detail Pengiriman Data';
+			$data['pengiriman']	= $pengiriman;
 			
-			if($pengiriman['pembetulan'] == 0) {
-				$this->load->view('klien/pengiriman_akuntansi/detail_pengiriman', $data);
-			} else {
-				$this->load->view('klien/pengiriman_akuntansi/detail_pembetulan', $data);
-			}
+			$this->load->view('klien/pengiriman_akuntansi/detail_pengiriman', $data);
 		}
 	}
 ?>

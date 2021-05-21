@@ -7,85 +7,99 @@
 			$this->load->model('M_Pengiriman_perpajakan');
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
-		} 
+		}
 		
 		public function index() {
 			
-			$data['judul'] = "Penerimaan Data Perpajakan"; 
-			$data['header'] = $data['judul'];
-			$data['sub_header'] = "Daftar data yang sudah diterima & data yang akan diambil.";
-
-			$data['klien'] = $this->Klien_model->getAllKlien();
-			$data['masa'] = $this->M_Pengiriman_perpajakan->masa();
-			$data['lokasi'] = "asset/uploads/";
+			$data['judul']	= "Penerimaan Data Perpajakan";
+			$data['masa']	= $this->Klien_model->getMasa();
+			$data['klien']	= $this->Klien_model->getAllKlien();
+			$data['lokasi']	= "asset/uploads/";
 			
 			$this->libtemplate->main('akuntan/penerimaan_perpajakan/tampil', $data);
 		}
-
-		public function ganti() {
-			
-			$klien = $_POST['klien'];
-			$bulan = $_POST['bulan'];
-			$tahun = $_POST['tahun'];
-				
+		
+		public function page() {
+			$klien	= $_POST['klien'];
+			$bulan	= $_POST['bulan'];
+			$tahun	= $_POST['tahun'];
+			$this->session->set_flashdata('klien', $klien);
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
-			$this->session->set_flashdata('klien', $klien);
-
+			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
-				$akses		= $this->Akses_model->getByAkuntan($id_akuntan, $bulan, $tahun);
-				if($akses == null) {
-					$data['pengiriman'] = null;
-				} else {
-					$pengiriman = $this->M_Pengiriman_perpajakan->getPerMasa($bulan, $tahun);
-					$data['pengiriman'] = [];
-					$id_klien = explode(",", $akses['klien']);
-					foreach($id_klien as $id) { 
-						foreach($pengiriman as $p => $val) {
-							if($val['id_klien'] == $id)
-							array_push($data['pengiriman'], $pengiriman[$p]);
-						}
-					} 
+				$masa		= $this->Klien_model->getMasa($bulan);
+				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+				if( $akses ) {
+					if($masa['id_bulan'] < $akses['masa']) {
+						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+					}
+					if( $akses ) {
+						$klien = explode(',', $akses['klien']);
+					}
 				}
-			} else {
-				$data['pengiriman'] = $this->M_Pengiriman_perpajakan->getPerKlien($bulan, $tahun, $klien);
 			}
+			
+			$limit		= $_POST['length'];
+			$offset		= $_POST['start'];
+			$countData	= $this->M_Pengiriman_perpajakan->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_perpajakan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 
-			if($data['pengiriman'] == null) {
-				$this->session->set_flashdata('empty', 'Belum ada data');
-				$this->load->view('empty');
-			} else {
-				$this->load->view('akuntan/penerimaan_perpajakan/isi', $data);
+			$data = [];
+			foreach($pengiriman as $k) {
+				$row	= [];
+				$row[]	= ++$offset.'.';
+				$row[]	= $k['nama_klien'];
+				$row[]	= $k['jenis_data'];
+				$row[]	= "Pengiriman ke-".($k['pembetulan'] + 1);
+				$row[]	= $k['tanggal_pengiriman'];
+				$row[]	= '
+					<a class="btn btn-sm btn-primary btn-detail_pengiriman" data-toggle="tooltip" data-nilai="'.$k['id_pengiriman'].'" data-placement="bottom" title="Detail Pengiriman">
+						<i class="bi bi-info-circle"></i>
+					</a>';
+					
+				$data[] = $row;
 			}
+			$callback	= [
+				'draw'			=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'	=> $countData,
+				'recordsFiltered'=>$countData,
+				'data'			=> $data,
+			];
+			echo json_encode($callback);
 		}
-
+		
 		public function klien() {
-			
-			$bulan	= $this->input->post('bulan', true);
-			$tahun	= $this->input->post('tahun', true);
-			
+			$bulan		= $this->input->post('bulan', true);
+			$tahun		= $this->input->post('tahun', true);
 			$id_akuntan	= $this->session->userdata('id_user');
-			$akses		= $this->Akses_model->getByAkuntan($id_akuntan, $bulan, $tahun);
+			
+			$bulan		= $this->Klien_model->getMasa($bulan);
+			$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+			if($bulan['id_bulan'] < ((int)$akses['masa'])) {
+				$tahun = $tahun - 1;
+				$akses = $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+			}
 			if($akses == null) {
-				$lists	= "<option value=''>--Tidak ada akses--</option>";
+				$lists = "<option value=''>--Tidak ada akses--</option>";
 			} else {
-				$lists	= "<option value=''>Semua Klien</option>";
+				$lists		= "<option value=''>Semua Klien</option>";
 				$id_klien	= explode(",", $akses['klien']);
 				foreach($id_klien as $id) {
-					$klien = $this->Klien_model->getById($id);
+					$klien	= $this->Klien_model->getById($id);
 					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 
 				} 
 			}
 			echo $lists;
 		}
-
+		
 		public function detail() {
 			$id_pengiriman = $this->input->post('action', true);
 			$pengiriman = $this->M_Pengiriman_perpajakan->getById($id_pengiriman);
-
-			$data['lokasi'] = "asset/uploads/{$pengiriman['nama_klien']}/{$pengiriman['tahun']}/{$pengiriman['masa']}";
-			$data['judul'] = 'Detail Pengiriman Data';
+			
+			$data['lokasi']	= "asset/uploads/".$pengiriman['nama_klien']."/".$pengiriman['tahun']."/".$pengiriman['masa'];
+			$data['judul']	= 'Detail Pengiriman Data';
 			$data['pengiriman'] = $pengiriman;
 			
 			if($pengiriman['pembetulan'] == 0) {

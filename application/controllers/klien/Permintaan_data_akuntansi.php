@@ -86,8 +86,8 @@
 		}
 
 		public function detail() {
-			$data['judul']		= 'Detail Permintaan Data ';
 			$id_permintaan		= $this->input->post('permintaan', true);
+			$data['judul']		= 'Detail Permintaan Data ';
 			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
 			
 			$this->load->view('klien/permintaan_akuntansi/detail', $data);

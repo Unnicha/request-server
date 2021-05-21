@@ -156,7 +156,7 @@
 					$this->session->set_flashdata('empty', 'Belum ada proses');
 					$this->load->view('empty');
 				} else {
-					$redirect = "admin/proses_lainnya/isi/{$status}";
+					$redirect = "admin/proses_lainnya/isi/".$status;
 					$this->load->view($redirect, $data);
 				}
 			}

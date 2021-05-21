@@ -38,7 +38,7 @@
 			return $this->db->from('klien')
 							->join('klu', 'klien.kode_klu = klu.kode_klu', 'left')
 							->join('user', 'klien.id_klien = user.id_user', 'left')
-							->where('klien.id_klien', $id_klien)
+							->where('id_klien', $id_klien)
 							->get()->row_array();
 		}
 		
@@ -53,8 +53,9 @@
 		}
 
 		public function getMax($level) {
-			$q = "SELECT MAX(id_user) as maxId FROM user WHERE level = '$level' ";
-			$max = $this->db->query($q)->row_array();
+			$max = $this->db->select_max('id_user', 'maxId')
+							->where('level', $level)
+							->get('user')->row_array();
 			$kodeMax = $max['maxId']; 
 			
 			// ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 3 char) 
@@ -62,7 +63,7 @@
 			$tambah = (int) substr($kodeMax, 1, 3);
 			$tambah++;  //kode lama +1
 			$baru = sprintf("%03s", $tambah); 
-			$kode_baru = "3{$baru}"; 
+			$kode_baru = "3".$baru;
 
 			return $kode_baru;
 		}

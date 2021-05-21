@@ -32,6 +32,22 @@
                 <td scope="row">Tahun</td>
                 <td><?= $pengiriman['tahun']; ?></td>
             </tr>
+			<tr>
+				<td scope="row">Jenis Permintaan</td>
+				<td>Ke-<?= $pengiriman['request']; ?></td>
+			</tr>
+			<tr>
+				<td scope="row">Jenis Pengiriman</td>
+				<td>
+					<?php 
+						if($pengiriman['pembetulan'] == 0) {
+							echo 'Pertama';
+						} else {
+							echo 'Revisi ke-'.$pengiriman['pembetulan'];
+						}
+					?>
+				</td>
+			</tr>
             <tr>
                 <td scope="row">Format Data</td>
                 <td><?= $pengiriman['format_data']; ?></td>

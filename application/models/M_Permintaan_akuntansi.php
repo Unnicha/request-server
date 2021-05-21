@@ -86,18 +86,6 @@
 		}
 
 		//delete soon
-		public function getPerKlien($bulan, $tahun, $klien) {
-			$q = "SELECT * FROM (((permintaan_akuntansi
-				LEFT JOIN jenis_data ON permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis) 
-				LEFT JOIN klien ON permintaan_akuntansi.id_klien = klien.id_klien) 
-				LEFT JOIN user ON permintaan_akuntansi.id_pengirim = user.id_user) 
-				WHERE masa = '$bulan' AND tahun = '$tahun' 
-				AND permintaan_akuntansi.id_klien = '$klien' 
-				ORDER BY id_permintaan ASC";
-			return $this->db->query($q)->result_array();
-		}
-
-		//delete soon
 		public function getReqByKlien($masa, $tahun, $klien) {
 			$q = "SELECT * FROM ((((permintaan_akuntansi
 				LEFT JOIN jenis_data ON permintaan_akuntansi.kode_jenis = jenis_data.kode_jenis) 
@@ -120,12 +108,11 @@
 
 			if($max['max_id']) {
 				$tambah = (int) substr($max['max_id'], -2);
-				$tambah++; //kode pembetulan +1
-				$data['request'] = sprintf("%02s", $tambah); //kode pembetulan baru, jadikan 2 char
+				$data['request'] = ++$tambah; //kode pembetulan +1
 			} else {
-				$data['request'] = "01";
+				$data['request'] = "1";
 			}
-			$data['id'] = $id_permintaan.$data['request'];
+			$data['id'] = $id_permintaan.(sprintf("%02s", $data['request']));
 			return $data;
 		}
 
@@ -138,7 +125,7 @@
 			$tahun			= $this->input->post('tahun', true);
 			$bulan			= $this->db->get_where('bulan', ['nama_bulan' => $masa])->row_array();
 			$masa			= sprintf('%02s', $bulan['id_bulan']);
-			$id_permintaan	= substr($tahun, -2)."{$masa}{$id_klien}{$kode_jenis}";
+			$id_permintaan	= substr($tahun, -2) . $masa . $id_klien . $kode_jenis;
 
 			$new = $this->getMax($id_permintaan, $bulan['nama_bulan'], $tahun, $kode_jenis, $id_klien);
 			$data = [

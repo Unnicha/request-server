@@ -93,7 +93,7 @@
 			$tambah = (int) substr($max['maxId'], 1, 3);
 			$tambah++;  //kode lama +1
 			$baru = sprintf("%03s", $tambah); //kode baru, jadikan 2 char
-			$kode_baru = "1{$baru}"; //tambahkan dengan kode baru
+			$kode_baru = "1".$baru; //tambahkan dengan kode baru
 
 			return $kode_baru;
 		}

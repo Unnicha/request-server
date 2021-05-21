@@ -45,7 +45,7 @@
 
 		public function tambahAkses() {
 			$tahun		= substr($this->input->post('tahun', true), 2, 2);
-			$id_akses	= "{$tahun}{$this->input->post('id_akuntan', true)}";
+			$id_akses	= $tahun . $this->input->post('id_akuntan', true);
 			
 			$cek = $this->getById($id_akses);
 			if($cek == null) {

@@ -9,8 +9,8 @@
     <table class="table table-striped table-detail" id="data">
         <tbody>
             <tr>
-                <td scope="row">ID Permintaan</td>
-                <td><?= $pengiriman['id_permintaan']; ?></td>
+                <td scope="row">ID Pengiriman</td>
+                <td><?= $pengiriman['id_pengiriman']; ?></td>
             </tr>
             <tr>
                 <td scope="row">Tanggal Permintaan</td>

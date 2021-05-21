@@ -4,7 +4,7 @@
 		
 		public function __construct() {
 			parent::__construct();
-			$this->load->model('M_Pengiriman_akuntansi', 'm_pengiriman');
+			$this->load->model('M_Pengiriman_akuntansi');
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
 		}
@@ -29,8 +29,8 @@
 			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
-				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 				$masa		= $this->Klien_model->getMasa($bulan);
+				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 				if( $akses ) {
 					if($masa['id_bulan'] < $akses['masa']) {
 						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
@@ -43,8 +43,8 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
-			$countData	= $this->m_pengiriman->countPengiriman($bulan, $tahun, $klien); 
-			$permintaan	= $this->m_pengiriman->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+			$countData	= $this->M_Pengiriman_akuntansi->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 
 			$data = [];
 			foreach($pengiriman as $k) {
@@ -96,7 +96,7 @@
 		
 		public function detail() {
 			$id_pengiriman = $this->input->post('action', true);
-			$pengiriman = $this->m_pengiriman->getById($id_pengiriman);
+			$pengiriman = $this->M_Pengiriman_akuntansi->getById($id_pengiriman);
 			
 			$data['lokasi']	= "asset/uploads/".$pengiriman['nama_klien']."/".$pengiriman['tahun']."/".$pengiriman['masa'];
 			$data['judul']	= 'Detail Pengiriman Data';

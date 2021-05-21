@@ -1,8 +1,5 @@
 <div class="container-fluid">
 	
-	<!-- Judul -->
-	<h2 class="text-center mb-2"> <?= $header; ?> </h2>
-
 	<!-- Form Ganti Tampilan -->
 	<form action="<?=base_url()?>admin/proses_data_akuntansi/download" method="post" target="_blank">
 		<div class="form-group row">
@@ -15,12 +12,12 @@
 						if($sess_bulan) {$bulan = $sess_bulan;}
 	
 						foreach ($masa as $m) : 
-							if ($m['id'] == $bulan || $m['value'] == $bulan) 
+							if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
 								{ $pilih="selected"; } 
 							else 
 								{ $pilih=""; }
 					?>
-					<option value="<?= $m['value']; ?>" <?=$pilih?>> <?= $m['value'] ?> </option>
+					<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 					<?php endforeach ?>
 				</select>
 				
@@ -37,11 +34,6 @@
 					?>
 					<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 					<?php endfor ?>
-				</select>
-				
-				<select name="tampil" class="form-control mr-1" id="tampil_proses">
-					<option value="Klien">Klien</option>
-					<option value="Akuntan">Akuntan</option>
 				</select>
 
 				<!-- Ganti Klien -->
@@ -71,32 +63,27 @@
 
 <script>
 	$(document).ready(function() {
-
-		function akses(){
-			var jenis = $('#tampil_proses').val();
+		function gantiKlien() {
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses_data_akuntansi/ganti_tampil',
-				data: {'jenis':jenis},
+				url: '<?= base_url(); ?>admin/proses_data_akuntansi/gantiKlien',
+				data: {
+					'bulan': $('#bulan_proses').val(), 
+					'tahun': $('#tahun_proses').val(), 
+					},
 				success: function(data) {
 					$("#klien_proses").html(data);
 				}
 			})
 		}
-		
 		function tampil(){
-			var bulan = $('#bulan_proses').val();
-			var tahun = $('#tahun_proses').val();
-			var klien = $('#klien_proses').val();
-			var jenis = $('#tampil_proses').val();
 			$.ajax({
 				type: 'POST',
 				url: '<?= base_url(); ?>admin/proses_data_akuntansi/ganti',
 				data: {
-					'bulan': bulan, 
-					'tahun': tahun, 
-					'klien': klien, 
-					'jenis': jenis,
+					'bulan': $('#bulan_proses').val(), 
+					'tahun': $('#tahun_proses').val(), 
+					'klien': $('#klien_proses').val(), 
 					},
 				//dataType: 'json', => karna datanya ga diencode ke json jadi 'dataType' jangan dideclare
 				success: function(data) {
@@ -104,27 +91,19 @@
 				}
 			})
 		}
-
-		akses();
+		gantiKlien();
 		tampil();
 
-		$("#tampil_proses").change(function() {
-			akses();
-			tampil();
-		});
-
 		$("#bulan_proses").change(function() {
+			gantiKlien();
 			tampil();
 		});
-		
 		$("#tahun_proses").change(function() {
+			gantiKlien();
 			tampil();
 		});
-
 		$("#klien_proses").change(function() {
 			tampil();
 		})
 	});
 </script>
-<!--
--->

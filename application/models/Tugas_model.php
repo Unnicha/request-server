@@ -28,14 +28,14 @@
 		}
 
 		public function getById($id_tugas) {
-			$q = "SELECT * FROM tugas 
-				LEFT JOIN jenis_data ON tugas.kode_jenis = jenis_data.kode_jenis
-				WHERE id_tugas = '$id_tugas'";
-			return $this->db->query($q)->row_array();
+			return $this->db->from('tugas')
+							->join('jenis_data', 'tugas.kode_jenis = jenis_data.kode_jenis', 'left')
+							->where('id_tugas', $id_tugas)
+							->get()->row_array();
 		}
 
 		public function getByStatus($status) {
-			return $this->db->query("SELECT * FROM tugas WHERE status_pekerjaan ='$status'")->row_array();
+			return $this->db->get_where('tugas', ['status_pekerjaan'=>$status])->result_array();
 		}
 
 		public function getByPengiriman() { // still on process
@@ -52,13 +52,11 @@
 		}
 
 		public function getMax($jenis_data, $status) {
-
-			//mengambil max id_tugas
-			$q = "SELECT max(id_tugas) as maxId FROM tugas 
-				WHERE kode_jenis = '$jenis_data' 
-				AND status_pekerjaan = '$status' ";
-			$max = $this->db->query($q)->row_array();
-			$kodeMax = $max['maxId']; //masukkan max id ke variabel
+			
+			$max = $this->db->select_max('id_tugas')
+							->where(['kode_jenis'=>$jenis_data, 'status_pekerjaan'=>$status])
+							->get('tugas')->row_array();
+			$kodeMax = $max['id_tugas']; //masukkan max id ke variabel
 			
 			$kategori = $this->status_pekerjaan(); 
 			foreach($kategori as $k => $val) {
@@ -66,11 +64,11 @@
 					$pekerjaan = $kategori[$k];
 				}
 			}
-			$default = "{$jenis_data}{$pekerjaan['id']}"; 
+			$default = $jenis_data . $pekerjaan['id']; 
 			//$id_kategori = $this->db->get_where('status_pekerjaan', ['nama_pekerjaan' => $status])->row_array();
 			
 			if($kodeMax == null) { 
-				$newId = "{$default}01"; 
+				$newId = $default.'01'; 
 			} else { 
 				//ambil kode tugas dari id_tugas => substr("dari $kodeMax", "index ke", "sebanyak x char") 
 				//jadikan integer => (int) 
@@ -78,7 +76,7 @@
 				$tambah++; //kode pembetulan +1
 				$kode_tugas = sprintf("%02s", $tambah); //kode pembetulan baru, jadikan 2 char
 
-				$newId = "{$default}{$kode_tugas}"; //tambahkan kode pembetulan baru
+				$newId = $default . $kode_tugas; //tambahkan kode pembetulan baru
 			}
 			return $newId;
 		}

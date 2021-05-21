@@ -31,14 +31,14 @@
 				redirect('login');
 			} else {
 				if($level == $cek) {
-					$data['head']		= $this->ci->load->view("{$level}/template/header", $data, TRUE);
-					$data['sidebar']	= $this->ci->load->view("{$level}/template/sidebar", $data, TRUE);
+					$data['head']		= $this->ci->load->view($level.'/template/header', $data, TRUE);
+					$data['sidebar']	= $this->ci->load->view($level.'/template/sidebar', $data, TRUE);
 					$data['content']	= $this->ci->load->view($content, $data, TRUE);
-					$data['foot']		= $this->ci->load->view("{$level}/template/footer", $data, TRUE);
+					$data['foot']		= $this->ci->load->view($level.'/template/footer', $data, TRUE);
 					
 					$this->ci->load->view('template', $data);
 				} else {
-					$redirect = base_url("{$level}");
+					$redirect = base_url($level);
 					redirect($redirect);
 				}
 			}

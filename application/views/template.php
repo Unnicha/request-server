@@ -44,7 +44,7 @@
 			<?= $head; ?>
 		</div>
 
-		<div class="container-fluid">
+		<div class=""> <!-- container-fluid -->
 			<div class="row">
 				<?= $sidebar; ?>
 				<div class="col-md-9 col-lg-10 ml-sm-auto px-0 pt-3">

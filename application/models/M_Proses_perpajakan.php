@@ -171,8 +171,8 @@
             $jam_selesai        = $this->input->post('jam_selesai', true);
 
             $id_tugas   = substr($id_tugas, 3);
-            $id_proses  = "{$id_pengiriman}{$id_tugas}{$id_akuntan}";
-            $redirect   = "akuntan/proses_perpajakan/mulai/{$id_pengiriman}";
+            $id_proses  = $id_pengiriman . $id_tugas . $id_akuntan;
+            $redirect   = 'akuntan/proses_perpajakan/mulai/'.$id_pengiriman;
 
             $flag = 0;
             if($tanggal_selesai != null) {

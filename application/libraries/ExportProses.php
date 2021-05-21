@@ -186,8 +186,8 @@
 				$no = 0;
 				foreach($proses[$k['id_klien']] as $p) {
 					if($p['nama_klien'] == $k['nama_klien']) {
-						$mulai		= "{$p['tanggal_mulai']} {$p['jam_mulai']}";
-						$selesai	= "{$p['tanggal_selesai']} {$p['jam_selesai']}";
+						$mulai		= $p['tanggal_mulai'].' '.$p['jam_mulai'];
+						$selesai	= $p['tanggal_selesai'].' '.$p['jam_selesai'];
 						if($p['tanggal_mulai'] == null) {
 							$durasi = '';
 						} else {

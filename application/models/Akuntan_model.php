@@ -31,16 +31,16 @@
 		}
 	
 		public function getMax($level) {
-			$q = "SELECT MAX(id_user) as maxId FROM user WHERE level = '$level' ";
-			$max = $this->db->query($q)->row_array();
+			$max = $this->db->select_max('id_user', 'maxId')
+							->where('level', $level)
+							->get('user')->row_array();
 			$kodeMax = $max['maxId']; 
 			
 			//ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 3 char) 
 			//jadikan integer => (int) 
 			$tambah = (int) substr($kodeMax, 1, 3);
-			$tambah++;  //kode lama +1
-			$baru = sprintf("%03s", $tambah); 
-			$kode_baru = "2{$baru}"; 
+			$baru = sprintf("%03s", ++$tambah); 
+			$kode_baru = "2".$baru;
 	
 			return $kode_baru;
 		}

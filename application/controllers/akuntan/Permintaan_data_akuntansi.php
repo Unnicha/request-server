@@ -35,7 +35,7 @@
 				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 				if( $akses ) {
 					if($masa['id_bulan'] < $akses['masa']) {
-						$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
 					}
 					if( $akses ) {
 						$klien = explode(',', $akses['klien']);

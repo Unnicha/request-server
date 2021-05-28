@@ -88,8 +88,4 @@
             </form>
         </div>
     </div>
-</div>
-
-<script>
-		$('#menu1').collapse('show');
-</script>
+</div> 

@@ -40,9 +40,7 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	$(document).ready(function() {
-		$('#menu1').collapse('show');
-
+	$(document).ready(function() { 
 		var notif = $('.notification').data('val');
 		if(notif == 'yes') {
 			$('#modalNotif').modal('show');

@@ -343,9 +343,7 @@
 
 
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/select2.min.js"></script>
-<script>
-		$('#menu1').collapse('show');
-
+<script> 
     // Script Autofill dengan Select
     $(document).on('change', '#kode_klu', function() {
 		var kode = $(this).find(':selected').val();

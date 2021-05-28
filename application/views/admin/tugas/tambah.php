@@ -108,10 +108,4 @@
             </div>
         </div>
     </form>
-</div>
-
-<script>
-    $(document).ready(function () {
-		$('#menu1').collapse('show');
-    })
-</script>
+</div> 

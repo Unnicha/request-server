@@ -59,7 +59,7 @@
 				$this->db->insert('akses', $data);
 			} else {
 				$this->session->set_flashdata('sudah', 'sudah ada'); 
-				redirect('admin/akses/tambah');  
+				redirect('admin/master/akses/tambah');  
 			}
 		}
 	

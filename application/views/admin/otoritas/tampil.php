@@ -43,10 +43,7 @@
 
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
-<script>
-		//sidebar menu show
-		$('#menu1').collapse('show');
-		
+<script> 
 		$(document).ready(function () {
 			//pop up message success
 			var notif = $('.notification').data('val');

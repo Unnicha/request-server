@@ -10,7 +10,7 @@
 	<div class="row">
 		<!-- Tombol Tambah Akuntan -->
 		<div class="col col-sm">
-			<a href="<?= base_url(); ?>admin/akses/tambah" class="btn btn-success">
+			<a href="<?= base_url(); ?>admin/master/akses/tambah" class="btn btn-success">
 				<i class="bi bi-plus"></i>
 				Tambah
 			</a>
@@ -62,8 +62,6 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
 	$(document).ready(function() {
-		$('#menu1').collapse('show');
-
 		var notif = $('.notification').data('val');
 		if(notif == 'yes') {
 			$('#modalNotif').modal('show');
@@ -78,7 +76,7 @@
 			'searching'		: false,
 			//'pageLength'	: 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/akses/page',
+				'url'	: '<?=base_url()?>admin/master/akses/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.bulan = $('#bulan').val(); 

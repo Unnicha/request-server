@@ -1,63 +1,57 @@
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-	<li class="nav-item tab-proses" role="presentation">
-		<a class="nav-link" id="belum-tab" data-toggle="tab" href="#belum" role="tab" aria-controls="belum" aria-selected="false" style="color:black">Belum Diproses</a>
-	</li>
-	<li class="nav-item tab-proses" role="presentation">
-		<a class="nav-link active" id="sedang-tab" data-toggle="tab" href="#sedang" role="tab" aria-controls="sedang" aria-selected="true" style="color:black">Sedang Diproses</a>
-	</li>
-	<li class="nav-item tab-proses" role="presentation">
-		<a class="nav-link" id="sudah-tab" data-toggle="tab" href="#sudah" role="tab" aria-controls="sudah" aria-selected="false" style="color:black">Selesai Diproses</a>
-	</li>
-</ul>
+<div class="container-fluid">
+	<h2 class="mb-3" align=center><?=$judul?></h2>
+	
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item tab-proses" role="presentation">
+			<a class="nav-link" id="tab-belum" data-toggle="tab" data-nilai="belum" href="#belum" role="tab" aria-controls="belum" aria-selected="false" style="color:black">Belum Diproses</a>
+		</li>
+		<li class="nav-item tab-proses" role="presentation">
+			<a class="nav-link active" id="tab-onproses" data-toggle="tab" data-nilai="onproses" href="#onproses" role="tab" aria-controls="onproses" aria-selected="true" style="color:black">Sedang Diproses</a>
+		</li>
+		<li class="nav-item tab-proses" role="presentation">
+			<a class="nav-link" id="tab-selesai" data-toggle="tab" data-nilai="selesai" href="#selesai" role="tab" aria-controls="selesai" aria-selected="false" style="color:black">Selesai Diproses</a>
+		</li>
+	</ul>
 
-<div class="tab-content container-proses" id="myTabContent">
-	<div class="tab-pane fade" id="belum" role="tabpanel" aria-labelledby="belum-tab">belum</div>
-	<div class="tab-pane fade show active" id="sedang" role="tabpanel" aria-labelledby="sedang-tab">onproses</div>
-	<div class="tab-pane fade" id="sudah" role="tabpanel" aria-labelledby="sudah-tab">selesai</div>
+
+	<div class="tab-content container-proses py-3 mb-3" id="myTabContent">
+		<div class="tab-pane fade" id="belum" role="tabpanel" aria-labelledby="tab-belum">belum</div>
+		<div class="tab-pane fade show active" id="onproses" role="tabpanel" aria-labelledby="tab-onproses">onproses</div>
+		<div class="tab-pane fade" id="selesai" role="tabpanel" aria-labelledby="tab-selesai">selesai</div>
+	</div>
 </div>
+
 
 <script>
 	$(document).ready(function() {
-		$.ajax({
-			type: 'POST',
-			data: {'status': $('.nav-link.active').html()},
-			url: '<?= base_url(); ?>akuntan/proses_data_lainnya/proses',
-			success: function(data) {
-				$(".show.active").html(data);
-			}
-		})
-	});
-	$('#sedang-tab').click(function() {
-		var status = $('#sedang-tab').html();
-		$.ajax({
-			type: 'POST',
-			data: {'status': status},
-			url: '<?= base_url(); ?>akuntan/proses_data_lainnya/proses',
-			success: function(data) {
-				$("#sedang").html(data);
-			}
-		})
-	});
-	$('#belum-tab').click(function() {
-		var status = $('#belum-tab').html();
-		$.ajax({
-			type: 'POST',
-			data: {'status': status},
-			url: '<?= base_url(); ?>akuntan/proses_data_lainnya/prosesBelum',
-			success: function(data) {
-				$("#belum").html(data);
-			}
-		})
-	});
-	$('#sudah-tab').click(function() {
-		var status = $('#sudah-tab').html();
-		$.ajax({
-			type: 'POST',
-			data: {'status': status},
-			url: '<?= base_url(); ?>akuntan/proses_data_lainnya/prosesSelesai',
-			success: function(data) {
-				$("#sudah").html(data);
-			}
-		})
+		$('#menu4').collapse('show');
+		
+		function view(status) {
+			$.ajax({
+				type: 'POST',
+				data: {
+					status	: status,
+					},
+				url: '<?= base_url(); ?>akuntan/proses_data_lainnya/prosesOn',
+				success: function(data) {
+					$('#'+status).html(data);
+				}
+			})
+		}
+		view( $('#myTab li a.active').data('nilai') );
+
+		$('#tampil').on('change', function() {
+			view( $('#myTab li a.active').data('nilai') );
+		});
+		
+		$('#tab-onproses').click(function() {
+			view ($(this).data('nilai') );
+		});
+		$('#tab-belum').click(function() {
+			view ($(this).data('nilai') );
+		});
+		$('#tab-selesai').click(function() {
+			view ($(this).data('nilai') );
+		});
 	});
 </script>

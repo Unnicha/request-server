@@ -1,4 +1,8 @@
 <div class="container-fluid">
+	<?php if($this->session->flashdata('notification')) : ?>
+		<div class="notification" data-val="yes"></div>
+	<?php endif; ?>
+
 	<h2 class="mb-3" align=center><?=$judul?></h2>
 
 	<div class="row form-inline mb-3">
@@ -32,15 +36,64 @@
 </div>
 
 
+<!-- Detail Proses -->
+<div class="modal fade detailProses" tabindex="-1" aria-labelledby="detailProsesLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-content profile-klien showProses">
+			<!-- Tampilkan Data -->
+		</div>
+	</div>
+</div>
+
+<!-- Batalkan Proses -->
+<div class="modal fade batalProses" tabindex="-1" aria-labelledby="batalProsesLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content mx-auto" style="width:400px">
+			<div class="modal-header pl-4">
+				<h5 class="modal-title">Batalkan Proses</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body p-3">
+				<div class="row mb-4">
+					<div class="col">
+						<font size="4">
+							Apakah Anda akan membatalkan proses data <mark class="idProses"></mark> ?
+						</font>
+					</div>
+				</div>
+				<div class="row text-center">
+					<div class="col">
+						<a class="btn btn-outline-secondary cancel" data-dismiss="modal" aria-label="Close">
+							Kembali
+						</a>
+						<a class="btn btn-danger showBatalProses">
+							Batalkan
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <script>
 	$(document).ready(function() {
 		$('#menu4').collapse('show');
+
+		var notif = $('.notification').data('val');
+		if(notif == 'yes') {
+			$('#modalNotif').modal('show');
+			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
+		}
 
 		function tampilan(jenis) {
 			$.ajax({
 				type	: 'POST',
 				data	: { tampil : jenis, },
-				url		: '<?= base_url(); ?>admin/proses_data_akuntansi/gantiAkuntan',
+				url		: '<?= base_url(); ?>admin/proses_data_akuntansi/gantiTampilan',
 				success	: function(data) {
 					$("#akuntan").html(data);
 				}
@@ -66,7 +119,7 @@
 		$('#tampil').on('change', function() {
 			var tampil = $(this).val();
 			tampilan(tampil);
-			//view( $('#myTab li a.active').data('nilai') );
+			view( $('#myTab li a.active').data('nilai') );
 		});
 		$('#akuntan').on('change', function() {
 			var status = $('#myTab li a.active').data('nilai');
@@ -85,51 +138,19 @@
 			var status = $(this).data('nilai');
 			view(status);
 		});
-	});
 
-
-	/*
-	$('#tab-onproses').click(function() {
-		$.ajax({
-			type: 'POST',
-			data: {
-				'status'	: $('#tab-onproses').data('nilai'),
-				'tampil'	: $('#tampil').val(),
-				'akuntan'	: $('#akuntan').val(),
-				},
-			url: '<?= base_url(); ?>admin/proses_data_akuntansi/prosesOn',
-			success: function(data) {
-				$("#onproses").html(data);
-			}
-		})
+		// Batal
+		$('.showBatalProses').click(function() {
+			var id = $('.idProses').html();
+			$.ajax({
+				type	: 'post',
+				url		: '<?= base_url(); ?>admin/proses_data_akuntansi/batal',
+				data	: 'id=' +id,
+				success	: function() {
+					$('.batalProses').modal('hide');
+					window.location.assign("<?= base_url();?>admin/proses_data_akuntansi");
+				}
+			})
+		});
 	});
-	$('#tab-belum').click(function() {
-		$.ajax({
-			type: 'POST',
-			data: {
-				'status'	: $('#tab-belum').data('nilai'),
-				'tampil'	: $('#tampil').val(),
-				'akuntan'	: $('#akuntan').val(),
-				},
-			url: '<?= base_url(); ?>admin/proses_data_akuntansi/prosesYet',
-			success: function(data) {
-				$("#belum").html(data);
-			}
-		})
-	});
-	$('#tab-selesai').click(function() {
-		$.ajax({
-			type: 'POST',
-			data: {
-				'status'	: $('#tab-selesai').data('nilai'),
-				'tampil'	: $('#tampil').val(),
-				'akuntan'	: $('#akuntan').val(),
-				},
-			url: '<?= base_url(); ?>admin/proses_data_akuntansi/prosesDone',
-			success: function(data) {
-				$("#selesai").html(data);
-			}
-		})
-	});
-	*/
 </script>

@@ -64,7 +64,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary mr-2">
                             Ubah
                         </button>
-                        <a href="<?= base_url(); ?>admin/akuntan" class="btn btn-secondary mr-3">
+                        <a href="<?= base_url(); ?>admin/master/akuntan" class="btn btn-secondary mr-3">
                             Batal
                         </a>
                     </div>
@@ -73,7 +73,3 @@
         </div>
     </form>
 </div>
-
-<script>
-		$('#menu1').collapse('show');
-</script>

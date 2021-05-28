@@ -101,9 +101,7 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	$(document).ready(function() {
-		$('#menu3').collapse('show');
-		
+	$(document).ready(function() { 
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,

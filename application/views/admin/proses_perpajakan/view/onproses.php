@@ -1,13 +1,7 @@
-<div class="container-fluid">
-	
-	<!-- Judul -->
-	<h2 class="text-center mb-2"> <?= $header; ?> </h2>
- 
-	<!-- Form Ganti Tampilan -->
+<div class="container-fluid p-0">
 	<form action="<?=base_url()?>admin/proses_data_perpajakan/download" method="post" target="_blank">
 		<div class="form-group row">
 			<div class="col form-inline">
-				<!-- Ganti Bulan -->
 				<select name="bulan" class="form-control mr-1" id="bulan_proses">
 					<?php 
 						$bulan = date('m');
@@ -15,16 +9,15 @@
 						if($sess_bulan) {$bulan = $sess_bulan;}
 	
 						foreach ($masa as $m) : 
-							if ($m['id'] == $bulan || $m['value'] == $bulan) 
+							if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
 								{ $pilih="selected"; } 
 							else 
 								{ $pilih=""; }
 					?>
-					<option value="<?= $m['value']; ?>" <?=$pilih?>> <?= $m['value'] ?> </option>
+					<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 					<?php endforeach ?>
 				</select>
 				
-				<!-- Ganti Tahun -->
 				<select name="tahun" class="form-control mr-1" id="tahun_proses">
 					<?php 
 						$tahun = date('Y');
@@ -38,13 +31,7 @@
 					<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 					<?php endfor ?>
 				</select>
-				
-				<select name="tampil" class="form-control mr-1" id="tampil_proses">
-					<option value="Klien">Klien</option>
-					<option value="Akuntan">Akuntan</option>
-				</select>
 
-				<!-- Ganti Klien -->
 				<select name="klien" class="form-control mr-1" id="klien_proses">
 					<option value="">--Tidak Ada Klien--</option>
 				</select> 
@@ -64,67 +51,74 @@
 		</div>
 	</form>
 	
-	<div id="show_proses">
-		<!-- Isi Table -->
+	<div id="mb-4">
+		<table id="myTable_proses" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
+			<thead class="text-center">
+				<tr>
+					<th scope="col">No.</th>
+					<th scope="col">Klien</th>
+					<th scope="col">Akuntan</th>
+					<th scope="col">Tugas</th>
+					<th scope="col">Revisi</th>
+					<th scope="col">Tanggal Mulai</th>
+					<th scope="col">Durasi</th>
+					<th scope="col">Standard</th>
+				</tr>
+			</thead>
+
+			<tbody class="text-center">
+			</tbody>
+		</table>
 	</div>
 </div>
 
+<script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
+<script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
 	$(document).ready(function() {
-
-		function akses(){
-			var jenis = $('#tampil_proses').val();
+		function gantiKlien() {
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses_data_perpajakan/ganti_tampil',
-				data: {'jenis':jenis},
+				url: '<?= base_url(); ?>admin/proses_data_perpajakan/gantiKlien',
+				data: {
+					'bulan': $('#bulan_proses').val(), 
+					'tahun': $('#tahun_proses').val(), 
+					},
 				success: function(data) {
 					$("#klien_proses").html(data);
 				}
 			})
 		}
-		
-		function tampil(){
-			var bulan = $('#bulan_proses').val();
-			var tahun = $('#tahun_proses').val();
-			var klien = $('#klien_proses').val();
-			var jenis = $('#tampil_proses').val();
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses_data_perpajakan/ganti',
-				data: {
-					'bulan': bulan, 
-					'tahun': tahun, 
-					'klien': klien, 
-					'jenis': jenis,
-					},
-				//dataType: 'json', => karna datanya ga diencode ke json jadi 'dataType' jangan dideclare
-				success: function(data) {
-					$("#show_proses").html(data);
-				}
-			})
-		}
-
-		akses();
-		tampil();
-
-		$("#tampil_proses").change(function() {
-			akses();
-			tampil();
+		var table = $('#myTable_proses').DataTable({
+			'processing'	: true,
+			'serverSide'	: true,
+			'ordering'		: false,
+			'lengthChange'	: false,
+			'searching'		: false,
+			'pageLength': 8,
+			'ajax'		: {
+				'url'	: '<?=base_url()?>admin/proses_data_perpajakan/page',
+				'type'	: 'post',
+				'data'	: function (e) { 
+					e.klien = $('#klien_proses').val(); 
+					e.bulan = $('#bulan_proses').val(); 
+					e.tahun = $('#tahun_proses').val();
+				},
+			},
 		});
+		gantiKlien();
+		table.draw();
 
 		$("#bulan_proses").change(function() {
-			tampil();
+			gantiKlien();
+			table.draw();
 		});
-		
 		$("#tahun_proses").change(function() {
-			tampil();
+			gantiKlien();
+			table.draw();
 		});
-
 		$("#klien_proses").change(function() {
-			tampil();
+			table.draw();
 		})
 	});
 </script>
-<!--
--->

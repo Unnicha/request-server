@@ -141,7 +141,7 @@
 			}
 			else {
 				$this->session->set_flashdata('flash', 'sudah digunakan'); 
-				redirect('admin/otoritas/ubah/'.$id_user);
+				redirect('admin/master/otoritas/ubah/'.$id_user);
 			}
 		}
 

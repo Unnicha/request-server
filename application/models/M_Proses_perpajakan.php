@@ -1,230 +1,145 @@
 <?php
 
-    class M_Proses_perpajakan extends CI_model {
+	class M_Proses_perpajakan extends CI_model {
 
-        public function getPerMasaTahun($bulan, $tahun) {
-            $q = "SELECT * FROM (((proses_perpajakan 
-                LEFT JOIN tugas ON tugas.id_tugas = proses_perpajakan.id_tugas) 
-                LEFT JOIN (pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman) 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                ORDER BY id_proses ASC";
-            return $this->db->query($q)->result_array();
-        } 
+		public function getPerMasaTahun($bulan, $tahun) { // not used
+			return $this->db->from('proses_perpajakan')
+							->join('tugas', 'tugas.id_tugas = proses_perpajakan.id_tugas', 'left')
+							->join('pengiriman_perpajakan', 'proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman', 'left')
+							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan', 'left')
+							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
+							->join('user', 'proses_perpajakan.id_akuntan = user.id_user', 'left')
+							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+							->order_by('id_proses', 'ASC')
+							->get()->result_array();
+		}
 
-        public function getBelum($bulan, $tahun) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND id_proses IS NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        }
+		public function getProses($start, $limit, $status, $bulan, $tahun, $klien='') {
+			if($klien) {
+				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
+			}
+			if($status == 'belum') {
+				$this->db->where(['id_proses'=>null]);
+			} elseif($status == 'selesai') {
+				$this->db->where(['id_proses !='=>null, 'tanggal_selesai !='=>null]);
+			} else {
+				$this->db->where(['id_proses !='=>null, 'tanggal_selesai'=>null]);
+			}
+			
+			return $this->db->from('pengiriman_perpajakan')
+							->join('permintaan_perpajakan', 'id_permintaan', 'left')
+							->join('jenis_data', 'kode_jenis', 'left')
+							->join('klien', 'id_klien', 'left')
+							->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left')
+							->join('proses_perpajakan', 'proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman AND tugas.id_tugas = proses_perpajakan.id_tugas', 'left')
+							->join('user', 'proses_perpajakan.id_akuntan = user.id_user', 'left')
+							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+							->order_by('pengiriman_perpajakan.id_pengiriman', 'ASC')
+							->limit($limit, $start)
+							->get()->result_array();
+		}
 
-        public function getSedang($bulan, $tahun) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND id_proses IS NOT NULL AND tanggal_selesai IS NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        }
+		public function countProses($status, $bulan, $tahun, $klien='') {
+			if($klien) {
+				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
+			}
+			if($status == 'belum') {
+				$this->db->where(['id_proses'=>null]);
+			} elseif($status == 'selesai') {
+				$this->db->where(['id_proses !='=>null, 'tanggal_selesai !='=>null]);
+			} else {
+				$this->db->where(['id_proses !='=>null, 'tanggal_selesai'=>null]);
+			}
+			return $this->db->from('pengiriman_perpajakan')
+							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan', 'left')
+							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
+							->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left')
+							->join('proses_perpajakan', 'proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman AND tugas.id_tugas = proses_perpajakan.id_tugas', 'left')
+							->join('user', 'proses_perpajakan.id_akuntan = user.id_user', 'left')
+							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+							->count_all_results();
+		}
 
-        public function getSelesai($bulan, $tahun) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND id_proses IS NOT NULL AND tanggal_selesai IS NOT NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        }
+		public function getById($id, $pengiriman=false) {
+			$this->db->from('pengiriman_perpajakan')
+					->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan', 'left')
+					->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
+					->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
+					->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left');
+			if($pengiriman == true) {
+				$this->db->where(['id_pengiriman'=>$id]);
+			} else {
+				$this->db->join('proses_perpajakan', 'proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman AND tugas.id_tugas = proses_perpajakan.id_tugas', 'left')
+						->where(['id_proses'=>$id]);
+			}
+			return $this->db->get()->row_array();
+		}
+		
+		public function tambahProses() {
 
-        public function getByKlienBelum($bulan, $tahun, $klien) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND permintaan_perpajakan.id_klien = '$klien'
-                AND id_proses IS NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        }
+			$id_pengiriman		= $this->input->post('id_pengiriman', true);
+			$id_akuntan			= $this->input->post('id_akuntan', true);
+			$id_tugas			= $this->input->post('id_tugas', true);
+			$tanggal_selesai	= $this->input->post('tanggal_selesai', true);
+			$jam_selesai		= $this->input->post('jam_selesai', true);
 
-        public function getByKlienSedang($bulan, $tahun, $klien) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND permintaan_perpajakan.id_klien = '$klien'
-                AND id_proses IS NOT NULL AND tanggal_selesai IS NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        }
+			$id_tugas	= substr($id_tugas, 3);
+			$id_proses	= $id_pengiriman . $id_tugas . $id_akuntan;
+			$redirect	= 'akuntan/proses_perpajakan/mulai/'.$id_pengiriman;
 
-        public function getByKlienSelesai($bulan, $tahun, $klien) {
-            $q = "SELECT * FROM (((pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                LEFT JOIN tugas ON jenis_data.kode_jenis = tugas.kode_jenis 
-                AND klien.status_pekerjaan = tugas.status_pekerjaan) 
-                LEFT JOIN (proses_perpajakan 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman 
-                AND tugas.id_tugas = proses_perpajakan.id_tugas) 
-                WHERE masa = '$bulan' AND tahun = '$tahun' 
-                AND permintaan_perpajakan.id_klien = '$klien'
-                AND id_proses IS NOT NULL AND tanggal_selesai IS NOT NULL
-                ORDER BY pengiriman_perpajakan.id_pengiriman ASC"; 
-            return $this->db->query($q)->result_array();
-        } 
+			$flag = 0;
+			if($tanggal_selesai != null) {
+				if($jam_selesai == null) {
+					$jam_selesai = null;
+					$this->session->set_flashdata('flash', '<b>Jam Selesai</b> harus diisi');
+					redirect($redirect);
+				} else {
+					$flag = 1;
+				}
+			} else {
+				$tanggal_selesai = null;
+				if($jam_selesai != null) {
+					$this->session->set_flashdata('flash', '<b>Tanggal Selesai</b> harus diisi');
+					redirect($redirect);
+				} else {
+					$jam_selesai = null;
+					$flag = 1;
+				}
+			}
 
-        public function getById($id_proses) {
-            $q = "SELECT * FROM (((proses_perpajakan
-                LEFT JOIN tugas ON tugas.id_tugas = proses_perpajakan.id_tugas) 
-                LEFT JOIN (pengiriman_perpajakan 
-                LEFT JOIN ((permintaan_perpajakan 
-                LEFT JOIN jenis_data ON permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis) 
-                LEFT JOIN klien ON permintaan_perpajakan.id_klien = klien.id_klien) 
-                ON permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan) 
-                ON proses_perpajakan.id_kirim = pengiriman_perpajakan.id_pengiriman) 
-                LEFT JOIN user ON proses_perpajakan.id_akuntan = user.id_user) 
-                WHERE id_proses = '$id_proses'";
-            return $this->db->query($q)->row_array();
-        }
-
-        public function masa() {
-            $masa = array(
-                array('id'=> '01', 'value'=>'Januari'), 
-                array('id'=> '02', 'value'=>'Februari'), 
-                array('id'=> '03', 'value'=>'Maret'), 
-                array('id'=> '04', 'value'=>'April'), 
-                array('id'=> '05', 'value'=>'Mei'), 
-                array('id'=> '06', 'value'=>'Juni'), 
-                array('id'=> '07', 'value'=>'Juli'), 
-                array('id'=> '08', 'value'=>'Agustus'), 
-                array('id'=> '09', 'value'=>'September'), 
-                array('id'=> '10', 'value'=>'Oktober'), 
-                array('id'=> '11', 'value'=>'November'), 
-                array('id'=> '12', 'value'=>'Desember'), 
-                //('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
-                // 'September', 'Oktober', 'November', 'Desember');
-            );
-            return $masa;
-        }
-        
-        public function tambahProses() {
-
-            $id_pengiriman      = $this->input->post('id_pengiriman', true);
-            $id_akuntan         = $this->input->post('id_akuntan', true);
-            $id_tugas           = $this->input->post('id_tugas', true);
-            $tanggal_selesai    = $this->input->post('tanggal_selesai', true);
-            $jam_selesai        = $this->input->post('jam_selesai', true);
-
-            $id_tugas   = substr($id_tugas, 3);
-            $id_proses  = $id_pengiriman . $id_tugas . $id_akuntan;
-            $redirect   = 'akuntan/proses_perpajakan/mulai/'.$id_pengiriman;
-
-            $flag = 0;
-            if($tanggal_selesai != null) {
-                if($jam_selesai == null) {
-                    $jam_selesai = null;
-                    $this->session->set_flashdata('flash', '<b>Jam Selesai</b> harus diisi');
-                    redirect($redirect);
-                } else {
-                    $flag = 1;
-                }
-            } else {
-                $tanggal_selesai = null;
-                if($jam_selesai != null) {
-                    $this->session->set_flashdata('flash', '<b>Tanggal Selesai</b> harus diisi');
-                    redirect($redirect);
-                } else {
-                    $jam_selesai = null;
-                    $flag = 1;
-                }
-            }
-
-            if($flag == 1) {
-                $data = [
-                    "id_proses" => $id_proses,
-                    "tanggal_mulai" => $this->input->post('tanggal_mulai', true),
-                    "jam_mulai" => $this->input->post('jam_mulai', true),
-                    "tanggal_selesai" => $tanggal_selesai,
-                    "jam_selesai" => $jam_selesai,
-                    "id_tugas" => $this->input->post('id_tugas', true),
-                    "id_kirim" => $this->input->post('id_pengiriman', true),
-                    "id_akuntan" => $this->input->post('id_akuntan', true),
-                ];
-                $this->db->insert('proses_perpajakan', $data);
-            }
-        }
-        
-        public function ubahProses() {
-            
-            $data = [
-                "tanggal_mulai" => $this->input->post('tanggal_mulai', true),
-                "jam_mulai" => $this->input->post('jam_mulai', true),
-                "tanggal_selesai" => $this->input->post('tanggal_selesai', true),
-                "jam_selesai" => $this->input->post('jam_selesai', true),
-            ];
-            $this->db->where('id_proses', $this->input->post('id_proses', true));
-            $this->db->update('proses_perpajakan', $data);
-        }
-        
-        public function hapusProses($id_proses) {
-
-            $this->db->where('id_proses', $id_proses);
-            $this->db->delete('proses_perpajakan');
-        }
-    }
+			if($flag == 1) {
+				$data = [
+					'id_proses'			=> $id_proses,
+					'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true),
+					'jam_mulai'			=> $this->input->post('jam_mulai', true),
+					'tanggal_selesai'	=> $tanggal_selesai,
+					'jam_selesai'		=> $jam_selesai,
+					'keterangan3'		=> $this->input->post('keterangan3', true),
+					'id_tugas'			=> $this->input->post('id_tugas', true),
+					'id_kirim'			=> $this->input->post('id_pengiriman', true),
+					'id_akuntan'		=> $this->input->post('id_akuntan', true),
+				];
+				$this->db->insert('proses_perpajakan', $data);
+			}
+		}
+		
+		public function ubahProses() {
+			$data = [
+				'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true),
+				'jam_mulai'			=> $this->input->post('jam_mulai', true),
+				'tanggal_selesai'	=> $this->input->post('tanggal_selesai', true),
+				'jam_selesai'		=> $this->input->post('jam_selesai', true),
+				'keterangan3'		=> $this->input->post('keterangan3', true),
+			];
+			$this->db->where('id_proses', $this->input->post('id_proses', true));
+			$this->db->update('proses_perpajakan', $data);
+		}
+		
+		public function hapusProses($id_proses) {
+			$this->db->where('id_proses', $id_proses);
+			$this->db->delete('proses_perpajakan');
+		}
+	}
 ?>

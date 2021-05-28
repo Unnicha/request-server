@@ -94,14 +94,10 @@
                         <button type="submit" name="tambah" class="btn btn-primary mr-2">
                             Ubah
                         </button>
-                        <a href="<?= base_url(); ?>admin/akses" class="btn btn-secondary">Batal</a>
+                        <a href="<?= base_url(); ?>admin/master/akses" class="btn btn-secondary">Batal</a>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-
-<script>
-		$('#menu1').collapse('show');
-</script>

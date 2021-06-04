@@ -10,7 +10,7 @@
 	<div class="row float-left mt-1">
 		<!-- Tombol Tambah Data -->
 		<div class="col">
-			<a href="<?= base_url(); ?>admin/klien/tambah" class="btn btn-success">
+			<a href="<?= base_url(); ?>admin/master/klien/tambah" class="btn btn-success">
 				<i class="bi-plus"></i>
 				Tambah
 			</a>
@@ -83,7 +83,7 @@
 			'lengthChange': false,
 			//'pageLength': 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/klien/page',
+				'url'	: '<?=base_url()?>admin/master/klien/page',
 				'type'	: 'post',
 			},
 		});
@@ -93,7 +93,7 @@
 			var profil = $(this).data('nilai');
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/klien/profil',
+				url: '<?= base_url(); ?>admin/master/klien/profil',
 				data: 'action='+ profil,
 				success: function(data) {
 					$("#detailProfil").modal('show');
@@ -107,7 +107,7 @@
 			var akun = $(this).data('value');
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/klien/akun',
+				url: '<?= base_url(); ?>admin/master/klien/akun',
 				data: 'action='+ akun,
 				success: function(data) {
 					$("#detailAkun").modal('show');

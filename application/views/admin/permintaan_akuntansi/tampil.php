@@ -66,7 +66,7 @@
 
 		<!-- Tombol Tambah Permintaan -->
 		<div class="col col-sm-3">
-			<a href="<?= base_url(); ?>admin/permintaan_data_akuntansi/tambah" class="btn btn-success float-right">
+			<a href="<?= base_url(); ?>admin/permintaan/permintaan_data_akuntansi/tambah" class="btn btn-success float-right">
 				<i class="bi-plus"></i>
 				Tambah
 			</a>
@@ -121,7 +121,7 @@
 			'searching'		: false,
 			//'pageLength': 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/permintaan_data_akuntansi/page',
+				'url'	: '<?=base_url()?>admin/permintaan/permintaan_data_akuntansi/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.klien = $('#klien').val(); 
@@ -150,7 +150,7 @@
 		var permintaan = $(this).data('nilai');
 		$.ajax({
 			type: 'POST',
-			url: '<?= base_url(); ?>admin/permintaan_data_akuntansi/detail',
+			url: '<?= base_url(); ?>admin/permintaan/permintaan_data_akuntansi/detail',
 			data: 'permintaan='+ permintaan,
 			success: function(data) {
 				$("#detailPermintaan").modal('show');

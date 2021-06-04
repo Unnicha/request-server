@@ -137,7 +137,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary mr-2">
                             Perbarui 
                         </button>
-                        <a href="<?= base_url(); ?>admin/permintaan_data_perpajakan" class="btn btn-secondary mr-3">
+                        <a href="<?= base_url(); ?>admin/permintaan/permintaan_data_perpajakan" class="btn btn-secondary mr-3">
                             Batal
                         </a>
                     </div>

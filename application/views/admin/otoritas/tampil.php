@@ -13,7 +13,7 @@
 	<div class="row float-left mt-1">
 		<!-- Tombol Tambah Data -->
 		<div class="col">
-			<a href="<?= base_url(); ?>admin/otoritas/tambah" class="btn btn-success">
+			<a href="<?= base_url(); ?>admin/master/otoritas/tambah" class="btn btn-success">
 				<i class="bi-plus"></i>
 				Tambah
 			</a> 
@@ -71,7 +71,7 @@
 				'lengthChange': false,
 				//'pageLength': 9,
 				'ajax'		: {
-					'url'	: '<?=base_url()?>admin/otoritas/page',
+					'url'	: '<?=base_url()?>admin/master/otoritas/page',
 					'type'	: 'post',
 				},
 			});

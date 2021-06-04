@@ -130,7 +130,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary mr-1">
                             Kirim 
                         </button>
-                        <a href="<?= base_url(); ?>admin/permintaan_data_lainnya" class="btn btn-secondary">
+                        <a href="<?= base_url(); ?>admin/permintaan/permintaan_data_lainnya" class="btn btn-secondary">
                             Batal
                         </a>
                     </div>

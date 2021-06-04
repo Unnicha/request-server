@@ -281,7 +281,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary">
                             Perbarui
                         </button>
-                        <a href="<?= base_url(); ?>admin/klien" type="submit" name="tambah" class="btn btn-secondary">
+                        <a href="<?= base_url(); ?>admin/master/klien" type="submit" name="tambah" class="btn btn-secondary">
                             Batal
                         </a>
                     </div>
@@ -349,7 +349,7 @@
 		var kode = $(this).find(':selected').val();
         $.ajax({
             type: 'POST',
-            url: '<?= base_url(); ?>admin/klien/pilih_klu',
+            url: '<?= base_url(); ?>admin/master/klien/pilih_klu',
             data: 'action='+ kode,
             success: function(data) {
                 var json = data,

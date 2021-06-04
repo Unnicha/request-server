@@ -88,7 +88,7 @@
 			} else {
 				$this->M_Permintaan_lainnya->tambahPermintaan();
 				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
-				redirect('admin/master/permintaan_data_lainnya'); 
+				redirect('admin/permintaan/permintaan_data_lainnya'); 
 			}
 		}
 		
@@ -111,7 +111,7 @@
 			} else {
 				$this->M_Permintaan_lainnya->ubahPermintaan();
 				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
-				redirect('admin/master/permintaan_data_lainnya'); 
+				redirect('admin/permintaan/permintaan_data_lainnya'); 
 			}
 		}
 
@@ -126,7 +126,7 @@
 		public function hapus($id_permintaan) {
 			$this->M_Permintaan_lainnya->hapusPermintaan($id_permintaan);
 			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
-			redirect('admin/master/permintaan_data_lainnya');
+			redirect('admin/permintaan/permintaan_data_lainnya');
 		}
 	}
 ?>

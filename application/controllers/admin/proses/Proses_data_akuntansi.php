@@ -25,7 +25,7 @@
 
 			$status		= $_POST['status'];
 			$tampil		= $_POST['tampil'];
-			$akuntan	= ($_POST['akuntan']) ? $_POST['akuntan'] : '';
+			$akuntan	= $_POST['akuntan'] ? $_POST['akuntan'] : '';
 			$this->session->set_userdata('status', $status);
 			$this->session->set_userdata('tampil', $tampil);
 			$this->session->set_userdata('akuntan', $akuntan);
@@ -37,54 +37,50 @@
 		}
 
 		public function gantiTampilan() {
-			$lists	= "<option value=''>--Semua ".$_POST['tampil']."--</option>";
+			$lists	= "<option value='kosong'> --- </option>";
 			if($_POST['tampil'] == 'Akuntan') {
+				$lists	= "<option value='kosong'>--Semua ".$_POST['tampil']."--</option>";
 				$akuntan	= $this->Akuntan_model->getAllAkuntan();
 				foreach($akuntan as $a) {
 					$lists	.= "<option value='".$a['id_user']."'>".$a['nama']."</option>"; 
 				}
 			}
-			
 			echo $lists;
 		}
 		
 		public function gantiKlien() {
-			$lists = "<option value=''>--Semua Klien--</option>";
-			$klien = '';
-			if($this->session->userdata('tampil') == "Akuntan") {
-				$akuntan = $this->session->userdata('akuntan');
-				if($akuntan) {
+			$lists		= "<option value='kosong'>--Tidak Ada Klien--</option>";
+			$tampil		= isset($_POST['tampil']) ? $_POST['tampil'] : $this->session->userdata('tampil');
+			$akuntan	= isset($_POST['akuntan']) ? $_POST['akuntan'] : $this->session->userdata('akuntan');
+			$klien		= $this->Klien_model->getAllKlien();
+			
+			if($tampil == "Akuntan") {
+				if($akuntan && $akuntan != 'kosong') {
 					$akses = $this->Akses_model->getByAkuntan($_POST['tahun'], $akuntan);
 					if($akses) {
 						$bulan = $this->Klien_model->getMasa($_POST['bulan']);
 						if($bulan['id_bulan'] < $akses['masa']) {
 							$akses = $this->Akses_model->getByAkuntan(($_POST['tahun'] - 1), $akuntan);
 						}
-						if($akses) {
-							$id_klien	= explode(',', $akses['klien']);
-							$klien		= [];
-							foreach($id_klien as $id) {
-								$klien[] = $this->Klien_model->getById($id);
-							}
-						} else {
-							$lists = "<option value=''>--Tidak Ada Klien--</option>";
+					} 
+					if($akses) {
+						$id_klien	= explode(',', $akses['klien']);
+						$klien		= [];
+						foreach($id_klien as $id) {
+							$klien[] = $this->Klien_model->getById($id);
 						}
 					} else {
-						$lists = "<option value=''>--Tidak Ada Klien--</option>";
+						$klien = '';
 					}
-				} else {
-					$klien = $this->Klien_model->getAllKlien();
 				}
-			} else {
-				$klien = $this->Klien_model->getAllKlien();
 			}
 			
 			if($klien) {
+				$lists		= "<option value=''>--Semua Klien--</option>";
 				foreach($klien as $k) {
 					$lists .= "<option value='".$k['id_klien']."'>".$k['nama_klien']."</option>"; 
 				}
 			}
-			
 			echo $lists; 
 		}
 		
@@ -113,8 +109,6 @@
 						if($akses) {
 							$klien = explode(",", $akses['klien']);
 							implode(",", $klien);
-						} else {
-							$klien = 'kosong';
 						}
 					}
 				}
@@ -128,13 +122,11 @@
 				$jam	= $k['lama_pengerjaan'] % 8;
 				$standar= $hari.' hari '.$jam.' jam';
 
-				$mulai		= $k['tanggal_mulai']." ".$k['jam_mulai'];
-				$selesai	= $k['tanggal_selesai']." ".$k['jam_selesai'];
-				if($k['tanggal_mulai']) {
-					if($k['tanggal_selesai']) {
-						$durasi	= $this->proses_admin->durasi($mulai, $selesai);
+				if( $k['tanggal_mulai'] ) {
+					if( $k['tanggal_selesai'] ) {
+						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
 					} else {
-						$durasi	= $this->proses_admin->durasi($mulai);
+						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai']);
 					}
 				}
 				
@@ -151,9 +143,6 @@
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama'];
 					$row[]	= $k['nama_tugas'];
-					$row[]	= $k['pembetulan'];
-					$row[]	= $mulai;
-					$row[]	= $selesai;
 					$row[]	= $durasi;
 					$row[]	= $standar;
 					$row[]	= '
@@ -167,7 +156,7 @@
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama'];
 					$row[]	= $k['nama_tugas'];
-					$row[]	= $mulai;
+					$row[]	= $k['tanggal_mulai'];
 					$row[]	= $durasi;
 					$row[]	= $standar;
 					$row[]	= '
@@ -195,13 +184,11 @@
 			$proses		= $this->m_proses->getById($id_proses);
 			$durasi		= '';
 
-			$mulai		= $proses['tanggal_mulai']." ".$proses['jam_mulai'];
-			$selesai	= $proses['tanggal_selesai']." ".$proses['jam_selesai'];
-			if($proses['tanggal_mulai']) {
-				if($proses['tanggal_selesai']) {
-					$durasi	= $this->proses_admin->durasi($mulai, $selesai);
+			if( $proses['tanggal_mulai'] ) {
+				if( $proses['tanggal_selesai'] ) {
+					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
 				} else {
-					$durasi	= $this->proses_admin->durasi($mulai);
+					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai']);
 				}
 			}
 			
@@ -211,65 +198,83 @@
 			$this->load->view('admin/proses_akuntansi/detail', $data);
 		}
 
-		public function batal() {
-			$id_proses	= $_POST['id'];
-			$data		= $this->m_proses->getById($id_proses);
-			$this->m_proses->batalProses($data);
+		public function batal_onproses() {
+			$id_proses				= $_POST['id'];
+			$data					= $this->m_proses->getById($id_proses);
+			$data['id_disposer3']	= $this->session->userdata('id_user');
+			$this->m_proses->batalMulaiProses($data);
+		}
+
+		public function batal_selesai() {
+			$id_proses				= $_POST['id'];
+			$data					= $this->m_proses->getById($id_proses);
+			$data['id_disposer3']	= $this->session->userdata('id_user');
+			$this->m_proses->batalSelesaiProses($data);
+		}
+
+		public function export() {
+			$data['judul']	= 'Export Laporan Proses Data';
+			$data['masa']	= $this->Klien_model->getMasa();
+			$this->load->view('admin/proses_akuntansi/export', $data);
 		}
 		
 		public function download() {
-			$bulan		= $this->input->post('bulan', true);
+			$masa		= $this->input->post('masa', true);
 			$tahun		= $this->input->post('tahun', true);
-			$get		= $this->input->post('klien', true);
+			$klien		= $this->input->post('klien', true);
+			$akuntan	= $this->input->post('akuntan', true);
 			$tampil		= $this->input->post('tampil', true);
-			$filename	= strtoupper($bulan).' '.$tahun;
+			$filename	= strtoupper(substr($masa, 0, 3)).' '.substr($tahun, -2);
+			$bulan		= $this->Klien_model->getMasa($masa);
 
-			if($get == null) {
-				$klien = $this->Klien_model->getAllKlien(); 
-			} else {
-				if($tampil == "Akuntan") {
-					$akses = $this->Akses_model->getByAkuntan($get, $bulan, $tahun);
-					$getNew = explode(",", $akses['klien']);
-					$filename = $filename.' '.$akses['nama'];
-					foreach($getNew as $e) {
-						$klien[] = $this->Klien_model->getById($e);
+			if($klien == null) {
+				$klien		= $this->Klien_model->getAllKlien(); 
+				$akuntans	= $this->Akuntan_model->getAllAkuntan();
+				
+				if($tampil == "Akuntan" && $akuntan != null) {
+					$akses = $this->Akses_model->getByAkuntan($tahun, $akuntan);
+					if($akses) {
+						if($bulan['id_bulan'] < $akses['masa']) {
+							$akses = $this->Akses_model->getByAkuntan(($tahun - 1), $akuntan);
+						}
+					} 
+					$klien = [];
+					if($akses) {
+						$getNew		= explode(",", $akses['klien']);
+						$filename	= $filename.' '.$akses['nama'];
+						foreach($getNew as $e) {
+							$klien[] = $this->Klien_model->getById($e);
+						}
 					}
-				} else {
-					$get		= $this->Klien_model->getById($get);
-					$filename	= $filename.' '.$get['nama_klien'];
-					$klien[]	= $get;
 				}
+			} else {
+				$get		= $this->Klien_model->getById($klien);
+				$filename	= $filename.' '.$get['nama_klien'];
+				$klien		= [];
+				$klien[]	= $get;
 			}
 
-			$status = $this->session->userdata('status');
 			foreach($klien as $k) {
-				if($status == 'belum')
-				$perklien = $this->m_proses->getByKlienBelum($bulan, $tahun, $k['id_klien']);
-				elseif($status == 'selesai')
-				$perklien = $this->m_proses->getByKlienSelesai($bulan, $tahun, $k['id_klien']);
-				else
-				$perklien = $this->m_proses->getByKlienSedang($bulan, $tahun, $k['id_klien']);
-				
-				$proses[$k['id_klien']] = $perklien;
+				$perklien				= $this->m_proses->getProses('', '', '', $masa, $tahun, $k['id_klien']);
+				$proses[$k['id_klien']]	= $perklien;
 			}
 			
-			$data['proses']		= $proses;
-			$data['bulan']		= $bulan;
-			$data['tahun']		= $tahun;
 			$data['klien']		= $klien;
+			$data['proses']		= $proses;
+			$data['bulan']		= $masa;
+			$data['tahun']		= $tahun;
 			$data['now']		= date('d/m/Y H:i');
 			$data['filename']	= 'Proses Data Akuntansi '.$filename;
-			$data['judul']		= "Proses Data Akuntansi";
-			
+			$data['judul']		= 'Proses Data Akuntansi';
+			/*
 			if($status == 'belum')
 			$data['subjudul']	= "Belum Diproses";
 			elseif($status == 'selesai')
 			$data['subjudul']	= "Selesai Diproses";
 			else
 			$data['subjudul']	= "Sedang Diproses";
-
+			*/
 			if($this->input->post('xls', true)) {
-				echo "xls";
 				return $this->exportproses->exportExcel($data);
 			}
 			elseif($this->input->post('pdf', true))

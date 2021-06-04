@@ -1,56 +1,40 @@
 <div class="container-fluid p-0">
-	
-	<form action="<?=base_url()?>akuntan/proses_data_akuntansi/download" method="post" target="_blank">
-		<div class="row mb-2">
-			<div class="col form-inline">
-				<select name="bulan" class="form-control mr-1" id="bulan_belum">
-					<?php 
-						$bulan = date('m');
-						$sess_bulan = $this->session->userdata('bulan');
-						if($sess_bulan) {$bulan = $sess_bulan;}
-	
-						foreach ($masa as $m) : 
-							if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-								{ $pilih="selected"; } 
-							else 
-								{ $pilih=""; }
-					?>
-					<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-					<?php endforeach ?>
-				</select>
-				
-				<select name="tahun" class="form-control mr-1" id="tahun_belum">
-					<?php 
-						$tahun = date('Y');
-						$sess_tahun = $this->session->userdata('tahun');
-						for($i=$tahun; $i>=2010; $i--) :
-							if ($i == $sess_tahun) 
-								{ $pilih="selected"; } 
-							else 
-								{ $pilih=""; }
-					?>
-					<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-					<?php endfor ?>
-				</select>
-
-				<select name="klien" class="form-control mr-1" id="klien_belum">
-					<option value="">--Tidak Ada Klien--</option>
-				</select> 
-			</div>
-
-			<div class="col-2 pl-0">
-				<div class="dropdown float-right">
-					<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Export
-					</button>
-					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<button type="submit" id="xls" name="xls" class="dropdown-item">Export Excel</button>
-						<button type="submit" id="pdf" name="pdf" class="dropdown-item">Export PDF</button>
-					</div>
-				</div>
-			</div>
+	<div class="row mb-2">
+		<div class="col form-inline">
+			<select name="bulan" class="form-control mr-1" id="bulan_belum">
+				<?php 
+					$bulan = date('m');
+					$sess_bulan = $this->session->userdata('bulan');
+					if($sess_bulan) {$bulan = $sess_bulan;}
+					foreach ($masa as $m) : 
+						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
+							{ $pilih="selected"; } 
+						else 
+							{ $pilih=""; }
+				?>
+				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
+			<select name="tahun" class="form-control mr-1" id="tahun_belum">
+				<?php 
+					$tahun = date('Y');
+					$sess_tahun = $this->session->userdata('tahun');
+					for($i=$tahun; $i>=2010; $i--) :
+						if ($i == $sess_tahun) 
+							{ $pilih="selected"; } 
+						else 
+							{ $pilih=""; }
+				?>
+				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+				<?php endfor ?>
+			</select>
+			
+			<select name="klien" class="form-control mr-1" id="klien_belum">
+				<option value="">--Tidak Ada Klien--</option>
+			</select> 
 		</div>
-	</form>
+	</div>
 	
 	<div id="mb-4">
 		<table id="myTable_belum" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
@@ -90,6 +74,7 @@
 				}
 			})
 		}
+		gantiKlien();
 		var table = $('#myTable_belum').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
@@ -107,9 +92,7 @@
 				},
 			},
 		});
-		gantiKlien();
-		table.draw();
-
+		
 		$("#bulan_belum").change(function() {
 			gantiKlien();
 			table.draw();

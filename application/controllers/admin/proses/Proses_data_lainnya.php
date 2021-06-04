@@ -132,13 +132,11 @@
 				$standar= $hari.' hari '.$jam.' jam';
 
 				//HITUNG DURASI
-				$mulai		= $k['tanggal_mulai']." ".$k['jam_mulai'];
-				$selesai	= $k['tanggal_selesai']." ".$k['jam_selesai'];
-				if($k['tanggal_mulai']) {
-					if($k['tanggal_selesai']) {
-						$durasi	= $this->proses_admin->durasi($mulai, $selesai);
+				if( $proses['tanggal_mulai'] ) {
+					if( $proses['tanggal_selesai'] ) {
+						$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
 					} else {
-						$durasi	= $this->proses_admin->durasi($mulai);
+						$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai']);
 					}
 				}
 				

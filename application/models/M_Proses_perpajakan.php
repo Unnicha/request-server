@@ -78,33 +78,29 @@
 		}
 		
 		public function tambahProses() {
-
-			$id_pengiriman		= $this->input->post('id_pengiriman', true);
-			$id_akuntan			= $this->input->post('id_akuntan', true);
-			$id_tugas			= $this->input->post('id_tugas', true);
-			$tanggal_selesai	= $this->input->post('tanggal_selesai', true);
-			$jam_selesai		= $this->input->post('jam_selesai', true);
-
+			$id_pengiriman	= $this->input->post('id_pengiriman', true);
+			$id_akuntan		= $this->input->post('id_akuntan', true);
+			$id_tugas		= $this->input->post('id_tugas', true);
+			$mulai			= $this->input->post('tanggal_mulai', true).' '.$this->input->post('jam_mulai', true);
+			$selesai		= $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true);
+			
 			$id_tugas	= substr($id_tugas, 3);
 			$id_proses	= $id_pengiriman . $id_tugas . $id_akuntan;
-			$redirect	= 'akuntan/proses_perpajakan/mulai/'.$id_pengiriman;
-
+			
 			$flag = 0;
-			if($tanggal_selesai != null) {
-				if($jam_selesai == null) {
-					$jam_selesai = null;
-					$this->session->set_flashdata('flash', '<b>Jam Selesai</b> harus diisi');
-					redirect($redirect);
+			if( $this->input->post('tanggal_selesai', true) ) {
+				if($this->input->post('jam_selesai', true) == null) {
+					$this->session->set_flashdata('jam_selesai', '<b>Jam Selesai</b> harus diisi');
+					redirect('akuntan/proses_data_perpajakan/mulai/'.$id_pengiriman);
 				} else {
 					$flag = 1;
 				}
 			} else {
-				$tanggal_selesai = null;
-				if($jam_selesai != null) {
-					$this->session->set_flashdata('flash', '<b>Tanggal Selesai</b> harus diisi');
-					redirect($redirect);
+				$selesai = null;
+				if($this->input->post('jam_selesai', true) != null) {
+					$this->session->set_flashdata('tanggal_selesai', '<b>Tanggal Selesai</b> harus diisi');
+					redirect('akuntan/proses_data_perpajakan/mulai/'.$id_pengiriman);
 				} else {
-					$jam_selesai = null;
 					$flag = 1;
 				}
 			}
@@ -112,10 +108,9 @@
 			if($flag == 1) {
 				$data = [
 					'id_proses'			=> $id_proses,
-					'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true),
-					'jam_mulai'			=> $this->input->post('jam_mulai', true),
-					'tanggal_selesai'	=> $tanggal_selesai,
-					'jam_selesai'		=> $jam_selesai,
+					'tanggal_proses'	=> date('d-m-Y H:i'),
+					'tanggal_mulai'		=> $mulai,
+					'tanggal_selesai'	=> $selesai,
 					'keterangan3'		=> $this->input->post('keterangan3', true),
 					'id_tugas'			=> $this->input->post('id_tugas', true),
 					'id_kirim'			=> $this->input->post('id_pengiriman', true),
@@ -127,19 +122,74 @@
 		
 		public function ubahProses() {
 			$data = [
-				'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true),
-				'jam_mulai'			=> $this->input->post('jam_mulai', true),
-				'tanggal_selesai'	=> $this->input->post('tanggal_selesai', true),
-				'jam_selesai'		=> $this->input->post('jam_selesai', true),
+				//'tanggal_proses'	=> date('d-m-Y H:i'),
+				'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true).' '.$this->input->post('jam_mulai', true),
+				'tanggal_selesai'	=> $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true),
 				'keterangan3'		=> $this->input->post('keterangan3', true),
 			];
 			$this->db->where('id_proses', $this->input->post('id_proses', true));
 			$this->db->update('proses_perpajakan', $data);
 		}
 		
-		public function hapusProses($id_proses) {
-			$this->db->where('id_proses', $id_proses);
-			$this->db->delete('proses_perpajakan');
+		public function batalMulaiProses($data) {
+			$max = $this->db->select_max('idt_proses')
+							->where('id_proses', $data['id_proses'])
+							->get('trash_proses_perpajakan')->row_array();
+			if($max) {
+				$idt		= substr($max['idt_proses'], -2);
+				$idt_proses	= $data['id_proses'] . ++$idt;
+			} else {
+				$idt_proses	= $data['id_proses'] . '00';
+			}
+
+			$row = [
+				'idt_proses'		=> $idt_proses,
+				'tanggal_cancel'	=> date('d-m-Y H:i'),
+				'id_proses'			=> $data['id_proses'],
+				'tanggal_proses'	=> $data['tanggal_proses'],
+				'tanggal_mulai'		=> $data['tanggal_mulai'],
+				'tanggal_selesai'	=> $data['tanggal_selesai'],
+				'keterangan3'		=> $data['keterangan3'],
+				'id_tugas'			=> $data['id_tugas'],
+				'id_kirim'			=> $data['id_kirim'],
+				'id_akuntan'		=> $data['id_akuntan'],
+				'id_disposer3'		=> $data['id_disposer3'],
+			];
+			$this->db->insert('trash_proses_perpajakan', $row);
+			
+			$this->db->delete('proses_perpajakan', ['id_proses' => $data['id_proses']]);
+			$this->session->set_flashdata('notification', 'Proses berhasil dibatalkan!'); 
+		}
+
+		public function batalSelesaiProses($data) {
+			$max = $this->db->select_max('idt_proses')
+							->where('id_proses', $data['id_proses'])
+							->get('trash_proses_perpajakan')->row_array();
+			if($max) {
+				$idt		= substr($max['idt_proses'], -2);
+				$idt_proses	= $data['id_proses'] . ++$idt;
+			} else {
+				$idt_proses	= $data['id_proses'] . '00';
+			}
+
+			$row = [
+				'idt_proses'		=> $idt_proses,
+				'tanggal_cancel'	=> date('d-m-Y H:i'),
+				'id_proses'			=> $data['id_proses'],
+				'tanggal_proses'	=> $data['tanggal_proses'],
+				'tanggal_mulai'		=> $data['tanggal_mulai'],
+				'tanggal_selesai'	=> $data['tanggal_selesai'],
+				'keterangan3'		=> $data['keterangan3'],
+				'id_tugas'			=> $data['id_tugas'],
+				'id_kirim'			=> $data['id_kirim'],
+				'id_akuntan'		=> $data['id_akuntan'],
+				'id_disposer3'		=> $data['id_disposer3'],
+			];
+			$this->db->insert('trash_proses_perpajakan', $row);
+
+			$this->db->where(['id_proses' => $data['id_proses']])
+					->update('proses_perpajakan', ['tanggal_selesai' => null]);
+			$this->session->set_flashdata('notification', 'Proses berhasil dibatalkan!'); 
 		}
 	}
 ?>

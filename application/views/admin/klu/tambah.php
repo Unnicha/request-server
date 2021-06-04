@@ -49,7 +49,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary mr-1">
                             Simpan
                         </button>
-                        <a href="<?= base_url(); ?>admin/klu" type="submit" name="tambah" class="btn btn-secondary">
+                        <a href="<?= base_url(); ?>admin/master/klu" type="submit" name="tambah" class="btn btn-secondary">
                             Batal
                         </a>
                     </div>

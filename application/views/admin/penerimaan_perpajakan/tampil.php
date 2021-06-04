@@ -4,7 +4,7 @@
 	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
 	 
 	<!-- Form Ganti Tampilan -->
-	<form action="<?=base_url()?>admin/penerimaan_data_perpajakan/cetak" method="post" target="_blank">
+	<form action="<?=base_url()?>admin/penerimaan/penerimaan_data_perpajakan/cetak" method="post" target="_blank">
 		<div class="row form-inline">
 			<div class="col-12 col-sm">
 				<!-- Ganti Bulan -->
@@ -113,7 +113,7 @@
 			},
 			//'pageLength': 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/penerimaan_data_perpajakan/page',
+				'url'	: '<?=base_url()?>admin/penerimaan/penerimaan_data_perpajakan/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.klien = $('#klien').val(); 
@@ -138,7 +138,7 @@
 			var pengiriman = $(this).data('nilai');
 			$.ajax({
 				type	: 'POST',
-				url		: '<?= base_url(); ?>admin/penerimaan_data_perpajakan/detail',
+				url		: '<?= base_url(); ?>admin/penerimaan/penerimaan_data_perpajakan/detail',
 				data	: 'action='+ pengiriman,
 				success	: function(data) {
 					$("#detailPengiriman").modal('show');

@@ -18,9 +18,8 @@
 			
 			// Add some data
 			$index = 1;
-			foreach($data['klien'] as $klien) {
-				$proses = $data['proses'][$klien['id_user']];
-				$this->newSheet($spreadsheet, $data, $proses, $klien, $index);
+			foreach($data['klien'] as $k) {
+				$this->newSheet($data, $spreadsheet, $k, $index);
 				$index++;
 			}
 			$spreadsheet->removeSheetByIndex(0);
@@ -36,55 +35,48 @@
 			exit;
 		}
 		
-		public function newSheet($spreadsheet, $data, $proses, $klien, $index) {
+		public function newSheet($data, $spreadsheet, $k, $index) {
 			$sheet = $spreadsheet->createSheet();
 			$sheet = $spreadsheet->setActiveSheetIndex($index)
-				->setCellValue('A1', $data['judul'])
-
-				//->setCellValue('A2', 'Akuntan')
-				//->setCellValue('B2', $akuntan['nama'])
-				->setCellValue('A3', 'Bulan')
-				->setCellValue('B3', $data['bulan'])
-				->setCellValue('A4', 'Tahun')
-				->setCellValue('B4', $data['tahun'])
-
-				->setCellValue('A5', 'No.')
-				->setCellValue('B5', 'Tugas')
-				->setCellValue('C5', 'Status')
-				->setCellValue('D5', 'Mulai')
-				->setCellValue('E5', 'Selesai')
-				->setCellValue('F5', 'Durasi')
-				->setCellValue('G5', 'Time Table');
+				->setCellValue('A1', 'No.')
+				->setCellValue('B1', 'Jenis Data')
+				->setCellValue('C1', 'Format Data')
+				->setCellValue('D1', 'Status')
+				->setCellValue('E1', 'Jenis Pengiriman')
+				->setCellValue('F1', 'File')
+				->setCellValue('G1', 'Tanggal Ambil')
+				->setCellValue('H1', 'Tanggal Pengiriman')
+				->setCellValue('I1', 'Keterangan');
 
 			// Miscellaneous glyphs, UTF-8
-			$i=6; $num=1;
-			foreach($proses as $o) {
-				if($o['id_proses'] == null) { // Status Pengiriman
-					$status = 'Belum Diproses';
-				} else {
-					if($o['tanggal_selesai'] == null)
-					$status = 'Sedang Diproses';
-					else
-					$status = 'Selesai Diproses';
-				}
-				$durasi = '';
-				if($o['tanggal_mulai']) {
-					$durasi = $this->durasi_cetak($o['tanggal_mulai'], $o['tanggal_selesai']);
-				}
+			$i=2; $num=1;
+			$permintaan = $data['permintaan'];
+			foreach($permintaan[$k['id_klien']] as $o) {
+				// Status Pengiriman
+				if($o['id_pengiriman'] == null)
+					$status = 'Belum Diterima';
+				else
+					$status = 'Sudah Diterima';
+				// Jenis Pengiriman
+				if($o['pembetulan'] == 0)
+					$pembetulan = 'Pertama';
+				else
+					$pembetulan = 'Pembetulan '.$o['pembetulan'];
 
 				$sheet = $spreadsheet->setActiveSheetIndex($index)
 					->setCellValue('A'.$i, $num.'.')
-					->setCellValue('B'.$i, $o['nama_tugas'])
-					->setCellValue('C'.$i, $status)
-					->setCellValue('D'.$i, $o['tanggal_mulai'])
-					->setCellValue('E'.$i, $o['tanggal_selesai'])
-					->setCellValue('F'.$i, $durasi)
-					->setCellValue('G'.$i, $o['lama_pengerjaan'].' jam');
+					->setCellValue('B'.$i, $o['jenis_data'])
+					->setCellValue('C'.$i, $o['format_data'])
+					->setCellValue('D'.$i, $status)
+					->setCellValue('E'.$i, $pembetulan)
+					->setCellValue('F'.$i, $o['file'])
+					->setCellValue('G'.$i, $o['tanggal_ambil'])
+					->setCellValue('H'.$i, $o['tanggal_pengiriman'])
+					->setCellValue('I'.$i, $o['keterangan2']);
 				$i++; $num++;
 			}
 			
-			$spreadsheet->getActiveSheet()->setTitle($klien['nama_klien'])
-										->mergeCells('A1:G1');
+			$spreadsheet->getActiveSheet()->setTitle($k['nama_klien']);
 			return $spreadsheet;
 		}
 

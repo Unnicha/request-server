@@ -24,8 +24,6 @@
 
 <script>
 	$(document).ready(function() {
-		$('#menu4').collapse('show');
-		
 		function view(status) {
 			$.ajax({
 				type: 'POST',

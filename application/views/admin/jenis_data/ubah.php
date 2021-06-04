@@ -62,7 +62,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary">
                             Perbarui
                         </button>
-                        <a href="<?= base_url(); ?>admin/jenis_data" type="submit" name="tambah" class="btn btn-secondary">
+                        <a href="<?= base_url(); ?>admin/master/jenis_data" type="submit" name="tambah" class="btn btn-secondary">
                             Batal
                         </a>
                     </div>

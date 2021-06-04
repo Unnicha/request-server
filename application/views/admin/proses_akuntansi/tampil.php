@@ -3,16 +3,21 @@
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 
-	<h2 class="mb-3" align=center><?=$judul?></h2>
+	<h2 class="mb-2" align=center><?=$judul?></h2>
 
-	<div class="row form-inline mb-3">
-		<label>Tampilan per</label>
-		<select name="tampil" class="form-control ml-2" id="tampil">
-			<option>Klien</option>
-			<option>Akuntan</option>
-		</select>
-		<select name="akuntan" class="form-control ml-2" id="akuntan">
-		</select>
+	<div class="row mb-3">
+		<div class="col form-inline">
+			<label>Tampilan per</label>
+			<select name="tampil" class="form-control ml-2" id="tampil">
+				<option>Klien</option>
+				<option>Akuntan</option>
+			</select>
+			<select name="akuntan" class="form-control ml-2" id="akuntan">
+			</select>
+		</div>
+		<div class="col-3 text-right">
+			<button class="btn btn-primary btn-export">Export</button>
+		</div>
 	</div>
 
 	<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
@@ -81,19 +86,17 @@
 
 <script>
 	$(document).ready(function() {
-		$('#menu4').collapse('show');
-
 		var notif = $('.notification').data('val');
 		if(notif == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
 
-		function tampilan(jenis) {
+		function tampilan() {
 			$.ajax({
 				type	: 'POST',
-				data	: { tampil : jenis, },
-				url		: '<?= base_url(); ?>admin/proses_data_akuntansi/gantiTampilan',
+				data	: { tampil : $('#tampil').val() },
+				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiTampilan',
 				success	: function(data) {
 					$("#akuntan").html(data);
 				}
@@ -107,48 +110,56 @@
 					tampil	: $('#tampil').val(),
 					akuntan	: $('#akuntan').val(),
 					},
-				url: '<?= base_url(); ?>admin/proses_data_akuntansi/prosesOn',
+				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/prosesOn',
 				success: function(data) {
 					$('#'+status).html(data);
 				}
 			})
 		}
-		tampilan( $('#tampil').val() );
+		tampilan();
 		view( $('#myTab li a.active').data('nilai') );
 
 		$('#tampil').on('change', function() {
-			var tampil = $(this).val();
-			tampilan(tampil);
+			tampilan();
 			view( $('#myTab li a.active').data('nilai') );
 		});
 		$('#akuntan').on('change', function() {
-			var status = $('#myTab li a.active').data('nilai');
-			view(status);
+			view( $('#myTab li a.active').data('nilai') );
 		});
 		
 		$('#tab-onproses').click(function() {
-			var status = $(this).data('nilai');
-			view(status);
+			view( $(this).data('nilai') );
 		});
 		$('#tab-belum').click(function() {
-			var status = $(this).data('nilai');
-			view(status);
+			view( $(this).data('nilai') );
 		});
 		$('#tab-selesai').click(function() {
-			var status = $(this).data('nilai');
-			view(status);
+			view( $(this).data('nilai') );
 		});
 
 		// Batal
 		$('.showBatalProses').click(function() {
-			var id = $('.idProses').html();
+			var id		= $('.idProses').html();
+			var status	= $('#myTab li a.active').data('nilai');
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>admin/proses_data_akuntansi/batal',
+				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/batal_'+status,
 				data	: 'id=' +id,
 				success	: function() {
 					$('.batalProses').modal('hide');
-					window.location.assign("<?= base_url();?>admin/proses_data_akuntansi");
+					window.location.assign("<?= base_url();?>admin/proses/proses_data_akuntansi");
+				}
+			})
+		});
+
+		// EXPORT
+		$('.btn-export').on('click', function() {
+			$.ajax({
+				type: 'POST',
+				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/export',
+				success: function(data) {
+					$(".detailProses").modal('show');
+					$(".showProses").html(data);
 				}
 			})
 		});

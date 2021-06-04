@@ -43,15 +43,15 @@
 				</tr>
 				<tr>
 					<td scope="row">Mulai Proses</td>
-					<td><?= $proses['tanggal_mulai'] ?> <?= $proses['jam_mulai'] ?></td>
+					<td><?= $proses['tanggal_mulai'] ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Selesai Proses</td>
-					<td><?= $proses['tanggal_selesai'] ?> <?= $proses['jam_selesai'] ?></td>
+					<td><?= $proses['tanggal_selesai'] ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Durasi</td>
-					<td><?= $durasi ?></td>
+					<td><?= $durasi ?> jam</td>
 				</tr>
 				<tr>
 					<td scope="row">Standar durasi</td>

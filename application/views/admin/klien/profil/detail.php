@@ -88,10 +88,10 @@
 </div>
 
 <div class="modal-footer float-right">
-    <a type="button" class="btn btn-info mr-1" href="<?= base_url(); ?>admin/klien/ubah_profil/<?= $klien['id_klien']; ?>">
+    <a type="button" class="btn btn-info mr-1" href="<?= base_url(); ?>admin/master/klien/ubah_profil/<?= $klien['id_klien']; ?>">
         Ubah
     </a>
-    <a type="button" class="btn btn-danger" href="<?= base_url(); ?>admin/klien/hapus/<?= $klien['id_klien']; ?>" onclick="return confirm('Yakin ingin menghapus data klien <?= $klien['nama_klien'] ?> ?');">
+    <a type="button" class="btn btn-danger" href="<?= base_url(); ?>admin/master/klien/hapus/<?= $klien['id_klien']; ?>" onclick="return confirm('Yakin ingin menghapus data klien <?= $klien['nama_klien'] ?> ?');">
         Hapus
     </a>
 </div>

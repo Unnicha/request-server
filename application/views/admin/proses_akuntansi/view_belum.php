@@ -1,6 +1,5 @@
 <div class="container-fluid p-0">
 	
-	<form action="<?=base_url()?>admin/proses_data_akuntansi/download" method="post" target="_blank">
 		<div class="row mb-2">
 			<div class="col form-inline">
 				<select name="bulan" class="form-control mr-1" id="bulan_belum">
@@ -37,20 +36,7 @@
 					<option value="">--Tidak Ada Klien--</option>
 				</select> 
 			</div>
-
-			<div class="col-2 pl-0">
-				<div class="dropdown float-right">
-					<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Export
-					</button>
-					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<button type="submit" id="xls" name="xls" class="dropdown-item">Export Excel</button>
-						<button type="submit" id="pdf" name="pdf" class="dropdown-item">Export PDF</button>
-					</div>
-				</div>
-			</div>
 		</div>
-	</form>
 	
 	<div id="mb-4">
 		<table id="myTable_belum" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
@@ -79,7 +65,7 @@
 		function gantiKlien() {
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses_data_akuntansi/gantiKlien',
+				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
 				data: {
 					'bulan': $('#bulan_belum').val(), 
 					'tahun': $('#tahun_belum').val(), 
@@ -89,6 +75,8 @@
 				}
 			})
 		}
+		gantiKlien();
+		
 		var table = $('#myTable_belum').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
@@ -97,7 +85,7 @@
 			'searching'		: false,
 			'pageLength': 8,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/proses_data_akuntansi/page',
+				'url'	: '<?=base_url()?>admin/proses/proses_data_akuntansi/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.klien = $('#klien_belum').val(); 
@@ -106,8 +94,6 @@
 				},
 			},
 		});
-		gantiKlien();
-		table.draw();
 
 		$("#bulan_belum").change(function() {
 			gantiKlien();

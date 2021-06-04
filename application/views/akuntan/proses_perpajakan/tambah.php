@@ -99,11 +99,15 @@
 					<label for="tanggal_selesai" class="col-sm-3 col-form-label">Selesai Proses</label> 
 					<div class="col-sm pr-0">
 						<input type="text" name="tanggal_selesai" class="form-control docs-date" id="tanggal_selesai" placeholder="Tanggal Selesai" data-toggle="datepicker">
-						<small class="form-text text-danger"><?= form_error('tanggal_selesai', '<p class="mb-0">', '</p>') ?></small>
+						<?php if($this->session->flashdata('tanggal_selesai')) : ?>
+							<small class="form-text text-danger"><?= $this->session->flashdata('tanggal_selesai') ?></small>
+						<?php endif; ?>
 					</div>
 					<div class="col-sm">
 						<input type="text" name="jam_selesai" class="form-control bs-timepicker" id="jam_selesai" placeholder="Jam Selesai">
-						<small class="form-text text-danger"><?= form_error('jam_selesai', '<p class="mb-0">', '</p>') ?></small>
+						<?php if($this->session->flashdata('jam_selesai')) : ?>
+							<small class="form-text text-danger"><?= $this->session->flashdata('jam_selesai') ?></small>
+						<?php endif; ?>
 					</div>
 				</div>
 
@@ -111,16 +115,15 @@
 				<div class="form-group row">
 					<label for="keterangan3" class="col-sm-3 col-form-label">Keterangan</label> 
 					<div class="col-sm">
-						<input type="text" name="keterangan3" class="form-control" id="keterangan3" value="<?= set_value($pengiriman['keterangan3']) ?>">
+						<input type="text" name="keterangan3" class="form-control" id="keterangan3" value="<?= set_value('keterangan3') ?>">
 					</div>
 				</div>
 
 				<!-- Tombol Simpan -->
 				<div class="row my-3 text-right">
 					<div class="col p-0">
-						<button type="submit" name="tambah" class="btn btn-primary mr-1">
-							Mulai
-						</button>
+						<input class="btn btn-primary" type="submit" value="Mulai">
+						<input class="btn btn-secondary" type="reset" value="Reset">
 						<a href="<?= base_url(); ?>akuntan/proses_data_perpajakan" class="btn btn-secondary mr-3">
 							Batal
 						</a>

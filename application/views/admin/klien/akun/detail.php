@@ -23,7 +23,7 @@
         </tbody>
     </table>
 
-    <a href="<?= base_url(); ?>admin/klien/ubah_akun/<?= $klien['id_klien']; ?>" type="button" class="btn btn-info float-right">
+    <a href="<?= base_url(); ?>admin/master/klien/ubah_akun/<?= $klien['id_klien']; ?>" type="button" class="btn btn-info float-right">
         Ubah
     </a>
 </div>

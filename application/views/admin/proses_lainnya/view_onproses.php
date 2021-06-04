@@ -1,7 +1,7 @@
 <div class="container-fluid p-0">
 	<div class="row mb-2">
 		<div class="col form-inline">
-			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
+			<select name="bulan" class="form-control mr-1" id="bulan_proses">
 				<?php 
 					$bulan = date('m');
 					$sess_bulan = $this->session->userdata('bulan');
@@ -16,7 +16,7 @@
 				<?php endforeach ?>
 			</select>
 			
-			<select name="tahun" class="form-control mr-1" id="tahun_selesai">
+			<select name="tahun" class="form-control mr-1" id="tahun_proses">
 				<?php 
 					$tahun = date('Y');
 					$sess_tahun = $this->session->userdata('tahun');
@@ -30,26 +30,27 @@
 				<?php endfor ?>
 			</select>
 
-			<select name="klien" class="form-control mr-1" id="klien_selesai">
+			<select name="klien" class="form-control mr-1" id="klien_proses">
 				<option value="">--Tidak Ada Klien--</option>
 			</select> 
 		</div>
 	</div>
 	
 	<div id="mb-4">
-		<table id="myTable_selesai" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
+		<table id="myTable_proses" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
 			<thead class="text-center">
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Klien</th>
 					<th scope="col">Akuntan</th>
 					<th scope="col">Tugas</th>
+					<th scope="col">Mulai</th>
 					<th scope="col">Durasi</th>
 					<th scope="col">Standard</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>
-			
+
 			<tbody class="text-center">
 			</tbody>
 		</table>
@@ -62,59 +63,59 @@
 	$(document).ready(function() {
 		function gantiKlien() {
 			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
-				data: {
-					'bulan': $('#bulan_selesai').val(), 
-					'tahun': $('#tahun_selesai').val(), 
+				type	: 'POST',
+				data	: {
+					'bulan'	: $('#bulan_proses').val(), 
+					'tahun'	: $('#tahun_proses').val(), 
 					},
-				success: function(data) {
-					$("#klien_selesai").html(data);
+				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/gantiKlien',
+				success	: function(data) {
+					$("#klien_proses").html(data);
 				}
 			})
 		}
 		gantiKlien();
-		
-		var table = $('#myTable_selesai').DataTable({
+
+		var table = $('#myTable_proses').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength': 8,
-			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/proses/proses_data_akuntansi/page',
+			'pageLength'	: 8,
+			'ajax'			: {
 				'type'	: 'post',
 				'data'	: function (e) { 
-					e.klien = $('#klien_selesai').val(); 
-					e.bulan = $('#bulan_selesai').val(); 
-					e.tahun = $('#tahun_selesai').val();
-				},
+					e.klien = $('#klien_proses').val(); 
+					e.bulan = $('#bulan_proses').val(); 
+					e.tahun = $('#tahun_proses').val();
+					},
+				'url'	: '<?=base_url()?>admin/proses/proses_data_lainnya/page',
 			},
 		});
-		
-		$("#bulan_selesai").change(function() {
+
+		$("#bulan_proses").change(function() {
 			gantiKlien();
 			table.draw();
 		});
-		$("#tahun_selesai").change(function() {
+		$("#tahun_proses").change(function() {
 			gantiKlien();
 			table.draw();
 		});
-		$("#klien_selesai").change(function() {
+		$("#klien_proses").change(function() {
 			table.draw();
 		})
 
-		$('#myTable_selesai tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
+		$('#myTable_proses tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		})
 
 		// Detail
-		$('#myTable_selesai tbody').on('click', 'a.btn-detail', function() {
+		$('#myTable_proses tbody').on('click', 'a.btn-detail', function() {
 			var id = $(this).data('nilai');
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/detail',
+				url: '<?= base_url(); ?>admin/proses/proses_data_lainnya/detail',
 				data: 'id='+ id,
 				success: function(data) {
 					$(".detailProses").modal('show');
@@ -124,7 +125,7 @@
 		});
 		
 		// Batal
-		$('#myTable_selesai tbody').on('click', 'a.btn-batal', function() {
+		$('#myTable_proses tbody').on('click', 'a.btn-batal', function() {
 			var id = $(this).data('nilai');
 			$(".batalProses").modal('show');
 			$(".idProses").html( $(this).data('nilai') );

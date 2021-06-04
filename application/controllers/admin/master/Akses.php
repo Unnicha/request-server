@@ -67,7 +67,7 @@
 			$data['judul']		= 'Form Tambah Akses'; 
 			$data['masa']		= $this->Klien_model->getMasa();
 			$data['klien']		= $this->Klien_model->getAllKlien();
-			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan('akuntan');
+			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
 			
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');

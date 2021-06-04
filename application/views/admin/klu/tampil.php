@@ -9,7 +9,7 @@
 	<div class="row mt-1 float-left">
 		<!-- Tombol Tambah Data -->
 		<div class="col">
-			<a href="<?= base_url(); ?>admin/klu/tambah" class="btn btn-success">
+			<a href="<?= base_url(); ?>admin/master/klu/tambah" class="btn btn-success">
 				<i class="bi bi-plus"></i>
 				Tambah 
 			</a>
@@ -58,7 +58,7 @@
 			'lengthChange': false,
 			//'pageLength': 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>admin/klu/page',
+				'url'	: '<?=base_url()?>admin/master/klu/page',
 				'type'	: 'post',
 			},
 		});

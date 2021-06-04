@@ -100,7 +100,7 @@
                         <button type="submit" name="tambah" class="btn btn-primary">
                             Simpan
                         </button>
-                        <a href="<?= base_url(); ?>admin/tugas" type="submit" name="tambah" class="btn btn-secondary">
+                        <a href="<?= base_url(); ?>admin/master/tugas" type="submit" name="tambah" class="btn btn-secondary">
                             Batal
                         </a>
                     </div>

@@ -93,18 +93,16 @@
 			
 			$data = [];
 			foreach($proses as $k) {
-				$hari	= floor($k['lama_pengerjaan'] / 8);
-				$jam	= $k['lama_pengerjaan'] % 8;
-				$standar= $hari.' hari '.$jam.' jam';
+				$hari		= floor($k['lama_pengerjaan'] / 8);
+				$jam		= $k['lama_pengerjaan'] % 8;
+				$standar	= $hari.' hari '.$jam.' jam';
 
 				//HITUNG DURASI
-				$mulai		= $k['tanggal_mulai']." ".$k['jam_mulai'];
-				$selesai	= $k['tanggal_selesai']." ".$k['jam_selesai'];
-				if($k['tanggal_mulai']) {
-					if($k['tanggal_selesai']) {
-						$durasi	= $this->proses_admin->durasi($mulai, $selesai);
+				if( $k['tanggal_mulai'] ) {
+					if( $k['tanggal_selesai'] ) {
+						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
 					} else {
-						$durasi	= $this->proses_admin->durasi($mulai);
+						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai']);
 					}
 				}
 				
@@ -135,7 +133,7 @@
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama'];
 					$row[]	= $k['nama_tugas'];
-					$row[]	= $mulai;
+					$row[]	= $k['tanggal_mulai'];
 					$row[]	= $durasi;
 					$row[]	= $standar;
 					$row[]	= '
@@ -156,6 +154,61 @@
 				'data'			=> $data,
 			];
 			echo json_encode($callback);
+		}
+		
+		public function mulai($id_pengiriman) {
+			
+			$data['judul']		= "Mulai Proses Data"; 
+			$data['pengiriman']	= $this->m_proses->getById($id_pengiriman, true);
+
+			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
+			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
+			
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('akuntan/proses_perpajakan/tambah', $data);
+			} else {
+				$this->m_proses->tambahProses();
+				$this->session->set_flashdata('notification', 'Proses data dimulai!');
+				redirect('akuntan/proses_data_perpajakan');
+			}
+		}
+		
+		public function selesai($id_proses) {
+			
+			$data['judul']		= "Perbarui Proses Data"; 
+			$data['pengiriman']	= $this->m_proses->getById($id_proses);
+			
+			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
+			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
+			$this->form_validation->set_rules('tanggal_selesai', 'Tanggal Selesai', 'required');
+			$this->form_validation->set_rules('jam_selesai', 'Jam Selesai', 'required');
+			
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('akuntan/proses_perpajakan/ubah', $data);
+			} else {
+				$this->m_proses->ubahProses();
+				$this->session->set_flashdata('notification', 'Proses data selesai!');
+				redirect('akuntan/proses_data_perpajakan');
+			}
+		}
+
+		public function detail() {
+			$id_proses	= $this->input->post('id', true);
+			$proses		= $this->m_proses->getById($id_proses);
+			$durasi		= '';
+
+			if( $proses['tanggal_mulai'] ) {
+				if( $proses['tanggal_selesai'] ) {
+					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
+				} else {
+					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai']);
+				}
+			}
+			
+			$data['judul']	= 'Detail Proses';
+			$data['proses']	= $proses;
+			$data['durasi']	= $durasi;
+			$this->load->view('akuntan/proses_perpajakan/detail', $data);
 		}
 		
 		public function download() {
@@ -215,63 +268,6 @@
 			}
 			elseif($this->input->post('pdf', true))
 				return $this->exportproses->exportPdf($data);
-		}
-		
-		public function mulai($id_pengiriman) {
-			
-			$data['judul']		= "Mulai Proses Data"; 
-			$data['pengiriman']	= $this->m_proses->getById($id_pengiriman, true);
-
-			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
-			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('akuntan/proses_perpajakan/tambah', $data);
-			} else {
-				$this->m_proses->tambahProses();
-				$this->session->set_flashdata('notification', 'Proses data dimulai!');
-				redirect('akuntan/proses_data_perpajakan');
-			}
-		}
-		
-		public function selesai($id_proses) {
-			
-			$data['judul']		= "Perbarui Proses Data"; 
-			$data['pengiriman']	= $this->m_proses->getById($id_proses);
-			
-			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
-			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
-			$this->form_validation->set_rules('tanggal_selesai', 'Tanggal Selesai', 'required');
-			$this->form_validation->set_rules('jam_selesai', 'Jam Selesai', 'required');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('akuntan/proses_perpajakan/ubah', $data);
-			} else {
-				$this->m_proses->ubahProses();
-				$this->session->set_flashdata('notification', 'Proses data selesai!');
-				redirect('akuntan/proses_data_perpajakan');
-			}
-		}
-
-		public function detail() {
-			$id_proses	= $this->input->post('id', true);
-			$proses		= $this->m_proses->getById($id_proses);
-			$durasi		= '';
-
-			$mulai		= $proses['tanggal_mulai']." ".$proses['jam_mulai'];
-			$selesai	= $proses['tanggal_selesai']." ".$proses['jam_selesai'];
-			if($proses['tanggal_mulai']) {
-				if($proses['tanggal_selesai']) {
-					$durasi	= $this->proses_admin->durasi($mulai, $selesai);
-				} else {
-					$durasi	= $this->proses_admin->durasi($mulai);
-				}
-			}
-			
-			$data['judul']	= 'Detail Proses';
-			$data['proses']	= $proses;
-			$data['durasi']	= $durasi;
-			$this->load->view('akuntan/proses_perpajakan/detail', $data);
 		}
 	}
 ?>

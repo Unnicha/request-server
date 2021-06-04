@@ -80,15 +80,14 @@
 				</div>
 				
 				<!-- Mulai Proses -->
+				<?php $mulai = explode(' ', $pengiriman['tanggal_mulai']) ?>
 				<div class="form-group row">
 					<label for="tanggal_mulai" class="col-sm-3 col-form-label"> Mulai Proses </label> 
-					<!-- Tanggal Mulai -->
 					<div class="col-sm pr-0">
-						<input type="text" name="tanggal_mulai" class="form-control" id="tanggal_mulai" value="<?=$pengiriman['tanggal_mulai']?>" readonly>
+						<input type="text" name="tanggal_mulai" class="form-control" id="tanggal_mulai" value="<?=$mulai[0]?>" readonly>
 					</div>
-					<!-- Jam Mulai -->
 					<div class="col-sm">
-						<input type="text" name="jam_mulai" class="form-control" id="jam_mulai" value="<?=$pengiriman['jam_mulai']?>" readonly>
+						<input type="text" name="jam_mulai" class="form-control" id="jam_mulai" value="<?=$mulai[1]?>" readonly>
 					</div>
 				</div>
 
@@ -96,11 +95,11 @@
 				<div class="form-group row">
 					<label for="tanggal_selesai" class="col-sm-3 col-form-label"> Selesai Proses </label> 
 					<div class="col-sm pr-0">
-						<input type="text" name="tanggal_selesai" class="form-control docs-date" id="tanggal_selesai" placeholder="Tanggal Selesai" data-toggle="datepicker">
+						<input type="text" name="tanggal_selesai" class="form-control docs-date" id="tanggal_selesai" placeholder="Tanggal Selesai" data-toggle="datepicker" required>
 						<small class="form-text text-danger"><?= form_error('tanggal_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 					<div class="col-sm">
-						<input type="text" name="jam_selesai" class="form-control bs-timepicker" id="jam_selesai" placeholder="Jam Selesai">
+						<input type="text" name="jam_selesai" class="form-control bs-timepicker" id="jam_selesai" placeholder="Jam Selesai" required>
 						<small class="form-text text-danger"><?= form_error('jam_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 				</div>
@@ -116,9 +115,8 @@
 				<!-- Tombol Simpan -->
 				<div class="row my-3 text-right">
 					<div class="col p-0">
-						<button type="submit" name="tambah" class="btn btn-primary mr-1">
-							Selesai
-						</button>
+						<input class="btn btn-primary" type="submit" value="Selesai">
+						<input class="btn btn-secondary" type="reset" value="Reset">
 						<a href="<?= base_url(); ?>akuntan/proses_data_lainnya" class="btn btn-secondary mr-3">
 							Batal
 						</a>

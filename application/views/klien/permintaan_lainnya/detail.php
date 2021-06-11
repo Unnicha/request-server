@@ -1,41 +1,59 @@
 <div class="modal-header">
-	<h5 class="modal-title" id="detailLabel"><?= $judul ?></h5>
+	<h5 class="modal-title" id="detailAkunLabel"><?= $judul ?></h5>
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>
 </div>
 
 <div class="modal-body">
-    <table class="table table-striped table-detail" id="data">
-        <tbody>
-            <tr>
-                <td scope="row">ID Permintaan</td>
-                <td><?= $permintaan['id_permintaan']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Nama Klien</td>
-                <td><?= $permintaan['nama_klien']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Jenis Data</td>
-                <td><?= $permintaan['jenis_data']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Masa</td>
-                <td><?= $permintaan['masa']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Tahun</td>
-                <td><?= $permintaan['tahun']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Tanggal Permintaan</td>
-                <td><?= $permintaan['tanggal_permintaan']; ?></td>
-            </tr>
-            <tr>
-                <td scope="row">Keterangan</td>
-                <td><?= $permintaan['keterangan']; ?></td>
-            </tr>
-        </tbody>
+	<div class="container-fluid p-0">
+	<table class="table table-striped table-detail" id="data">
+		<tbody>
+			<tr>
+				<td scope="row">Tanggal Permintaan</td>
+				<td><?= $permintaan['tanggal_permintaan']; ?></td>
+			</tr>
+			<tr>
+				<td scope="row">Nama Klien</td>
+				<td><?= $permintaan['nama_klien']; ?></td>
+			</tr>
+			<tr>
+				<td scope="row">Bulan / Tahun</td>
+				<td><?= $bulan .' / '. $permintaan['tahun']; ?></td>
+			</tr>
+			<tr>
+				<td scope="row">Pengirim</td>
+				<td><?= ucwords($permintaan['level']) ?> - <?= $permintaan['nama'] ?></td>
+			</tr>
+			<tr>
+				<td colspan="2"><h6 class="mb-0">Data (<?=$jum_data?>)</h6></td>
+			</tr>
+			<?php for($i=0; $i<$jum_data; $i++) : ?>
+			<tr>
+				<td colspan="2">
+					<div class="form-row">
+						<div class="col-1 text-center">
+							<?= $i+1 ?>.
+						</div>
+						<div class="col">
+							<div class="form-row">
+								<div class="col-5">Jenis Data</div>
+								<div class="col">: <?= $jenis_data[$i]['jenis_data'] ?></div>
+							</div>
+							<div class="form-row">
+								<div class="col-5">Detail</div>
+								<div class="col">: <?= $detail[$i] ?></div>
+							</div>
+							<div class="form-row">
+								<div class="col-5">Format Data</div>
+								<div class="col">: <?= $format_data[$i] ?></div>
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php endfor ?>
+		</tbody>
 	</table>
+	</div>
 </div>

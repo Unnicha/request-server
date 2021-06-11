@@ -15,18 +15,14 @@
 						<!-- Ganti Bulan -->
 						<select name='bulan' class="form-control" id="bulan">
 							<?php 
-								$bulan = date('m');
-								$sess_bulan = $this->session->userdata('bulan');
-								if($sess_bulan) {$bulan = $sess_bulan;}
-									foreach ($masa as $m) : 
-										if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-											{ $pilih="selected"; } 
-										else 
-											{ $pilih=""; }
-										?>
-							<option value="<?=$m['nama_bulan']?>" <?=$pilih?>>
-								<?= $m['nama_bulan'] ?>
-							</option>
+								$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+								foreach ($masa as $m) : 
+									if ($m['id_bulan'] == $bulan) 
+										{ $pilih="selected"; } 
+									else 
+										{ $pilih=""; }
+									?>
+							<option value="<?=$m['id_bulan']?>" <?=$pilih?>><?= $m['nama_bulan'] ?></option>
 							<?php endforeach ?>
 						</select>
 						
@@ -35,7 +31,7 @@
 							<?php 
 								$tahun = date('Y');
 								$sess_tahun = $this->session->userdata('tahun');
-								for($i=$tahun; $i>=2010; $i--) :
+								for($i=$tahun; $i>=2016; $i--) :
 									if ($i == $sess_tahun) 
 										{ $pilih="selected"; } 
 									else 
@@ -58,7 +54,7 @@
 		<div class="col-sm-3 col-md-3">
 			<a href="<?= base_url(); ?>akuntan/permintaan_data_lainnya/tambah" class="btn btn-success float-right">
 				<i class="bi-plus"></i>
-				Tambah
+				Buat
 			</a>
 		</div>
 	</div>
@@ -69,9 +65,7 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
-					<th scope="col">Jenis Data</th>
 					<th scope="col">Request ke</th>
-					<th scope="col">Format</th>
 					<th scope="col">Tanggal Permintaan</th>
 					<th scope="col">Status</th>
 					<th scope="col">Action</th>
@@ -109,7 +103,11 @@
 			$.ajax({
 				type: 'POST',
 				url: '<?= base_url(); ?>akuntan/permintaan_data_lainnya/klien',
-				data: { 'tahun' : $('#tahun').val(), },
+				data: { 
+					'bulan'	: $('#bulan').val(), 
+					'tahun'	: $('#tahun').val(), 
+					'jenis'	: 'Semua',
+				},
 				success: function(data) {
 					$("#klien").html(data);
 				}

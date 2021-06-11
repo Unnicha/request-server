@@ -6,128 +6,119 @@
 			return $this->db->from('pengiriman_lainnya')
 							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
 							->order_by('id_pengiriman', 'ASC')
 							->get()->result_array();
 		}
-
+		
 		public function getByMasa($bulan, $tahun, $klien='', $start, $limit) {
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
 			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_request', 'left')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where(['bulan' => $bulan, 'tahun' => $tahun])
 							->limit($limit, $start)
 							->order_by('id_pengiriman', 'ASC')
 							->get()->result_array();
 		}
-
+		
 		public function countPengiriman($bulan, $tahun, $klien='') {
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
 			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_request', 'left')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where(['bulan' => $bulan, 'tahun' => $tahun])
 							->count_all_results();
 		}
-
+		
 		public function getById($id_pengiriman) {
 			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_request', 'left')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
 							->where('id_pengiriman', $id_pengiriman)
 							->get()->row_array();
 		}
-
-		public function getMax($id_permintaan) { //fungsi untuk membuat id baru dengan autoincrement
+		
+		public function getMax($id_permintaan) { 
 			$max = $this->db->select_max('id_pengiriman')
-							->where('id_permintaan', $id_permintaan)
+							->where('id_request', $id_permintaan)
 							->get('pengiriman_lainnya')->row_array();
-			$kodeMax = $max['id_pengiriman']; //masukkan max id ke variabel
-
-			if($kodeMax == null) {
+			
+			if($max['id_pengiriman'] == null) {
 				$id_pengiriman = $id_permintaan."0";
 			} else {
-				//ambil kode pembetulan => substr(dari $kodeMax, index ke, sebanyak x char) 
-				//jadikan integer => (int) 
-				$revisi = (int) substr($kodeMax, -1);
+				$revisi = substr($max['id_pengiriman'], -1);
 				if($revisi == 9) {
 					$id_pengiriman = $id_permintaan;
 				} else {
-					$id_pengiriman	= $id_permintaan . ++$revisi; //tambahkan kode pembetulan baru
+					$id_pengiriman	= $id_permintaan . ++$revisi; 
 				}
 			}
-			
 			return $id_pengiriman;
 		}
 		
 		public function kirim() {
-
 			$id_permintaan	= $this->input->post('id_permintaan', true);
-			$masa			= $this->input->post('masa', true);
-			$tahun			= $this->input->post('tahun', true);
+			$id_pengiriman	= $this->getMax($id_permintaan);
+			$format_data	= explode('|', $this->input->post('format_data', true));
+			$tanggal_ambil	= $this->input->post('tanggal_ambil', true);
+			$files			= $this->input->post('files', true);
+			$nama_klien		= $this->session->userdata('nama');
 			
-			$redirect		= "klien/permintaan_data_lainnya/kirim/".$id_permintaan;
-			$id_pengiriman	= $this->getMax($id_permintaan); //ambil id_pengiriman terbesar yang sudah ada
 			if($id_pengiriman == $id_permintaan) {
 				$this->session->set_flashdata('flash', 'Revisi sudah mencapai batas maksimal. Silahkan hubungi accounting');
-				redirect("klien/pengiriman_data_lainnya/pembetulan/".$id_permintaan);
+				$callback = 'ERROR';
 			} else {
-				$pembetulan		= substr($id_pengiriman, -1); //mengambil kode pembetulan dari id_pengiriman
-				if($pembetulan > 0) { // error handler
-					$redirect	= "klien/pengiriman_data_lainnya/pembetulan/".$id_permintaan;
-				}
-				
-				$nama_klien		= $this->session->userdata('nama');
-				$format_data	= $this->input->post('format_data', true);
-				$fileDikirim	= "";
-				
-				if($format_data == "Softcopy") {
-					//cek apakah field File diisi
-					if(basename($_FILES['file']['name']) == null) { 
-						$this->session->set_flashdata('flash', 'Kolom <b>File</b> harus diisi');
-						redirect($redirect); 
-					} else {
-						$fileDikirim = $this->proses_file($nama_klien, $masa, $tahun);
-						if($fileDikirim == null) {
-							$this->session->set_flashdata('flash','Format file yang di izinkan hanya <b>XLS</b> dan <b>PDF</b>');
-							redirect($redirect); 
+				$j = 0; $k = 0;
+				for($i=0; $i<count($format_data); $i++) {
+					if($format_data[$i] == "Softcopy") {
+						$upload[$i] = $this->proses_file($nama_klien, $j);
+						if($upload[$i] == null) {
+							$this->session->set_flashdata('flash','Format file yang di izinkan : <b>.xls, .xlsx, .csv, .pdf, .rar, .zip</b>');
+							$callback = 'ERROR';
 						}
+						$j++;
+					} elseif($format_data[$i] == "Hardcopy") {
+						$upload[$i] = $tanggal_ambil[$k];
+						$k++;
 					}
 				}
 				
-				if($format_data == "Hardcopy") {
-					if($this->input->post('tanggal_ambil', true) == null) {
-						$this->session->set_flashdata('flash', 'Kolom <b>Tanggal Ambil</b> harus diisi');
-						redirect($redirect); 
-					}
+				if($upload == null) {
+					return '';
+				} elseif($callback) {
+					return $callback;
+				} else {
+					$data = [
+						'id_pengiriman'		=> $id_pengiriman,
+						'tanggal_pengiriman'=> date('d-m-Y H:i'),
+						'pembetulan'		=> substr($id_pengiriman, -1),
+						'file'				=> implode('|', $tanggal_ambil),
+						'keterangan'		=> implode('|', $this->input->post('keterangan', true)),
+						'id_request'		=> $this->input->post('id_permintaan', true),
+					];
+					$this->db->insert('pengiriman_lainnya', $data);
+					return 'OK';
 				}
-				
-				$data = [
-					'id_pengiriman'		=> $id_pengiriman,
-					'tanggal_pengiriman'=> $this->input->post('tanggal_pengiriman', true),
-					'pembetulan'		=> $pembetulan,
-					'file'				=> $fileDikirim,
-					'tanggal_ambil'		=> $this->input->post('tanggal_ambil', true),
-					'keterangan2'		=> $this->input->post('keterangan', true),
-					'id_permintaan'		=> $this->input->post('id_permintaan', true),
-				];
-				$this->db->insert('pengiriman_lainnya', $data);
 			}
 		}
 		
-		public function proses_file($nama_klien, $masa, $tahun) {
-
-			$fileData		= $_FILES['file'];
-			$folderUpload	= "asset/uploads/".$nama_klien."/".$tahun."/".$masa."/";
-			$targetFile		= $folderUpload . basename($fileData['name']);
+		public function konfirmasi() {
+			$data = [
+				'status'		=> implode('|', $this->input->post('status', true)),
+				'keterangan2'	=> implode('|', $this->input->post('keterangan2', true)),
+			];
+			$this->db->where('id_pengiriman', $this->input->post('id_pengiriman', true))
+					->update('pengiriman_lainnya', $data);
+		}
+		
+		public function proses_file($nama_klien, $index) {
+			$fileData		= $_FILES['files'];
+			$folderUpload	= "asset/uploads/".$nama_klien."/".date('Y')."/";
+			$targetFile		= $folderUpload . basename($fileData['name'][$index]);
 			$extractFile	= pathinfo($targetFile); 
 			
 			if (!is_dir($folderUpload)) { # periksa apakah folder sudah ada
@@ -150,8 +141,8 @@
 				}
 				// Apabila tidak ada file yang sama ($sameName masih '0') maka nama file sama dengan
 				// nama ketika diupload. Jika $sameName > 0 maka pakai format "namafile($sameName).ext"
-				$newName	= empty($sameName) ? $fileData['name'] : $extractFile['filename'].'('.$sameName.').'.$extractFile['extension'];
-				$upload		= move_uploaded_file($fileData['tmp_name'], $folderUpload.$newName);
+				$newName	= empty($sameName) ? $fileData['name'][$index] : $extractFile['filename'].'('.$sameName.').'.$extractFile['extension'];
+				$upload		= move_uploaded_file($fileData['tmp_name'][$index], $folderUpload.$newName);
 			}
 			return $newName;
 		}

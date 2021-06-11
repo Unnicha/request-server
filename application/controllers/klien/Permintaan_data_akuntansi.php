@@ -10,41 +10,40 @@
 			$this->load->model('M_Permintaan_akuntansi');
 			$this->load->model('M_Pengiriman_akuntansi');
 			$this->load->model('Klien_model');
+			$this->load->model('Jenis_data_model');
 		} 
 		
 		public function index() {
 			$data['judul']	= "Permintaan Data Akuntansi";
 			$data['masa']	= $this->Klien_model->getMasa();
-			
 			$this->libtemplate->main('klien/permintaan_akuntansi/tampil', $data);
 		}
 		
 		public function page() {
-			$bulan	= $_POST['bulan'];
 			$tahun	= $_POST['tahun'];
+			$bulan	= $_POST['bulan'];
 			$klien	= $this->session->userdata('id_user');
-			$this->session->set_userdata('bulan', $bulan); 
-			$this->session->set_userdata('tahun', $tahun);
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
-			$countData	= $this->M_Permintaan_akuntansi->countForKlien($bulan, $tahun, $klien); 
-			$permintaan	= $this->M_Permintaan_akuntansi->getForKlien($bulan, $tahun, $klien, $offset, $limit);
+			$countData	= $this->M_Permintaan_akuntansi->countPermintaan($bulan, $tahun, $klien); 
+			$permintaan	= $this->M_Permintaan_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
 			$data		= [];
-			foreach($permintaan as $k) { 
-				if( $this->M_Permintaan_akuntansi->getPengiriman($k['id_permintaan']) ) {
-					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Diterima"></i>';
+			foreach($permintaan as $k) {
+				if( $k['id_pengiriman'] ) {
+					//$status = '<span class="badge badge-success">Sudah Dikirim</span>';
+					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Dikirim"></i>';
 				} else {
-					$status = '<i class="bi bi-hourglass-split icon-status" style="color:red" data-toggle="tooltip" data-placement="bottom" title="Belum Diterima"></i>';
+					$status = '<span class="badge badge-warning">Belum Dikirim</span>';
+					//$status = '<i class="bi bi-hourglass-split icon-status" style="color:red" data-toggle="tooltip" data-placement="bottom" title="Belum Dikirim"></i>';
 				}
 
 				$row	= [];
 				$row[]	= ++$offset.'.';
-				$row[]	= $k['jenis_data'];
 				$row[]	= $k['request'];
-				$row[]	= $k['format_data'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $status;
 				$row[]	= '
 					<a class="btn btn-sm btn-info btn-detail_permintaan" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
 						<i class="bi bi-info-circle"></i>
@@ -65,30 +64,49 @@
 		}
 		
 		public function kirim($id_permintaan) {
+			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
+			implode(',', $kode_jenis);
 			
-			$data['judul'] = "Form Pengiriman Data"; 
-			$data['header'] = "Kirim Data";
-			$data['permintaan'] = $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$data['judul']			= "Form Pengiriman - Data Akuntansi"; 
+			$data['permintaan']		= $permintaan;
+			$data['jenis_data']		= $this->Jenis_data_model->getForDetail($kode_jenis);
+			$data['format_data']	= explode('|', $permintaan['format_data']);
+			$data['detail']			= explode('|', $permintaan['detail']);
+			$data['jum_data']		= count($data['jenis_data']);
 			
-			$this->form_validation->set_rules('tanggal_pengiriman', 'Tanggal Pengiriman', 'required');
-			$this->form_validation->set_rules('format_data', 'Format Data', 'required');
-			$this->form_validation->set_rules('masa', 'Masa', 'required');
-			$this->form_validation->set_rules('tahun', 'Tahun', 'required');
-			$this->form_validation->set_rules('keterangan', 'Keterangan', '');
+			$this->form_validation->set_rules('id_permintaan', 'File', 'required');
+			$this->form_validation->set_rules('keterangan[]', 'Keterangan', '');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('klien/permintaan_akuntansi/kirim', $data);
 			} else {
-				$this->M_Pengiriman_akuntansi->kirim();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
-				redirect('klien/permintaan_data_akuntansi'); 
+				$send = $this->M_Pengiriman_akuntansi->kirim();
+				if($send == 'ERROR') {
+					redirect('klien/permintaan_data_akuntansi/kirim/'.$id_permintaan);
+				} else {
+					if($send == 'OK') {
+						$this->session->set_flashdata('notification', 'Data berhasil dikirim!');
+					}
+					redirect('klien/permintaan_data_akuntansi');
+				}
 			}
 		}
-
+		
 		public function detail() {
-			$id_permintaan		= $this->input->post('permintaan', true);
-			$data['judul']		= 'Detail Permintaan Data ';
-			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$id_permintaan	= $this->input->post('permintaan', true);
+			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
+			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
+			implode(',', $kode_jenis);
+			
+			$data['judul']			= 'Detail Permintaan';
+			$data['permintaan']		= $permintaan;
+			$data['bulan']			= $bulan['nama_bulan'];
+			$data['jenis_data']		= $this->Jenis_data_model->getForDetail($kode_jenis);
+			$data['format_data']	= explode('|', $permintaan['format_data']);
+			$data['detail']			= explode('|', $permintaan['detail']);
+			$data['jum_data']		= count($data['jenis_data']);
 			
 			$this->load->view('klien/permintaan_akuntansi/detail', $data);
 		}

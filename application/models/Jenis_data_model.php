@@ -20,11 +20,20 @@
 			}
 			return $this->db->from('jenis_data')->count_all_results();
 		}
-
+		
 		public function getById($kode_jenis) {
 			return $this->db->get_where('jenis_data', ['kode_jenis'=>$kode_jenis])->row_array();
 		}
 
+		public function getForDetail($kode_jenis) {
+			return $this->db->where_in('kode_jenis', $kode_jenis)
+							->get('jenis_data')->result_array();
+		}
+		
+		public function getByKategori($kategori) {
+			return $this->db->get_where('jenis_data', ['kategori'=>$kategori])->result_array();
+		}
+		
 		public function getMax($kategori) {
 			$max = $this->db->select_max('kode_jenis', 'maxId')
 							->where('kategori', $kategori)

@@ -34,12 +34,16 @@
 							->count_all_results();
 		}
 
-		public function getById($id_klien) {
-			return $this->db->from('klien')
-							->join('klu', 'klien.kode_klu = klu.kode_klu', 'left')
-							->join('user', 'klien.id_klien = user.id_user', 'left')
-							->where('id_klien', $id_klien)
-							->get()->row_array();
+		public function getById($id_klien, $lists='') {
+			$this->db->from('klien')
+					->join('klu', 'klien.kode_klu = klu.kode_klu', 'left')
+					->join('user', 'klien.id_klien = user.id_user', 'left')
+					->where_in('id_klien', $id_klien);
+			
+			if($lists == 'lists')
+			return $this->db->get()->result_array();
+			else
+			return $this->db->get()->row_array();
 		}
 		
 		public function getMasa($masa='') {

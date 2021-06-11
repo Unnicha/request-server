@@ -1,4 +1,7 @@
 <div class="container-fluid">
+	<?php if($this->session->flashdata('notification')) : ?>
+		<div class="notification" data-val="yes"></div>
+	<?php endif; ?>
 
 	<!-- Judul -->
 	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
@@ -8,17 +11,14 @@
 			<!-- Ganti Bulan -->
 			<select name='bulan' class="form-control" id="bulan">
 				<?php 
-					$bulan		= date('m');
-					$sess_bulan	= $this->session->userdata('bulan');
-					if($sess_bulan) {$bulan = $sess_bulan;}
-
+					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
+						if ($m['id_bulan'] == $bulan) 
 							{ $pilih="selected"; } 
 						else 
 							{ $pilih=""; }
-				?>
-				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+							?>
+				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
@@ -50,9 +50,10 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
-					<th scope="col">Jenis Data</th>
-					<th scope="col">Jenis Pengiriman</th>
+					<th scope="col">Permintaan</th>
+					<th scope="col">Pengiriman</th>
 					<th scope="col">Tanggal Pengiriman</th>
+					<th scope="col">Status</th>
 					<th scope="col">Detail</th>
 				</tr>
 			</thead>
@@ -78,6 +79,12 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
 	$(document).ready(function() {
+		var notif = $('.notification').data('val');
+		if(notif == 'yes') {
+			$('#modalNotif').modal('show');
+			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
+		}
+		
 		function klien() {
 			var bulan = $('#bulan').val();
 			var tahun = $('#tahun').val();

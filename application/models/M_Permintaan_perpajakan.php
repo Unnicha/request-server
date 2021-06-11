@@ -4,7 +4,6 @@
 
 		public function getAllPermintaan() { 
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->order_by('id_permintaan', 'ASC')
@@ -16,10 +15,10 @@
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('pengiriman_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_request', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where(['bulan' => $bulan, 'tahun' => $tahun, 'id_pengiriman' => null])
 							->limit($limit, $start)
 							->order_by('id_permintaan', 'ASC')
 							->get()->result_array();
@@ -30,10 +29,10 @@
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
+							->join('pengiriman_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_request', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun])
+							->where(['bulan' => $bulan, 'tahun' => $tahun, 'id_pengiriman' => null])
 							->count_all_results();
 		}
 
@@ -43,7 +42,6 @@
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['masa' => $bulan, 'tahun' => $tahun])
@@ -61,7 +59,6 @@
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['masa' => $bulan, 'tahun' => $tahun])
@@ -70,21 +67,15 @@
 								)")
 							->count_all_results();
 		}
-
-		public function getPengiriman($id_permintaan) {
-			return $this->db->get_where('pengiriman_perpajakan', ['id_permintaan'=>$id_permintaan])
-							->row_array();
-		}
-
+		
 		public function getById($id_permintaan) {
 			return $this->db->from('permintaan_perpajakan')
-							->join('jenis_data', 'permintaan_perpajakan.kode_jenis = jenis_data.kode_jenis', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['id_permintaan' => $id_permintaan])
 							->get()->row_array();
 		}
-
+		
 		//delete soon
 		public function getReqByKlien($masa, $tahun, $klien) {
 			$q = "SELECT * FROM ((((permintaan_perpajakan
@@ -99,45 +90,36 @@
 			return $this->db->query($q)->result_array();
 		}
 
-		//fungsi untuk membuat id baru dengan autoincrement
-		public function getMax($id_permintaan, $masa, $tahun, $kode_jenis, $id_klien) { 
-			$max = $this->db->select_max('id_permintaan', 'max_id')
-							->where(['masa'=>$masa, 'tahun'=>$tahun])
-							->where(['kode_jenis'=>$kode_jenis, 'id_klien'=>$id_klien])
+		public function getMax($id_klien, $bulan, $tahun) { 
+			$max = $this->db->select_max('id_permintaan')
+							->where(['id_klien' => $id_klien, 'bulan'=>$bulan, 'tahun'=>$tahun])
 							->get('permintaan_perpajakan')->row_array();
-
-			if($max['max_id']) {
-				$tambah = (int) substr($max['max_id'], -2);
-				$data['request'] = ++$tambah; //kode pembetulan +1
+			
+			if($max['id_permintaan']) {
+				$tambah	= substr($max['id_permintaan'], -3);
+				$newId	= substr($tahun, -2) . $bulan . $id_klien . ++$tambah;
 			} else {
-				$data['request'] = "1";
+				$newId	= substr($tahun, -2) . $bulan . $id_klien . "201";
 			}
-			$data['id'] = $id_permintaan.(sprintf("%02s", $data['request']));
-			return $data;
+			return $newId;
 		}
 
 		public function tambahPermintaan() { 
-			$kode_jenis	= $this->input->post('kode_jenis', true);
-			$id_klien	= $this->input->post('id_klien', true);
-			$level		= $this->input->post('level', true);
-
-			$masa			= $this->input->post('masa', true);
+			$id_klien		= $this->input->post('id_klien', true);
+			$bulan			= $this->input->post('bulan', true);
 			$tahun			= $this->input->post('tahun', true);
-			$bulan			= $this->db->get_where('bulan', ['nama_bulan' => $masa])->row_array();
-			$masa			= sprintf('%02s', $bulan['id_bulan']);
-			$id_permintaan	= substr($tahun, -2) . $masa . $id_klien . $kode_jenis;
-
-			$new = $this->getMax($id_permintaan, $bulan['nama_bulan'], $tahun, $kode_jenis, $id_klien);
+			$id_permintaan	= $this->getMax($id_klien, $bulan, $tahun);
+			
 			$data = [
-				'id_permintaan'		=> $new['id'],
-				'tanggal_permintaan'=> $this->input->post('tanggal_permintaan', true),
-				'masa'				=> $this->input->post('masa', true),
-				'tahun'				=> $this->input->post('tahun', true),
-				'format_data'		=> $this->input->post('format_data', true),
-				'request'			=> $new['request'],
-				'keterangan'		=> $this->input->post('keterangan', true),
-				'kode_jenis'		=> $this->input->post('kode_jenis', true),
-				'id_klien'			=> $this->input->post('id_klien', true),
+				'id_permintaan'		=> $id_permintaan,
+				'tanggal_permintaan'=> date('d-m-Y H:i'),
+				'id_klien'			=> $id_klien,
+				'bulan'				=> $bulan,
+				'tahun'				=> $tahun,
+				'kode_jenis'		=> implode('|', $this->input->post('kode_jenis', true)),
+				'format_data'		=> implode('|', $this->input->post('format_data', true)),
+				'detail'			=> implode('|', $this->input->post('detail', true)),
+				'request'			=> substr($id_permintaan, -2),
 				'id_pengirim'		=> $this->input->post('id_user', true),
 			];
 			$this->db->insert('permintaan_perpajakan', $data);

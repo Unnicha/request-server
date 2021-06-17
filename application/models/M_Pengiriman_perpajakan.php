@@ -48,59 +48,133 @@
 							->get('pengiriman_perpajakan')->row_array();
 			
 			if($max['id_pengiriman'] == null) {
-				$id_pengiriman = $id_permintaan."0";
+				$id_pengiriman	= $id_permintaan."01";
 			} else {
-				$revisi = substr($max['id_pengiriman'], -1);
-				if($revisi == 9) {
-					$id_pengiriman = $id_permintaan;
-				} else {
-					$id_pengiriman	= $id_permintaan . ++$revisi; 
-				}
+				$revisi			= substr($max['id_pengiriman'], -2);
+				$id_pengiriman	= $id_permintaan . sprintf('%02s', ++$revisi); 
 			}
 			return $id_pengiriman;
 		}
 		
 		public function kirim() {
-			$id_permintaan	= $this->input->post('id_permintaan', true);
-			$id_pengiriman	= $this->getMax($id_permintaan);
+			$id_pengiriman	= $this->getMax($this->input->post('id_permintaan', true));
 			$format_data	= explode('|', $this->input->post('format_data', true));
-			$tanggal_ambil	= $this->input->post('tanggal_ambil', true);
-			$files			= $this->input->post('files', true);
-			$nama_klien		= $this->session->userdata('nama');
 			
-			if($id_pengiriman == $id_permintaan) {
-				$this->session->set_flashdata('flash', 'Revisi sudah mencapai batas maksimal. Silahkan hubungi accounting');
-				$callback = 'ERROR';
-			} else {
-				$j = 0; $k = 0;
-				for($i=0; $i<count($format_data); $i++) {
-					if($format_data[$i] == "Softcopy") {
-						$upload[$i] = $this->proses_file($nama_klien, $j);
+			$j = 0; $k = 0;
+			for($i=0; $i<count($format_data); $i++) {
+				if($format_data[$i] == "Softcopy") {
+					$upload[$i] = '';
+					if($_FILES['files']['name'][$j] != null) {
+						$upload[$i] = $this->proses_file($this->session->userdata('nama'), $j);
 						if($upload[$i] == null) {
 							$this->session->set_flashdata('flash','Format file yang di izinkan : <b>.xls, .xlsx, .csv, .pdf, .rar, .zip</b>');
 							$callback = 'ERROR';
 						}
-						$j++;
-					} elseif($format_data[$i] == "Hardcopy") {
-						$upload[$i] = $tanggal_ambil[$k];
-						$k++;
 					}
+					$j++;
+				} elseif($format_data[$i] == "Hardcopy") {
+					$upload[$i] = $this->input->post('tanggal_ambil', true)[$k];
+					$k++;
 				}
-				
-				if($upload == null) {
-					return '';
-				} elseif($callback) {
-					return $callback;
-				} else {
+			}
+			
+			$cekUpload	= array_unique($upload);
+			if(count($cekUpload)==1 && $cekUpload[0]=='') {
+				$upload	= null;
+			}
+			
+			if(isset($callback)) {
+				return $callback;
+			} else {
+				if($upload) {
+					$tanggal	= date('d-m-Y H:i');
+					foreach($upload as $up) {
+						if($up == null) {
+							$status[] = 'kosong';	$tanggal_pengiriman[] = '';
+						} else {
+							$status[] = 'belum';	$tanggal_pengiriman[] = $tanggal;
+						}
+					}
+					
 					$data = [
 						'id_pengiriman'		=> $id_pengiriman,
-						'tanggal_pengiriman'=> date('d-m-Y H:i'),
-						'pembetulan'		=> substr($id_pengiriman, -1),
-						'file'				=> implode('|', $tanggal_ambil),
+						'tanggal_pengiriman'=> implode('|', $tanggal_pengiriman),
+						'pembetulan'		=> substr($id_pengiriman, -2),
+						'file'				=> implode('|', $upload),
 						'keterangan'		=> implode('|', $this->input->post('keterangan', true)),
+						'status'			=> implode('|', $status),
 						'id_request'		=> $this->input->post('id_permintaan', true),
 					];
 					$this->db->insert('pengiriman_perpajakan', $data);
+					return 'OK';
+				}
+			}
+		}
+		
+		public function ubah() {
+			$pengiriman		= $this->getById($this->input->post('id_pengiriman', true));
+			$format_data	= $this->input->post('format_data', true);
+			$keterangan		= $this->input->post('keterangan', true);
+			
+			$j = 0; $k = 0;
+			for($i=0; $i<count($format_data); $i++) {
+				if($format_data[$i] == "Softcopy") {
+					$upload[$i] = '';
+					if($_FILES['files']['name'][$j] != null) {
+						$upload[$i] = $this->proses_file($this->session->userdata('nama'), $j);
+						if($upload[$i] == null) {
+							$this->session->set_flashdata('flash','Format file yang di izinkan : <b>.xls, .xlsx, .csv, .pdf, .rar, .zip</b>');
+							$callback = 'ERROR';
+						}
+					}
+					$j++;
+				} elseif($format_data[$i] == "Hardcopy") {
+					$upload[$i] = $this->input->post('tanggal_ambil', true)[$k];
+					$k++;
+				}
+			}
+			
+			$cekUpload	= array_unique($upload);
+			if(count($cekUpload)==1 && $cekUpload[0]=='') {
+				$upload	= null;
+			}
+			
+			if(isset($callback)) {
+				return $callback;
+			} else {
+				if($upload) {
+					$tanggal = date('d-m-Y H:i');
+					foreach($upload as $up) {
+						if($up == null) {
+							$status[] = 'kosong';	$tanggal_pengiriman[] = '';
+						} else {
+							$status[] = 'belum';	$tanggal_pengiriman[] = $tanggal;
+						}
+					}
+					
+					$oldTanggal	= explode('|', $pengiriman['tanggal_pengiriman']);
+					$oldFile	= explode('|', $pengiriman['file']);
+					$oldKet		= explode('|', $pengiriman['keterangan']);
+					$oldStatus	= explode('|', $pengiriman['status']);
+					$j=0;
+					for($i=0; $i<count($oldTanggal); $i++) {
+						if($oldTanggal[$i] == null) {
+							$oldTanggal[$i]	= $tanggal_pengiriman[$j];
+							$oldFile[$i]	= $upload[$j];
+							$oldKet[$i]		= $keterangan[$j];
+							$oldStatus[$i]	= $status[$j];
+							$j++;
+						}
+					}
+					
+					$data = [
+						'tanggal_pengiriman'=> implode('|', $oldTanggal),
+						'file'				=> implode('|', $oldFile),
+						'keterangan'		=> implode('|', $oldKet),
+						'status'			=> implode('|', $oldStatus),
+					];
+					$this->db->where('id_pengiriman', $this->input->post('id_pengiriman', true))
+							->update('pengiriman_perpajakan', $data);
 					return 'OK';
 				}
 			}

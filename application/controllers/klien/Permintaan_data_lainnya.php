@@ -32,11 +32,9 @@
 			$data		= [];
 			foreach($permintaan as $k) {
 				if( $k['id_pengiriman'] ) {
-					//$status = '<span class="badge badge-success">Sudah Dikirim</span>';
-					$status = '<i class="bi bi-check-circle-fill icon-status" style="color:green" data-toggle="tooltip" data-placement="bottom" title="Sudah Dikirim"></i>';
+					$status = '<span class="badge badge-success">Sudah Dikirim</span>';
 				} else {
 					$status = '<span class="badge badge-warning">Belum Dikirim</span>';
-					//$status = '<i class="bi bi-hourglass-split icon-status" style="color:red" data-toggle="tooltip" data-placement="bottom" title="Belum Dikirim"></i>';
 				}
 
 				$row	= [];
@@ -66,14 +64,16 @@
 		public function kirim($id_permintaan) {
 			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
 			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
-			implode(',', $kode_jenis);
+			foreach($kode_jenis as $kode) {
+				$jenis_data[] = $this->Jenis_data_model->getById($kode);
+			}
 			
 			$data['judul']			= "Form Pengiriman - Data Lainnya"; 
 			$data['permintaan']		= $permintaan;
-			$data['jenis_data']		= $this->Jenis_data_model->getForDetail($kode_jenis);
+			$data['jenis_data']		= $jenis_data;
 			$data['format_data']	= explode('|', $permintaan['format_data']);
 			$data['detail']			= explode('|', $permintaan['detail']);
-			$data['jum_data']		= count($data['jenis_data']);
+			$data['batal']			= 'klien/permintaan_data_lainnya';
 			
 			$this->form_validation->set_rules('id_permintaan', 'File', 'required');
 			$this->form_validation->set_rules('keterangan[]', 'Keterangan', '');
@@ -97,16 +97,17 @@
 			$id_permintaan	= $this->input->post('permintaan', true);
 			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
 			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
-			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
-			implode(',', $kode_jenis);
+			$kode_jenis		= explode('|', $pengiriman['kode_jenis']);
+			foreach($kode_jenis as $kode) {
+				$jenis_data[] = $this->Jenis_data_model->getById($kode);
+			}
 			
 			$data['judul']			= 'Detail Permintaan';
 			$data['permintaan']		= $permintaan;
 			$data['bulan']			= $bulan['nama_bulan'];
-			$data['jenis_data']		= $this->Jenis_data_model->getForDetail($kode_jenis);
+			$data['jenis_data']		= $jenis_data;
 			$data['format_data']	= explode('|', $permintaan['format_data']);
 			$data['detail']			= explode('|', $permintaan['detail']);
-			$data['jum_data']		= count($data['jenis_data']);
 			
 			$this->load->view('klien/permintaan_lainnya/detail', $data);
 		}

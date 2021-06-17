@@ -7,7 +7,7 @@
 	
 	<hr class="my-0">
 
-	<div class="row row-child my-3">
+	<div class="row row-child mb-3">
 		<div class="col">
 			<?php if($this->session->flashdata('flash')) : ?>
 			<div class="row">
@@ -21,33 +21,32 @@
 
 			<form action="" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="id_permintaan" value="<?=$permintaan['id_permintaan']?>">
+				<input type="hidden" name="format_data" value="<?=$permintaan['format_data']?>">
 				
 				<?php for($i=0; $i<$jum_data; $i++) : ?>
-				<div class="form-row mb-4">
-					<label class="col-form-label"><b><?= $i+1 ?>.</b></label>
-					<div class="col">
+				<div class="form-row mt-3">
+					<label class="col-form-label pt-0"><b><?= $i+1 ?>.</b></label>
+					
+					<div class="col col-lg-5">
 						<div class="form-row mb-2">
-							
-							<!-- Jenis Data -->
-							<div class="col-4">
-								<input type="text" name="kode_jenis[]" class="form-control" value="<?=$jenis_data[$i]['jenis_data']?>" readonly>
-							</div>
-								
-							<!-- Keterangan -->
-							<div class="col">
-								<textarea type="text" name="keterangan[]" class="form-control" style="height:calc(1.5em + .75rem + 2px)" readonly><?=$keterangan[$i]?></textarea>
-							</div>
-							
-							<!-- Format Data -->
-							<div class="col-4">
-								<input type="text" name="format_data[]" class="form-control" value="<?=$format_data[$i]?>" readonly>
-							</div>
+							<div class="col-4">Jenis Data</div>
+							<div class="col">: <?=$jenis_data[$i]['jenis_data']?></div>
 						</div>
-						
-						<div class="form-row">
+						<div class="form-row my-2">
+							<div class="col-4">Detail</div>
+							<div class="col">: <?=$detail[$i]?></div>
+						</div>
+						<div class="form-row my-2">
+							<div class="col-4">Format Data</div>
+							<div class="col">: <?=$format_data[$i]?></div>
+						</div>
+					</div>
+					
+					<div class="col col-lg-5">
+						<div class="form-group row">
 							<?php if($format_data[$i] == 'Softcopy') : ?>
 							<!-- File -->
-							<div class="col-4">
+							<div class="col">
 								<div class="custom-file">
 									<input type="file" name="files[]" class="custom-file-input" required>
 									<label class="custom-file-label" data-browse="Cari">Pilih file</label>
@@ -56,18 +55,21 @@
 							</div>
 							<?php else : ?>
 							<!-- Tanggal Pengambilan -->
-							<div class="col-4">
+							<div class="col">
 								<input type="text" name="tanggal_ambil[]" class="form-control docs-date" placeholder="Tanggal Ambil Data" data-toggle="datepicker" required>
 							</div>
 							<?php endif ?>
-								
-							<!-- Keterangan -->
-							<div class="col-4">
-								<textarea type="text" name="keterangan2[]" class="form-control" style="height:calc(1.5em + .75rem + 2px)" placeholder="Tambahkan Keterangan"></textarea>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col">
+								<textarea type="text" name="keterangan[]" class="form-control" style="height:calc(1.5em + .75rem + 2px)" placeholder="Tambahkan Keterangan"></textarea>
 							</div>
 						</div>
 					</div>
 				</div>
+				
+				<hr class="my-0">
 				<?php endfor ?>
 				
 				<!-- Tombol Simpan -->
@@ -76,7 +78,7 @@
 						<button type="submit" name="tambah" class="btn btn-primary mr-1">
 							Kirim
 						</button>
-						<a href="<?= base_url(); ?>klien/permintaan_data_perpajakan" class="btn btn-secondary">
+						<a href="<?= base_url(); ?>klien/pengiriman_data_perpajakan" class="btn btn-secondary">
 							Batal
 						</a>
 					</div>
@@ -95,8 +97,8 @@
 		
 		//memanggil date picker
 		const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
-			autoHide	: true,
-			format		: 'dd-mm-yyyy',
+			autoHide: true,
+			format: 'dd-mm-yyyy',
 		});
 	})
 </script>

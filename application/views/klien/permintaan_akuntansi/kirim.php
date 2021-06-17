@@ -12,7 +12,7 @@
 			<?php if($this->session->flashdata('flash')) : ?>
 			<div class="row">
 				<div class="col">
-					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					<div class="alert alert-danger mb-0 mt-3 alert-dismissible fade show" role="alert">
 						<?= $this->session->flashdata('flash'); ?>.
 					</div>
 				</div>
@@ -21,8 +21,9 @@
 
 			<form action="" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="id_permintaan" value="<?=$permintaan['id_permintaan']?>">
+				<input type="hidden" name="format_data" value="<?=$permintaan['format_data']?>">
 				
-				<?php for($i=0; $i<$jum_data; $i++) : ?>
+				<?php for($i=0; $i<count($jenis_data); $i++) : ?>
 				<div class="form-row mt-3">
 					<label class="col-form-label pt-0"><b><?= $i+1 ?>.</b></label>
 					
@@ -55,13 +56,14 @@
 							<?php else : ?>
 							<!-- Tanggal Pengambilan -->
 							<div class="col">
-								<div class="input-group">
-									<input type="text" name="tanggal_ambil[]" class="form-control docs-date" placeholder="Tanggal Ambil Data" data-toggle="datepicker" minlength="10" autocomplete="off">
-									<div class="input-group-append trigger">
-										<div class="input-group-text"><i class="bi bi-calendar2"></i></div>
+								<div class="input-group kalender">
+									<input type="text" name="tanggal_ambil[]" class="form-control docs-date" data-toggle="datepicker" autocomplete="off" placeholder="Tanggal Ambil Data" readonly>
+									<div class="input-group-append">
+										<a class="btn btn-outline-secondary reset-date px-2" data-toggle="tooltip" data-placement="bottom" title="Reset Tanggal">
+											<i class="bi bi-x-circle" style="font-size:20px"></i>
+										</a>
 									</div>
 								</div>
-								<small class="form-text px-2">Format dd-mm-yyyy</small>
 							</div>
 							<?php endif ?>
 						</div>
@@ -80,12 +82,8 @@
 				<!-- Tombol Simpan -->
 				<div class="row my-4">
 					<div class="col">
-						<button type="submit" name="tambah" class="btn btn-primary mr-1">
-							Kirim
-						</button>
-						<a href="<?= base_url(); ?>klien/permintaan_data_akuntansi" class="btn btn-secondary">
-							Batal
-						</a>
+						<button type="submit" class="btn btn-primary mr-1">Kirim</button>
+						<a href="<?=base_url() . $batal?>" class="btn btn-secondary mr-1">Batal</a>
 					</div>
 				</div>
 			</form>
@@ -108,6 +106,14 @@
 			autoHide	: true,
 			format		: 'dd-mm-yyyy',
 			startDate	: '<?= date('d-m-Y') ?>',
+		});
+		
+		$(".reset").click(function() {
+			$(this).closest('.kalender').find("input[type=text]").val("");
+		});
+		
+		$('[data-toggle="tooltip"]').mouseenter(function() {
+			$(this).tooltip();
 		});
 	})
 </script>

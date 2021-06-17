@@ -99,6 +99,9 @@
 					e.tahun = $('#tahun').val();
 				},
 			},
+			'columnDefs'	: [ 
+				{ className: "align-top", targets: "_all" },
+			],
 		});
 
 		// Fungsi untuk ganti tampilan

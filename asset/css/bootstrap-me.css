@@ -196,12 +196,15 @@ hr.hr-profil {
 	padding-top: 0%!important;
 	padding-bottom: 0%!important;
 }
+.kalender .form-control[readonly] {
+	background-color: #ffffff;
+	opacity: 1;
+}
 .modal-content.profile-klien {
 	width: 600px;
 	margin-left: auto;
 	margin-right: auto;
 }
-
 .navbar {
 	background-color: #156eb5de
 }
@@ -226,6 +229,10 @@ hr.hr-profil {
 	color: #fff!important;
 	background-color:#1c6bd8d9!important; 
 	border-color:#1c6bd8!important; 
+}
+.reset-date {
+	background-color: #e9ecef;
+	border-color: #ced4da;
 }
 .row.row-child {
 	margin-left: 0;

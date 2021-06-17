@@ -12,58 +12,49 @@
 			<form action="" method="post">
 				<input type="hidden" name="id_pengiriman" value="<?=$id_pengiriman?>">
 				
-				<?php for($i=0; $i<$jum_data; $i++) : ?>
+				<?php $num=0; foreach($isi as $i) : ?>
 				<div class="form-row pt-1 mt-2">
-					<label class="col-form-label pt-0"><b><?= $i+1 ?>.</b></label>
+					<label class="col-form-label pt-0"><b><?= $num + 1 ?>.</b></label>
 					
 					<div class="col col-lg-5">
 						<div class="form-row mb-2">
 							<div class="col-4">Jenis Data</div>
-							<div class="col">: <?=$jenis_data[$i]['jenis_data']?></div>
+							<div class="col">: <?=$i['jenis_data']?></div>
 						</div>
 						<div class="form-row my-2">
 							<div class="col-4">Detail</div>
-							<div class="col">: <?=$detail[$i]?></div>
+							<div class="col">: <?=$i['detail']?></div>
 						</div>
 						<div class="form-row my-2">
 							<div class="col-4">Format Data</div>
-							<div class="col">: <?=$format_data[$i]?></div>
+							<div class="col">: <?=$i['format_data']?></div>
 						</div>
-						<?php if($format_data[$i] == 'Softcopy') : ?>
 						<div class="form-row my-2">
-							<div class="col-4">File</div>
-							<div class="col">
-								: <a href="<?=base_url() . $lokasi . $file[$i]?>"><?=$file[$i]?></a>
-							</div>
+							<div class="col-4"><?=$i['fileTitle']?></div>
+							<div class="col">: <?=$i['file']?></div>
 						</div>
-						<?php else : ?>
-						<div class="form-row my-2">
-							<div class="col-4">Tanggal Ambil</div>
-							<div class="col">: <?=$file[$i]?></div>
-						</div>
-						<?php endif ?>
 					</div>
 					
 					<?php 
-						$lengkap	= ($status[$i] == 'lengkap') ? 'checked' : '';
-						$kurang		= ($status[$i] == 'kurang') ? 'checked' : '';
-						$belum		= ($status[$i] == 'belum') ? 'checked' : '';
+						$lengkap	= ($i['status'] == 'lengkap') ? 'checked' : '';
+						$kurang		= ($i['status'] == 'kurang') ? 'checked' : '';
+						$belum		= ($i['status'] == 'belum') ? 'checked' : '';
 					?>
 					<div class="col col-lg-5">
 						<div class="form-row">
 							<label for="klien" class="col-form-label pr-3 py-0">Status :</label> 
 							<div class="col-sm">
 								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="status[<?=$i?>]" id="lengkap[<?=$i?>]" value="lengkap" <?=$lengkap?>>
-									<label class="form-check-label" for="lengkap[<?=$i?>]">Lengkap</label>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="lengkap[<?=$num?>]" value="lengkap" <?=$lengkap?>>
+									<label class="form-check-label" for="lengkap[<?=$num?>]">Lengkap</label>
 								</div>
 								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="status[<?=$i?>]" id="kurang[<?=$i?>]" value="kurang" <?=$kurang?>>
-									<label class="form-check-label" for="kurang[<?=$i?>]">Kurang Lengkap</label>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="kurang[<?=$num?>]" value="kurang" <?=$kurang?>>
+									<label class="form-check-label" for="kurang[<?=$num?>]">Kurang Lengkap</label>
 								</div>
 								<div class="form-check mb-2" style="display:none">
-									<input class="form-check-input" type="radio" name="status[<?=$i?>]" id="belum[<?=$i?>]" value="belum" <?=$belum?>>
-									<label class="form-check-label" for="belum[<?=$i?>]">Kosong</label>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="belum[<?=$num?>]" value="belum" <?=$belum?>>
+									<label class="form-check-label" for="belum[<?=$num?>]">Kosong</label>
 								</div>
 							</div>
 						</div>
@@ -77,16 +68,14 @@
 				</div>
 				
 				<hr class="my-0">
-				<?php endfor ?>
+				<?php $num++; endforeach ?>
 				
 				<!-- Tombol Simpan -->
 				<div class="row my-4">
 					<div class="col">
-						<button type="submit" name="tambah" class="btn btn-primary mr-1">Kirim</button>
-						<button type="reset" name="reset" class="btn btn-outline-secondary mr-1">Reset</button>
-						<a href="<?= base_url(); ?>akuntan/penerimaan_data_akuntansi" class="btn btn-secondary">
-							Batal
-						</a>
+						<button type="submit" name="tambah" class="btn btn-primary">Kirim</button>
+						<a href="<?= base_url(); ?>akuntan/penerimaan_data_akuntansi" class="btn btn-secondary">Batal</a>
+						<button type="reset" name="reset" class="btn btn-outline-secondary">Reset</button>
 					</div>
 				</div>
 			</form>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2021 at 12:33 PM
+-- Generation Time: Jun 17, 2021 at 06:45 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.4.16
 
@@ -206,7 +206,7 @@ CREATE TABLE `pengiriman_akuntansi` (
 --
 
 INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `tanggal_pengiriman`, `pembetulan`, `status_kirim`, `file`, `keterangan`, `status`, `keterangan2`, `id_request`) VALUES
-('210630021010', '09-06-2021 10:52', '0', NULL, '24-06-2021|pph21 app history.rar|01-06-2021|15-06-2021', 'ada|revisi total||', 'lengkap|lengkap|belum|kurang', '|||', '21063002101');
+('2106300210101', '16-06-2021 14:28|||16-06-2021 14:28', '01', NULL, '17-06-2021|||17-06-2021', '|||', 'lengkap|kosong|kosong|', '|||', '21063002101');
 
 -- --------------------------------------------------------
 
@@ -225,6 +225,14 @@ CREATE TABLE `pengiriman_lainnya` (
   `id_request` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
+--
+-- Dumping data for table `pengiriman_lainnya`
+--
+
+INSERT INTO `pengiriman_lainnya` (`id_pengiriman`, `tanggal_pengiriman`, `pembetulan`, `file`, `keterangan`, `status`, `keterangan2`, `id_request`) VALUES
+('2106300230101', '16-06-2021 15:04|16-06-2021 14:34|16-06-2020 14:05', '01', 'hitung jam(1).xlsx|17-06-2021|23-06-2021', '||', 'belum|belum|belum', NULL, '21063002301'),
+('2106300230102', '|16-07-2021 14:05|16-06-2021 14:06', '02', '|17-06-2021|20-06-2021', '||', 'kosong|belum|belum', NULL, '21063002301');
+
 -- --------------------------------------------------------
 
 --
@@ -241,6 +249,13 @@ CREATE TABLE `pengiriman_perpajakan` (
   `keterangan2` mediumtext DEFAULT NULL,
   `id_request` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `pengiriman_perpajakan`
+--
+
+INSERT INTO `pengiriman_perpajakan` (`id_pengiriman`, `tanggal_pengiriman`, `pembetulan`, `file`, `keterangan`, `status`, `keterangan2`, `id_request`) VALUES
+('2106300220101', '16-06-2021 14:29|', '01', '17-06-2021|', '|', 'belum|kosong', NULL, '21063002201');
 
 -- --------------------------------------------------------
 
@@ -266,7 +281,7 @@ CREATE TABLE `permintaan_akuntansi` (
 --
 
 INSERT INTO `permintaan_akuntansi` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `kode_jenis`, `format_data`, `detail`, `request`, `id_pengirim`) VALUES
-('21063002101', '08-06-2021 11:07', '3002', '06', '2021', '101|102|104|105', 'Hardcopy|Softcopy|Hardcopy|Hardcopy', 'Mei|Mei|Mei|Mei', '01', '2002');
+('21063002101', '08-06-2021 11:07', '3002', '06', '2021', '101|101|104|105', 'Hardcopy|Softcopy|Hardcopy|Hardcopy', 'Mei|Mei|Mei|Mei', '01', '2002');
 
 -- --------------------------------------------------------
 
@@ -648,10 +663,10 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `level`, `nama`, `email_u
 ('1001', 'adminzzz', '$2y$10$PRPnNCJnb8oka2V8b7cR1uTWM6Lns1RW5VFCO8AYfKA3WUnW4OkCK', 'admin', 'Administrator', 'admin@data.hrwconsulting.com'),
 ('1002', 'cacacaca', '$2y$10$PjjYlu4oKsdqsDkGBVmgQenQL75U7nTghZafrGAi6Xf4anudIfKky', 'admin', 'Khansa', 'unnicha23@gmail.com'),
 ('2001', 'ayularasati', '$2y$10$uq0LZMpg9ylrhkltn5gaLOE6DSQEiQym9udw/3xBiSheF2Vk8Mvwe', 'akuntan', 'Ayu', 'ayu@gmail.com'),
-('2002', 'harigusman', '$2y$10$pWWEtppezC/DDQGvxHwsZeTY.pnm6n/9OMVaJGJaFGGsmlJjeHis6', 'akuntan', 'Hari', 'hari@gmail.com'),
+('2002', 'harigusman', '$2y$10$I04lLTWi4rm/ADEiIe4JFO74/TYOCbDY9SnlIeCkM6pOcxWMZVdhu', 'akuntan', 'Hari', 'hari@gmail.com'),
 ('2003', 'denicool', '$2y$10$s3UtGxffanpArgPV7TSJtOHeRdLiiBMY2hX/hyO4qLmqpmKqWl1.i', 'akuntan', 'Deni', 'deni@gmail.com'),
 ('3001', 'citarasa', 'citarasa123', 'klien', 'CV. Sedap Rasa', 'tax@citarasa.co.id'),
-('3002', 'dermaga1', '$2y$10$BKJir0sjf942kLzGHQXcyOEddRW/zoc1APHpwdFTScwlGtXOvSZM6', 'klien', 'PT. Dermaga Baru', 'PT. Dermaga Baru'),
+('3002', 'dermaga1', '$2y$10$ctOyUm8mD61J1n2rIObT2ujtx6BBFpR4DdEa6ZwqchVIbmyc8d7rG', 'klien', 'PT. Dermaga Baru', 'PT. Dermaga Baru'),
 ('3003', 'ptapahayo', '$2y$10$6uXha38qQX/bIK.iEi2preSsRHgty7eDzxPRlaxdczM959Ex0WkIq', 'klien', 'PT. Apa Hayoo', 'tax@apahayo.com');
 
 --

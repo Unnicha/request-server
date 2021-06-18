@@ -22,6 +22,10 @@
 				<td><?= $bulan .' / '. $permintaan['tahun']; ?></td>
 			</tr>
 			<tr>
+				<td scope="row">Permintaan ke</td>
+				<td><?= $permintaan['request'] ?></td>
+			</tr>
+			<tr>
 				<td scope="row">Pengirim</td>
 				<td><?= ucwords($permintaan['level']) ?> - <?= $permintaan['nama'] ?></td>
 			</tr>

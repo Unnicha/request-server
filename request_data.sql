@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2021 at 06:45 AM
+-- Generation Time: Jun 18, 2021 at 12:21 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.4.16
 
@@ -191,9 +191,8 @@ INSERT INTO `klu` (`kode_klu`, `bentuk_usaha`, `jenis_usaha`) VALUES
 
 CREATE TABLE `pengiriman_akuntansi` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` mediumtext DEFAULT NULL,
   `pembetulan` varchar(255) DEFAULT NULL,
-  `status_kirim` mediumtext DEFAULT NULL,
   `file` mediumtext DEFAULT NULL,
   `keterangan` mediumtext DEFAULT NULL,
   `status` mediumtext DEFAULT NULL,
@@ -205,8 +204,8 @@ CREATE TABLE `pengiriman_akuntansi` (
 -- Dumping data for table `pengiriman_akuntansi`
 --
 
-INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `tanggal_pengiriman`, `pembetulan`, `status_kirim`, `file`, `keterangan`, `status`, `keterangan2`, `id_request`) VALUES
-('2106300210101', '16-06-2021 14:28|||16-06-2021 14:28', '01', NULL, '17-06-2021|||17-06-2021', '|||', 'lengkap|kosong|kosong|', '|||', '21063002101');
+INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `tanggal_pengiriman`, `pembetulan`, `file`, `keterangan`, `status`, `keterangan2`, `id_request`) VALUES
+('2106300210101', '18-06-2021 11:41||18-06-2021 11:41|16-06-2021 14:28', '01', '21-06-2021||21-06-2021|17-06-2021', 'Bisa diambil jam 14.00||sda.|', 'belum|kosong|belum|lengkap', 'Kurang data Juni|||OK', '21063002101');
 
 -- --------------------------------------------------------
 
@@ -216,7 +215,7 @@ INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `tanggal_pengiriman`, `pemb
 
 CREATE TABLE `pengiriman_lainnya` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` mediumtext DEFAULT NULL,
   `pembetulan` varchar(255) DEFAULT NULL,
   `file` mediumtext DEFAULT NULL,
   `keterangan` mediumtext DEFAULT NULL,
@@ -241,7 +240,7 @@ INSERT INTO `pengiriman_lainnya` (`id_pengiriman`, `tanggal_pengiriman`, `pembet
 
 CREATE TABLE `pengiriman_perpajakan` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` mediumtext DEFAULT NULL,
   `pembetulan` varchar(255) DEFAULT NULL,
   `file` mediumtext DEFAULT NULL,
   `keterangan` mediumtext DEFAULT NULL,
@@ -281,7 +280,10 @@ CREATE TABLE `permintaan_akuntansi` (
 --
 
 INSERT INTO `permintaan_akuntansi` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `kode_jenis`, `format_data`, `detail`, `request`, `id_pengirim`) VALUES
-('21063002101', '08-06-2021 11:07', '3002', '06', '2021', '101|101|104|105', 'Hardcopy|Softcopy|Hardcopy|Hardcopy', 'Mei|Mei|Mei|Mei', '01', '2002');
+('21063002101', '08-06-2021 11:07', '3002', '06', '2021', '101|101|104|105', 'Hardcopy|Softcopy|Hardcopy|Hardcopy', 'Mei|Mei|Mei|Mei', '01', '2002'),
+('21063002102', '18-06-2021 09:22', '3002', '06', '2021', '101|102|104|106|109', 'Hardcopy|Hardcopy|Softcopy|Softcopy|Softcopy', 'Jan - Juni|Jan - Juni|Jan - Juni|Jan - Juni|Jan - Juni', '02', '2002'),
+('21063002103', '18-06-2021 09:25', '3002', '06', '2021', '101|102', 'Softcopy|Softcopy', 'Masa Juni|Masa Juni', '03', '2002'),
+('21063002104', '18-06-2021 14:34', '3002', '06', '2021', '101|104|102', 'Softcopy|Softcopy|Softcopy', 'Jan - Juni|Jan - Juni|Jan - Juni', '04', '1001');
 
 -- --------------------------------------------------------
 
@@ -308,7 +310,8 @@ CREATE TABLE `permintaan_lainnya` (
 
 INSERT INTO `permintaan_lainnya` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `kode_jenis`, `format_data`, `detail`, `id_pengirim`) VALUES
 ('21063002301', '08-06-2021 10:08', '3002', '06', '2021', '01', '301|302|303', 'Softcopy|Hardcopy|Hardcopy', 'Mei|Mei|Jan - Mei 2021', '2002'),
-('21063002302', '08-06-2021 10:44', '3002', '06', '2021', '02', '301|303', 'Hardcopy|Hardcopy', 'Mei|Mei', '2002');
+('21063002302', '08-06-2021 10:44', '3002', '06', '2021', '02', '301|303', 'Hardcopy|Hardcopy', 'Mei|Mei', '2002'),
+('21063002303', '18-06-2021 11:17', '3002', '06', '2021', '03', '301|302|303', 'Softcopy|Softcopy|Hardcopy', 'Jan - Juni|Jan - Juni|Jan - Juni', '2002');
 
 -- --------------------------------------------------------
 
@@ -334,7 +337,8 @@ CREATE TABLE `permintaan_perpajakan` (
 --
 
 INSERT INTO `permintaan_perpajakan` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `kode_jenis`, `detail`, `format_data`, `id_pengirim`) VALUES
-('21063002201', '08-06-2021 11:09', '3002', '06', '2021', '01', '201|202', 'Mei|Mei', 'Hardcopy|Softcopy', '2002');
+('21063002201', '08-06-2021 11:09', '3002', '06', '2021', '01', '201|202', 'Mei|Mei', 'Hardcopy|Softcopy', '2002'),
+('21063002202', '18-06-2021 11:15', '3002', '06', '2021', '02', '201|202', 'Jan - Juni|Jan - Juni', 'Hardcopy|Hardcopy', '2002');
 
 -- --------------------------------------------------------
 
@@ -660,13 +664,13 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `level`, `nama`, `email_user`) VALUES
-('1001', 'adminzzz', '$2y$10$PRPnNCJnb8oka2V8b7cR1uTWM6Lns1RW5VFCO8AYfKA3WUnW4OkCK', 'admin', 'Administrator', 'admin@data.hrwconsulting.com'),
+('1001', 'adminzzz', '$2y$10$KN16.szmQ3L9sXWaNQhZROAHaRoQThec2lGJnXCVyH5S17WTcsyRW', 'admin', 'Administrator', 'admin@data.hrwconsulting.com'),
 ('1002', 'cacacaca', '$2y$10$PjjYlu4oKsdqsDkGBVmgQenQL75U7nTghZafrGAi6Xf4anudIfKky', 'admin', 'Khansa', 'unnicha23@gmail.com'),
 ('2001', 'ayularasati', '$2y$10$uq0LZMpg9ylrhkltn5gaLOE6DSQEiQym9udw/3xBiSheF2Vk8Mvwe', 'akuntan', 'Ayu', 'ayu@gmail.com'),
-('2002', 'harigusman', '$2y$10$I04lLTWi4rm/ADEiIe4JFO74/TYOCbDY9SnlIeCkM6pOcxWMZVdhu', 'akuntan', 'Hari', 'hari@gmail.com'),
+('2002', 'harigusman', '$2y$10$umm8Q1qoUUWGT1aXTz.Jie9b9NQMLJNdUspru4uNWhaGQnn2wA8VC', 'akuntan', 'Hari', 'hari@gmail.com'),
 ('2003', 'denicool', '$2y$10$s3UtGxffanpArgPV7TSJtOHeRdLiiBMY2hX/hyO4qLmqpmKqWl1.i', 'akuntan', 'Deni', 'deni@gmail.com'),
 ('3001', 'citarasa', 'citarasa123', 'klien', 'CV. Sedap Rasa', 'tax@citarasa.co.id'),
-('3002', 'dermaga1', '$2y$10$ctOyUm8mD61J1n2rIObT2ujtx6BBFpR4DdEa6ZwqchVIbmyc8d7rG', 'klien', 'PT. Dermaga Baru', 'PT. Dermaga Baru'),
+('3002', 'dermaga1', '$2y$10$ElCGPXpjCzYcVqAlJbSPU.Wwf8Ws7ER.xB.v2IYTGsUnWe55zcRYS', 'klien', 'PT. Dermaga Baru', 'PT. Dermaga Baru'),
 ('3003', 'ptapahayo', '$2y$10$6uXha38qQX/bIK.iEi2preSsRHgty7eDzxPRlaxdczM959Ex0WkIq', 'klien', 'PT. Apa Hayoo', 'tax@apahayo.com');
 
 --

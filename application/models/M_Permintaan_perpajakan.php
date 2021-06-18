@@ -96,8 +96,8 @@
 							->get('permintaan_perpajakan')->row_array();
 			
 			if($max['id_permintaan']) {
-				$tambah	= substr($max['id_permintaan'], -3);
-				$newId	= substr($tahun, -2) . $bulan . $id_klien . ++$tambah;
+				$tambah	= substr($max['id_permintaan'], -2);
+				$newId	= substr($tahun, -2) . $bulan . $id_klien .'2'. sprintf('%02s', ++$tambah);
 			} else {
 				$newId	= substr($tahun, -2) . $bulan . $id_klien . "201";
 			}

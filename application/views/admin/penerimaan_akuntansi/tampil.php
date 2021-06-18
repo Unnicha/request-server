@@ -9,32 +9,27 @@
 			<div class="col-12 col-sm">
 				<!-- Ganti Bulan -->
 				<select name='bulan' class="form-control" id="bulan">
-					<?php 
-						$bulan = date('m');
-						$sess_bulan = $this->session->userdata('bulan');
-						if($sess_bulan) {$bulan = $sess_bulan;}
-
-						foreach ($masa as $m) : 
-							if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-								{ $pilih="selected"; } 
-							else 
-								{ $pilih=""; }
-					?>
-					<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+					<?php
+						$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+						foreach ($masa as $m) :
+							$pilih = "";
+							if($m['id_bulan'] == $bulan)
+							{ $pilih="selected"; }
+							?>
+					<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 					<?php endforeach ?>
 				</select>
 				
 				<!-- Ganti Tahun -->
 				<select name='tahun' class="form-control" id="tahun">
 					<?php 
-						$tahun = date('Y');
-						$sess_tahun = $this->session->userdata('tahun');
+						$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 						for($i=$tahun; $i>=2010; $i--) :
-							if ($i == $sess_tahun) 
-								{ $pilih="selected"; } 
-							else 
-								{ $pilih=""; }
-					?>
+							if ($i == $tahun) {
+								$pilih="selected";
+							} else {
+								$pilih="";
+							} ?>
 					<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 					<?php endfor ?>
 				</select>
@@ -45,11 +40,11 @@
 						<?php 
 						$sess_klien = $this->session->userdata('klien');
 						foreach ($klien as $k) :
-							if ($k['id_klien'] == $sess_klien) 
-								{ $pilih="selected"; } 
-							else 
-								{ $pilih=""; }
-						?>
+							if ($k['id_klien'] == $sess_klien) {
+								$pilih="selected";
+							} else {
+								$pilih="";
+							} ?>
 					<option value="<?= $k['id_klien']; ?>" <?= $pilih; ?>><?= $k['nama_klien'] ?></option>
 						<?php endforeach ?>
 				</select> 
@@ -76,9 +71,10 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
-					<th scope="col">Jenis Data</th>
-					<th scope="col">Jenis Pengiriman</th>
+					<th scope="col">Permintaan</th>
+					<th scope="col">Pengiriman</th>
 					<th scope="col">Tanggal Pengiriman</th>
+					<th scope="col">Status</th>
 					<th scope="col">Detail</th>
 				</tr>
 			</thead>
@@ -121,6 +117,9 @@
 					e.tahun = $('#tahun').val();
 				},
 			},
+			'columnDefs'	: [ 
+				{ className: "align-top", targets: "_all" },
+			],
 		});
 		
 		$("#klien").change(function() { 

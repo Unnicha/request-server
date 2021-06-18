@@ -4,7 +4,7 @@
 
 		public function getAllPengiriman() {
 			return $this->db->from('pengiriman_perpajakan')
-							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_permintaan', 'left')
+							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_request', 'left')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->order_by('id_pengiriman', 'ASC')
 							->get()->result_array();
@@ -158,7 +158,7 @@
 					$oldStatus	= explode('|', $pengiriman['status']);
 					$j=0;
 					for($i=0; $i<count($oldTanggal); $i++) {
-						if($oldTanggal[$i] == null) {
+						if($oldStatus[$i] != 'lengkap') {
 							$oldTanggal[$i]	= $tanggal_pengiriman[$j];
 							$oldFile[$i]	= $upload[$j];
 							$oldKet[$i]		= $keterangan[$j];
@@ -181,9 +181,25 @@
 		}
 		
 		public function konfirmasi() {
+			$pengiriman	= $this->getById($this->input->post('id_pengiriman', true));
+			$oldTanggal	= explode('|', $pengiriman['tanggal_pengiriman']);
+			$oldStatus	= explode('|', $pengiriman['status']);
+			$oldKet		= explode('|', $pengiriman['keterangan2']);
+			
+			$j=0;
+			for($i=0; $i<count($oldTanggal); $i++) {
+				if($oldTanggal[$i] != '' && $oldStatus[$i] != 'lengkap') {
+					$oldStatus[$i]	= $this->input->post('status', true)[$j];
+					$oldKet[$i]		= $this->input->post('keterangan2', true)[$j];
+					$j++;
+				} else {
+					$oldKet[$i] = (isset($oldKet[$i])) ? $oldKet[$i] : '';
+				}
+			}
+			
 			$data = [
-				'status'		=> implode('|', $this->input->post('status', true)),
-				'keterangan2'	=> implode('|', $this->input->post('keterangan2', true)),
+				'status'		=> implode('|', $oldStatus),
+				'keterangan2'	=> implode('|', $oldKet),
 			];
 			$this->db->where('id_pengiriman', $this->input->post('id_pengiriman', true))
 					->update('pengiriman_perpajakan', $data);

@@ -22,6 +22,10 @@
 				<td><?= $bulan .' / '. $permintaan['tahun']; ?></td>
 			</tr>
 			<tr>
+				<td scope="row">Permintaan ke</td>
+				<td><?= $permintaan['request'] ?></td>
+			</tr>
+			<tr>
 				<td scope="row">Pengirim</td>
 				<td><?= ucwords($permintaan['level']) ?> - <?= $permintaan['nama'] ?></td>
 			</tr>
@@ -36,15 +40,15 @@
 							<?= $i+1 ?>.
 						</div>
 						<div class="col">
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Jenis Data</div>
 								<div class="col">: <?= $jenis_data[$i]['jenis_data'] ?></div>
 							</div>
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Keterangan</div>
 								<div class="col">: <?= $detail[$i] ?></div>
 							</div>
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Format Data</div>
 								<div class="col">: <?= $format_data[$i] ?></div>
 							</div>

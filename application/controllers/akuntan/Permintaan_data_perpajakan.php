@@ -124,8 +124,9 @@
 			$permintaan		= $this->M_Permintaan_perpajakan->getById($id_permintaan);
 			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
 			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
-			implode(',', $kode_jenis);
-			$jenis_data		= $this->Jenis_data_model->getForDetail($kode_jenis);
+			foreach($kode_jenis as $kode) {
+				$jenis_data[] = $this->Jenis_data_model->getById($kode);
+			}
 			
 			$data['judul']			= 'Detail Permintaan';
 			$data['permintaan']		= $permintaan;

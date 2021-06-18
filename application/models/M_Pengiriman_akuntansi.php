@@ -4,7 +4,7 @@
 
 		public function getAllPengiriman() {
 			return $this->db->from('pengiriman_akuntansi')
-							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_permintaan', 'left')
+							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = pengiriman_akuntansi.id_request', 'left')
 							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
 							->order_by('id_pengiriman', 'ASC')
 							->get()->result_array();
@@ -158,7 +158,7 @@
 					$oldStatus	= explode('|', $pengiriman['status']);
 					$j=0;
 					for($i=0; $i<count($oldTanggal); $i++) {
-						if($oldTanggal[$i] == null) {
+						if($oldStatus[$i] != 'lengkap') {
 							$oldTanggal[$i]	= $tanggal_pengiriman[$j];
 							$oldFile[$i]	= $upload[$j];
 							$oldKet[$i]		= $keterangan[$j];
@@ -188,7 +188,7 @@
 			
 			$j=0;
 			for($i=0; $i<count($oldTanggal); $i++) {
-				if($oldTanggal[$i] != '' && $oldStatus != 'lengkap') {
+				if($oldTanggal[$i] != '' && $oldStatus[$i] != 'lengkap') {
 					$oldStatus[$i]	= $this->input->post('status', true)[$j];
 					$oldKet[$i]		= $this->input->post('keterangan2', true)[$j];
 					$j++;

@@ -13,10 +13,8 @@
 		}
 		
 		public function index() {
-			
 			$data['judul']	= "Penerimaan Data Akuntansi";
 			$data['masa']	= $this->Klien_model->getMasa();
-			$data['klien']	= $this->Klien_model->getAllKlien();
 			
 			$this->libtemplate->main('akuntan/penerimaan_akuntansi/tampil', $data);
 		}
@@ -63,7 +61,7 @@
 				}
 				
 				$date		= explode('|', $k['tanggal_pengiriman']);
-				foreach($date as $d=>$val) {
+				foreach($date as $d => $val) {
 					if($val == '') unset($date[$d]);
 				}
 				sort($date);
@@ -125,7 +123,7 @@
 			$detail			= explode('|', $pengiriman['detail']);
 			$file			= explode('|', $pengiriman['file']);
 			$status			= explode('|', $pengiriman['status']);
-			$keterangan		= explode('|', $pengiriman['keterangan']);
+			$keterangan2	= ($pengiriman['keterangan2']) ? explode('|', $pengiriman['keterangan2']) : null;
 			
 			for($i=0; $i<count($jenis_data); $i++) {
 				$linkFile = '<a href="'. base_url() . $lokasi . $file[$i].'">'. $file[$i] .'</a>';
@@ -136,8 +134,8 @@
 						'format_data'	=> $format_data[$i],
 						'fileTitle'		=> ($format_data == 'Softcopy') ? 'File' : 'Tanggal Ambil',
 						'file'			=> ($format_data == 'Softcopy') ? $linkFile : $file[$i],
-						'keterangan'	=> $keterangan[$i],
 						'status'		=> $status[$i],
+						'keterangan2'	=> ($keterangan2) ? $keterangan2[$i] : '',
 					];
 				}
 			}
@@ -145,6 +143,8 @@
 			$data['judul']			= "Konfirmasi Pengiriman - Data Akuntansi"; 
 			$data['id_pengiriman']	= $pengiriman['id_pengiriman'];
 			$data['isi']			= $isi;
+			$data['status']			= $status;
+			$data['tgl_kirim']		= explode('|', $pengiriman['tanggal_pengiriman']);
 			
 			$this->form_validation->set_rules('id_pengiriman', 'ID Pengiriman', 'required');
 			$this->form_validation->set_rules('status[]', 'Status', 'required');
@@ -204,7 +204,7 @@
 			
 			$data['judul']		= 'Detail Pengiriman Data';
 			$data['pengiriman']	= $pengiriman;
-			$data['button']		= (in_array('kosong', $status) || in_array('kurang', $status)) ? true : false;
+			$data['button']		= (in_array('belum', $status)) ? true : false;
 			$data['isi']		= $isi;
 			
 			$this->load->view('akuntan/penerimaan_akuntansi/detail', $data);

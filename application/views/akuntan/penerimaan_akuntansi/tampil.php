@@ -118,6 +118,9 @@
 					e.tahun = $('#tahun').val();
 				},
 			},
+			'columnDefs'	: [ 
+				{ className: "align-top", targets: "_all" },
+			],
 		});
 		
 		$("#bulan").change(function() {

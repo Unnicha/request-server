@@ -19,7 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				$data['judul'] = 'Selamat Datang';
 				$data['nama'] = $nama_user;
 				$this->libtemplate->main('admin/home', $data);
-				$this->sendmail->main();
+				//$this->sendmail->main();
 			}
 		}
 	}

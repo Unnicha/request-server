@@ -74,7 +74,7 @@
 				<div class="row my-4">
 					<div class="col">
 						<button type="submit" name="tambah" class="btn btn-primary">Kirim</button>
-						<a href="<?= base_url(); ?>akuntan/penerimaan_data_akuntansi" class="btn btn-secondary">Batal</a>
+						<a href="<?= base_url(); ?>akuntan/penerimaan_data_lainnya" class="btn btn-secondary">Batal</a>
 						<button type="reset" name="reset" class="btn btn-outline-secondary">Reset</button>
 					</div>
 				</div>

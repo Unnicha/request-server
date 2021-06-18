@@ -15,16 +15,13 @@
 						<!-- Ganti Bulan -->
 						<select name='bulan' class="form-control" id="bulan">
 							<?php 
-								$bulan = date('m');
-								$sess_bulan	= $this->session->userdata('bulan');
-								if($sess_bulan) {$bulan = $sess_bulan;}
-									foreach ($masa as $m) : 
-										if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-											{ $pilih="selected"; } 
-										else 
-											{ $pilih=""; }
-										?>
-							<option value="<?=$m['nama_bulan']?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+								$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+								foreach ($masa as $m) : 
+									$pilih = "";
+									if($m['id_bulan'] == $bulan)
+										{ $pilih="selected"; }
+									?>
+							<option value="<?=$m['id_bulan']?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 							<?php endforeach ?>
 						</select>
 						
@@ -79,9 +76,7 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
-					<th scope="col">Jenis Data</th>
-					<th scope="col">Request ke</th>
-					<th scope="col">Format</th>
+					<th scope="col">Permintaan ke</th>
 					<th scope="col">Tanggal Permintaan</th>
 					<th scope="col">Status</th>
 					<th scope="col">Action</th>

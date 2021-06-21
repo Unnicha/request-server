@@ -64,7 +64,7 @@
 								<div class="col-5">Status</div>
 								<div class="col">: <?= $i['statusBadge'] ?></div>
 							</div>
-							<?php if($i['status'] == 'kurang') : ?>
+							<?php if($i['status'] == 2) : ?>
 							<div class="form-row mb-1">
 								<div class="col-5">Keterangan</div>
 								<div class="col">: <?= $i['keterangan'] ?></div>

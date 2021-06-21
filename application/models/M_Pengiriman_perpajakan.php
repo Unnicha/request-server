@@ -90,9 +90,9 @@
 					$tanggal	= date('d-m-Y H:i');
 					foreach($upload as $up) {
 						if($up == null) {
-							$status[] = 'kosong';	$tanggal_pengiriman[] = '';
+							$status[] = 0;	$tanggal_pengiriman[] = '';
 						} else {
-							$status[] = 'belum';	$tanggal_pengiriman[] = $tanggal;
+							$status[] = 1 ;	$tanggal_pengiriman[] = $tanggal;
 						}
 					}
 					
@@ -146,9 +146,9 @@
 					$tanggal = date('d-m-Y H:i');
 					foreach($upload as $up) {
 						if($up == null) {
-							$status[] = 'kosong';	$tanggal_pengiriman[] = '';
+							$status[] = 0;	$tanggal_pengiriman[] = '';
 						} else {
-							$status[] = 'belum';	$tanggal_pengiriman[] = $tanggal;
+							$status[] = 1;	$tanggal_pengiriman[] = $tanggal;
 						}
 					}
 					
@@ -158,7 +158,7 @@
 					$oldStatus	= explode('|', $pengiriman['status']);
 					$j=0;
 					for($i=0; $i<count($oldTanggal); $i++) {
-						if($oldStatus[$i] != 'lengkap') {
+						if($oldStatus[$i] < 3) {
 							$oldTanggal[$i]	= $tanggal_pengiriman[$j];
 							$oldFile[$i]	= $upload[$j];
 							$oldKet[$i]		= $keterangan[$j];
@@ -188,7 +188,7 @@
 			
 			$j=0;
 			for($i=0; $i<count($oldTanggal); $i++) {
-				if($oldTanggal[$i] != '' && $oldStatus[$i] != 'lengkap') {
+				if($oldTanggal[$i] != '' && $oldStatus[$i] < 3) {
 					$oldStatus[$i]	= $this->input->post('status', true)[$j];
 					$oldKet[$i]		= $this->input->post('keterangan2', true)[$j];
 					$j++;

@@ -47,13 +47,13 @@
 				
 				$badge	= '';
 				$status	= explode('|', $k['status']);
-				if(in_array('kosong', $status)) {
+				if(in_array(0, $status)) {
 					$badge .= '<span class="badge badge-danger">Belum Dikirim</span><br>';
-				} if(in_array('belum', $status)) {
+				} if(in_array(1, $status)) {
 					$badge .= '<span class="badge badge-warning">Belum Dikonfirmasi</span><br>';
-				} if(in_array('kurang', $status)) {
+				} if(in_array(2, $status)) {
 					$badge .= '<span class="badge badge-danger">Kurang Lengkap</span><br>';
-				} if(in_array('lengkap', $status)) {
+				} if(in_array(3, $status)) {
 					$badge .= '<span class="badge badge-success">Sudah Dikonfirmasi</span>';
 				}
 				
@@ -127,8 +127,8 @@
 			$keterangan2	= ($pengiriman['keterangan2']) ? explode('|', $pengiriman['keterangan2']) : $pengiriman['keterangan2'];
 			
 			for($i=0; $i<count($jenis_data); $i++) {
-				if($status[$i] == 'kosong' || $status[$i] == 'kurang') {
-					if($status[$i] == 'kosong') {
+				if($status[$i] == 0 || $status[$i] == 2) {
+					if($status[$i] == 0) {
 						$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
 					} else {
 						$badge	= '<span class="badge badge-warning">Kurang Lengkap</span>';
@@ -181,20 +181,21 @@
 			$files		= explode('|', $pengiriman['file']);
 			$keterangan	= explode('|', $pengiriman['keterangan']);
 			$status		= explode('|', $pengiriman['status']);
+			$button		= false;
 			
 			for($i=0; $i<count($jenis_data); $i++) {
 				$linkFile	= '<a href="'. base_url() . $lokasi . $files[$i].'">'. $files[$i] .'</a>';
 				$fileTitle	= ($formatData[$i] == 'Softcopy') ? 'File' : 'Tanggal Ambil';
 				$file		= ($formatData[$i] == 'Softcopy') ? $linkFile : $files[$i];
 				
-				if($status[$i] == 'kosong') {
-					$badge = '<span class="badge badge-danger">Belum Dikirim</span>';
-				} elseif($status[$i] == 'belum') {
+				if($status[$i] == 0) {
+					$badge = '<span class="badge badge-danger">Belum Dikirim</span>'; $button = true;
+				} elseif($status[$i] == 1) {
 					$badge = '<span class="badge badge-warning">Belum Dikonfirmasi</span>';
-				} elseif($status[$i] == 'lengkap') {
+				} elseif($status[$i] == 3) {
 					$badge = '<span class="badge badge-success">Sudah Dikonfirmasi</span>';
 				} else {
-					$badge = '<span class="badge badge-danger">Kurang Lengkap</span>';
+					$badge = '<span class="badge badge-danger">Kurang Lengkap</span>'; $button = true;
 				}
 				
 				$isi[]	= [
@@ -212,7 +213,7 @@
 			$data['judul']		= 'Detail Pengiriman Data';
 			$data['pengiriman']	= $pengiriman;
 			$data['bulan']		= $bulan['nama_bulan'];
-			$data['button']		= (in_array('kosong', $status) || in_array('kurang', $status)) ? true : false;
+			$data['button']		= $button;
 			$data['isi']		= $isi;
 			
 			$this->load->view('klien/pengiriman_akuntansi/detail', $data);

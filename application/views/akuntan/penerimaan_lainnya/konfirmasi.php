@@ -36,24 +36,24 @@
 					</div>
 					
 					<?php 
-						$lengkap	= ($i['status'] == 'lengkap') ? 'checked' : '';
-						$kurang		= ($i['status'] == 'kurang') ? 'checked' : '';
-						$belum		= ($i['status'] == 'belum') ? 'checked' : '';
+						$lengkap	= ($i['status'] == 3) ? 'checked' : '';
+						$kurang		= ($i['status'] == 2) ? 'checked' : '';
+						$belum		= ($i['status'] == 1) ? 'checked' : '';
 					?>
 					<div class="col col-lg-5">
 						<div class="form-row">
 							<label for="klien" class="col-form-label pr-3 py-0">Status :</label> 
 							<div class="col-sm">
 								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="lengkap[<?=$num?>]" value="lengkap" <?=$lengkap?>>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="lengkap[<?=$num?>]" value="3" <?=$lengkap?>>
 									<label class="form-check-label" for="lengkap[<?=$num?>]">Lengkap</label>
 								</div>
 								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="kurang[<?=$num?>]" value="kurang" <?=$kurang?>>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="kurang[<?=$num?>]" value="2" <?=$kurang?>>
 									<label class="form-check-label" for="kurang[<?=$num?>]">Kurang Lengkap</label>
 								</div>
 								<div class="form-check mb-2" style="display:none">
-									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="belum[<?=$num?>]" value="belum" <?=$belum?>>
+									<input class="form-check-input" type="radio" name="status[<?=$num?>]" id="belum[<?=$num?>]" value="1" <?=$belum?>>
 									<label class="form-check-label" for="belum[<?=$num?>]">Kosong</label>
 								</div>
 							</div>

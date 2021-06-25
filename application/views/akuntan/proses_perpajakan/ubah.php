@@ -10,20 +10,6 @@
 
 	<div class="row row-child mt-3">
 		<div class="col col-proses">
-			<!-- Notifikasi -->
-			<?php if($this->session->flashdata('flash')) : ?>
-				<div class="row">
-					<div class="col">
-						<div class="alert alert-danger alert-dismissible fade show" role="alert">
-							<?= $this->session->flashdata('flash'); ?>
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-				</div>
-			<?php endif; ?>
-
 			<!-- Isi Form -->
 			<form action="" method="post"> 
 				<input type="hidden" id="id_proses" name="id_proses" value="<?=$pengiriman['id_proses']?>">
@@ -44,6 +30,14 @@
 					</div>
 				</div>
 
+				<!-- Detail -->
+				<div class="form-group row">
+					<label for="detail" class="col-sm-3 col-form-label">Detail</label> 
+					<div class="col-sm">
+						<input type="text" name="detail" class="form-control" id="detail" value="<?=$pengiriman['detail']?>" readonly>
+					</div>
+				</div>
+
 				<!-- Output -->
 				<div class="form-group row">
 					<label for="nama_tugas" class="col-sm-3 col-form-label">Output</label> 
@@ -51,36 +45,8 @@
 						<input type="text" name="nama_tugas" class="form-control" id="nama_tugas" value="<?=$pengiriman['nama_tugas']?>" readonly>
 					</div>
 				</div>
-
-				<!-- Masa -->
-				<div class="form-group row">
-					<label for="masa" class="col-sm-3 col-form-label">Masa</label> 
-					<div class="col-sm pr-0">
-						<input type="text" name="masa" class="form-control" id="masa" value="<?=$pengiriman['masa']?>" readonly>
-					</div>
-					<div class="col-sm">
-						<input type="text" name="tahun" class="form-control" id="tahun" value="<?=$pengiriman['tahun']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Permintaan -->
-				<div class="form-group row">
-					<label for="pembetulan" class="col-sm-3 col-form-label">Permintaan ke</label> 
-					<div class="col-sm">
-						<input type="text" name="pembetulan" class="form-control" id="pembetulan" value="<?=$pengiriman['request']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Pengiriman -->
-				<div class="form-group row">
-					<label for="pembetulan" class="col-sm-3 col-form-label">Pengiriman ke</label> 
-					<div class="col-sm">
-						<input type="text" name="pembetulan" class="form-control" id="pembetulan" value="<?=($pengiriman['pembetulan'] + 1)?>" readonly>
-					</div>
-				</div>
 				
 				<!-- Mulai Proses -->
-				<?php $mulai = explode(' ', $pengiriman['tanggal_mulai']) ?>
 				<div class="form-group row">
 					<label for="tanggal_mulai" class="col-sm-3 col-form-label"> Mulai Proses </label> 
 					<div class="col-sm pr-0">
@@ -92,14 +58,21 @@
 				</div>
 
 				<!-- Selesai Proses -->
-				<div class="form-group row">
+				<div class="form-group row kalender">
 					<label for="tanggal_selesai" class="col-sm-3 col-form-label"> Selesai Proses </label> 
 					<div class="col-sm pr-0">
-						<input type="text" name="tanggal_selesai" class="form-control docs-date" id="tanggal_selesai" placeholder="Tanggal Selesai" data-toggle="datepicker" required>
+						<div class="input-group">
+							<input type="text" name="tanggal_selesai" class="form-control date" id="tanggal_selesai" placeholder="Tanggal Selesai" autocomplete="off" required readonly>
+							<div class="input-group-append">
+								<a class="btn btn-outline-secondary reset-date px-2" data-toggle="tooltip" data-placement="bottom" title="Reset Tanggal">
+									<i class="bi bi-x-circle" style="font-size:20px"></i>
+								</a>
+							</div>
+						</div>
 						<small class="form-text text-danger"><?= form_error('tanggal_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 					<div class="col-sm">
-						<input type="text" name="jam_selesai" class="form-control bs-timepicker" id="jam_selesai" placeholder="Jam Selesai" required>
+						<input type="text" name="jam_selesai" class="form-control timepicker" id="jam_selesai" placeholder="Jam Selesai" autocomplete="off" required readonly>
 						<small class="form-text text-danger"><?= form_error('jam_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 				</div>
@@ -108,7 +81,7 @@
 				<div class="form-group row">
 					<label for="keterangan3" class="col-sm-3 col-form-label">Keterangan</label> 
 					<div class="col-sm">
-						<input type="text" name="keterangan3" class="form-control" id="keterangan3" value="<?= $pengiriman['keterangan3'] ?>">
+						<textarea name="keterangan3" class="form-control" id="keterangan3" style="height:calc(1.5em + .75rem + 2px)"><?= $pengiriman['ket_proses'] ?></textarea>
 					</div>
 				</div>
 
@@ -116,10 +89,7 @@
 				<div class="row my-3 text-right">
 					<div class="col p-0">
 						<input class="btn btn-primary" type="submit" value="Selesai">
-						<input class="btn btn-secondary" type="reset" value="Reset">
-						<a href="<?= base_url(); ?>akuntan/proses_data_perpajakan" class="btn btn-secondary mr-3">
-							Batal
-						</a>
+						<a href="<?= base_url(); ?>akuntan/proses_data_perpajakan" class="btn btn-secondary mr-3">Batal</a>
 					</div>
 				</div>
 			</form>
@@ -127,16 +97,29 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/timepicker-tiny.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/mdtimepicker.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.en-us.js"></script>
 <script>
-	//memanggil date picker
-	const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
-		autoHide: true,
-		format: 'dd/mm/yyyy',
+	//memanggil time picker
+	mdtimepicker('.timepicker', {
+		is24hour	: true,
+		clearBtn	: true,
 	});
 
-	//memanggil time picker
-	$('.bs-timepicker').timepicker();
+	//memanggil datepicker
+	$(function() {
+		var startDate	= $('#tanggal_mulai').val();
+		var endDate		= $('#tanggal_selesai');
+		
+		endDate.datepicker({
+			autoHide	: true,
+			format		: 'dd/mm/yyyy',
+			startDate	: startDate,
+		});
+	});
+	
+	$(".reset-date").click(function() {
+		$(this).closest('.kalender').find('.date').datepicker('reset');
+	});
 </script>

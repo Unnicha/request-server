@@ -3,29 +3,26 @@
 		<div class="col form-inline">
 			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
 				<?php 
-					$bulan = date('m');
-					$sess_bulan = $this->session->userdata('bulan');
-					if($sess_bulan) {$bulan = $sess_bulan;}
+					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
-				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+						if ($m['id_bulan'] == $bulan) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
 			<select name="tahun" class="form-control mr-1" id="tahun_selesai">
 				<?php 
-					$tahun = date('Y');
-					$sess_tahun = $this->session->userdata('tahun');
+					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2010; $i--) :
-						if ($i == $sess_tahun) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
+						if ($i == $tahun) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
 				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
@@ -56,15 +53,6 @@
 	</div>
 </div>
 
-<!-- Detail Proses -->
-<div class="modal fade detailProses" tabindex="-1" aria-labelledby="detailProsesLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg">
-		<div class="modal-content profile-klien showProses">
-			<!-- Tampilkan Data -->
-		</div>
-	</div>
-</div>
-
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
@@ -90,6 +78,9 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Belum ada proses"
+			},
 			'ajax'			: {
 				'url'	: '<?=base_url()?>akuntan/proses_data_akuntansi/page',
 				'type'	: 'post',

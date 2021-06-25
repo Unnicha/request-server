@@ -33,7 +33,7 @@
 				<td colspan="2">
 					<div class="form-row">
 						<div class="col-1 text-center">
-							<b><?= ++$num . '.' ?></b>
+							<b><?= ++$num ?>.</b>
 						</div>
 						<div class="col">
 							<div class="form-row mb-1">
@@ -45,29 +45,29 @@
 								<div class="col">: <?= $i['detail'] ?></div>
 							</div>
 							
-							<?php if($i['tanggal']) : ?>
+							<?php if($i['tanggal_pengiriman']) : ?>
 							<div class="form-row mb-1">
 								<div class="col-5">Tanggal Pengiriman</div>
-								<div class="col">: <?= $i['tanggal'] ?></div>
+								<div class="col">: <?= $i['tanggal_pengiriman'] ?></div>
 							</div>
 							<div class="form-row mb-1">
-								<div class="col-5"><?= $i['file_title'] ?></div>
-								<div class="col">: <?= $i['file'] ?></div>
+								<div class="col-5"><?= $add[$num]['file_title'] ?></div>
+								<div class="col">: <?= $add[$num]['file'] ?></div>
 							</div>
 							<div class="form-row mb-1">
 								<div class="col-5">Note</div>
-								<div class="col">: <?= $i['note'] ?></div>
+								<div class="col">: <?= $i['ket_file'] ?></div>
 							</div>
 							<?php else : ?>
 							<div class="form-row mb-1">
 								<div class="col-5">Format Data</div>
-								<div class="col">: <?= $i['format'] ?></div>
+								<div class="col">: <?= $i['format_data'] ?></div>
 							</div>
 							<?php endif ?>
 							
 							<div class="form-row mb-1">
 								<div class="col-5">Status</div>
-								<div class="col">: <?= $i['status'] ?></div>
+								<div class="col">: <?= $add[$num]['status'] ?></div>
 							</div>
 						</div>
 					</div>

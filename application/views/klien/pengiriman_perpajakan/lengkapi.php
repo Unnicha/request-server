@@ -9,8 +9,18 @@
 
 	<div class="row row-child mb-3">
 		<div class="col px-lg-4">
+			<?php if($this->session->flashdata('flash')) : ?>
+			<div class="row">
+				<div class="col">
+					<div class="alert alert-danger mb-0 mt-3 alert-dismissible fade show" role="alert">
+						<?= $this->session->flashdata('flash'); ?>.
+					</div>
+				</div>
+			</div>
+			<?php endif; ?>
+			
 			<form action="" method="post" enctype="multipart/form-data">
-				<input type="hidden" name="id_pengiriman" value="<?=$id_pengiriman?>">
+				<input type="hidden" name="id_permintaan" value="<?=$id_permintaan?>">
 				
 				<?php $num=0; foreach($isi as $i) : ?>
 				<input type="hidden" name="format_data[]" value="<?=$i['format_data']?>">
@@ -32,12 +42,12 @@
 						</div>
 						<div class="form-row mb-2">
 							<div class="col-4">Status</div>
-							<div class="col">: <?=$i['statusBadge']?></div>
+							<div class="col">: <?=$add[$num]['status']?></div>
 						</div>
 						<?php if($i['status'] == 2) : ?>
 							<div class="form-row mb-2">
 								<div class="col-4">Note</div>
-								<div class="col">: <?=$i['note']?></div>
+								<div class="col">: <?=$i['ket_status']?></div>
 							</div>
 						<?php endif ?>
 					</div>
@@ -65,7 +75,7 @@
 									</div>
 								</div>
 							</div>
-							<?php endif ?>
+							<?php endif; ?>
 						</div>
 						
 						<div class="form-group row">

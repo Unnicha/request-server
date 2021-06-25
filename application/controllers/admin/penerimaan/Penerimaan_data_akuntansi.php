@@ -37,31 +37,33 @@
 			
 			$data = [];
 			foreach($pengiriman as $k) {
-				$badge	= '';
-				$status	= explode('|', $k['status']);
-				if(in_array(0, $status)) {
-					$badge .= '<span class="badge badge-danger">Belum Dikirim</span><br>';
-				} if(in_array(1, $status)) {
-					$badge .= '<span class="badge badge-warning">Belum Dikonfirmasi</span><br>';
-				} if(in_array(2, $status)) {
-					$badge .= '<span class="badge badge-danger">Kurang Lengkap</span><br>';
-				} if(in_array(3, $status)) {
-					$badge .= '<span class="badge badge-success">Sudah Dikonfirmasi</span>';
+				$badge = []; $date = [];
+				$detail = $this->M_Pengiriman_akuntansi->getDetail($k['id_permintaan']);
+				foreach($detail as $d) {
+					if($d['status'] == 1) {
+						$badge[] = '<span class="badge badge-warning">Belum Dikonfirmasi</span>';
+					} elseif($d['status'] == 2) {
+						$badge[] = '<span class="badge badge-danger">Kurang Lengkap</span>';
+					} elseif($d['status'] == 3) {
+						$badge[] = '<span class="badge badge-success">Sudah Dikonfirmasi</span>';
+					} else {
+						$badge[] = '<span class="badge badge-danger">Belum Dikirim</span>';
+					}
+					
+					if($d['tanggal_pengiriman']) {
+						$date[] = $d['tanggal_pengiriman'];
+					}
 				}
-				
-				$date		= explode('|', $k['tanggal_pengiriman']);
-				foreach($date as $d => $val) {
-					if($val == '') unset($date[$d]);
-				}
-				sort($date);
+				$badge	= array_unique($badge);	sort($badge);
+				$date	= array_unique($date);	sort($date);
 				
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
 				$row[]	= $k['request'];
 				$row[]	= $k['pembetulan'];
-				$row[]	= $date[0];
-				$row[]	= $badge;
+				$row[]	= implode('<br>', $date);
+				$row[]	= implode('<br>', $badge);
 				$row[]	= '
 					<a class="btn btn-sm btn-primary btn-detail_pengiriman" data-toggle="tooltip" data-nilai="'.$k['id_pengiriman'].'" data-placement="bottom" title="Detail Pengiriman">
 						<i class="bi bi-info-circle"></i>
@@ -79,53 +81,36 @@
 		}
 
 		public function detail() {
-			$id_pengiriman	= $this->input->post('action', true);
-			$pengiriman		= $this->M_Pengiriman_akuntansi->getById($id_pengiriman);
-			$kode_jenis		= explode('|', $pengiriman['kode_jenis']);
-			foreach($kode_jenis as $kode) {
-				$jenis_data[] = $this->Jenis_data_model->getById($kode);
-			}
-			
-			$lokasi			= 'asset/uploads/'.$pengiriman['nama_klien'].'/'.$pengiriman['tahun'].'/'; 
-			$detail			= explode('|', $pengiriman['detail']);
-			$tanggal		= explode('|', $pengiriman['tanggal_pengiriman']);
-			$formatData		= explode('|', $pengiriman['format_data']);
-			$files			= explode('|', $pengiriman['file']);
-			$keterangan		= explode('|', $pengiriman['keterangan']);
-			$status			= explode('|', $pengiriman['status']);
-			$keterangan2	= ($pengiriman['keterangan2']) ? explode('|', $pengiriman['keterangan2']) : null;
-			
-			for($i=0; $i<count($jenis_data); $i++) {
-				$linkFile = '<a href="'. base_url() . $lokasi . $files[$i].'">'. $files[$i] .'</a>';
+			$pengiriman	= $this->M_Pengiriman_akuntansi->getById($this->input->post('action', true));
+			$isi		= $this->M_Pengiriman_akuntansi->getDetail($pengiriman['id_permintaan']);
+			$lokasi		= 'asset/uploads/'.$pengiriman['nama_klien'].'/'.$pengiriman['tahun'].'/'; 
+			$button		= false;
+			$num=0;
+			foreach($isi as $i) {
+				$linkFile = '<a href="'. base_url() . $lokasi . $i['file'].'">'. $i['file'] .'</a>';
 				
-				if($status[$i] == 0) {
-					$badge = '<span class="badge badge-danger">Belum Dikirim</span>';
-				} elseif($status[$i] == 1) {
-					$badge = '<span class="badge badge-warning">Belum Dikonfirmasi</span>';
-				} elseif($status[$i] == 3) {
+				if($i['status'] == 1) {
+					$badge = '<span class="badge badge-warning">Belum Dikonfirmasi</span>'; $button = true;
+				} elseif($i['status'] == 2) {
+					$badge = '<span class="badge badge-danger">Kurang Lengkap</span>';
+				} elseif($i['status'] == 3) {
 					$badge = '<span class="badge badge-success">Sudah Dikonfirmasi</span>';
 				} else {
-					$badge = '<span class="badge badge-danger">Kurang Lengkap</span>';
+					$badge = '<span class="badge badge-danger">Belum Dikirim</span>';
 				}
 				
-				$isi[]	= [
-					'jenis_data'	=> $jenis_data[$i]['jenis_data'],
-					'detail'		=> $detail[$i],
-					'tanggal'		=> $tanggal[$i],
-					'format'		=> $formatData[$i],
-					'file_title'	=> ($formatData[$i] == 'Softcopy') ? 'File' : 'Tanggal Ambil',
-					'file'			=> ($formatData[$i] == 'Softcopy') ? $linkFile : $files[$i],
-					'note'			=> $keterangan[$i],
-					'status'		=> $status[$i],
-					'statusBadge'	=> $badge,
-					'keterangan'	=> ($keterangan2) ? $keterangan2[$i] : '',
+				$add[++$num]	= [
+					'file_title'	=> ($i['format_data'] == 'Softcopy') ? 'File' : 'Tanggal Ambil',
+					'file'			=> ($i['format_data'] == 'Softcopy') ? $linkFile : $i['file'],
+					'status'		=> $badge,
 				];
 			}
 			
 			$data['judul']		= 'Detail Pengiriman Data';
 			$data['pengiriman']	= $pengiriman;
-			$data['button']		= (in_array(1, $status)) ? true : false;
+			$data['button']		= $button;
 			$data['isi']		= $isi;
+			$data['add']		= $add;
 			
 			$this->load->view('admin/penerimaan_akuntansi/detail', $data);
 		}

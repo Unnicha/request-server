@@ -1,4 +1,8 @@
 <div class="container-fluid">
+	<?php if($this->session->flashdata('notification')) : ?>
+		<div class="notification" data-val="yes"></div>
+	<?php endif; ?>
+	
 	<h2 class="mb-3" align=center><?=$judul?></h2>
 	
 	<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -15,8 +19,7 @@
 			<a class="nav-link" id="tab-export" data-toggle="tab" data-nilai="export" href="#export" role="tab" aria-controls="export" aria-selected="false" style="color:black">Export</a>
 		</li>
 	</ul>
-
-
+	
 	<div class="tab-content container-proses py-3 mb-3" id="myTabContent">
 		<div class="tab-pane fade" id="belum" role="tabpanel" aria-labelledby="tab-belum">belum</div>
 		<div class="tab-pane fade show active" id="onproses" role="tabpanel" aria-labelledby="tab-onproses">onproses</div>
@@ -26,8 +29,24 @@
 </div>
 
 
+<!-- Detail Proses -->
+<div class="modal fade detailProses" tabindex="-1" aria-labelledby="detailProsesLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-content profile-klien showProses">
+			<!-- Tampilkan Data -->
+		</div>
+	</div>
+</div>
+
+
 <script>
 	$(document).ready(function() {
+		var notif = $('.notification').data('val');
+		if(notif == 'yes') {
+			$('#modalNotif').modal('show');
+			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
+		}
+		
 		function view(status) {
 			$.ajax({
 				type: 'POST',

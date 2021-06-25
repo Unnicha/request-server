@@ -26,9 +26,7 @@
 
 			<!-- Isi Form -->
 			<form action="" method="post"> 
-				<input type="hidden" id="id_tugas" name="id_tugas" value="<?=$pengiriman['id_tugas']?>">
-				<input type="hidden" id="id_pengiriman" name="id_pengiriman" value="<?=$pengiriman['id_pengiriman']?>">
-				<input type="hidden" id="id_akuntan" name="id_akuntan" value="<?=$this->session->userdata('id_user')?>">
+				<input type="hidden" id="id_proses" name="id_proses" value="<?=$pengiriman['id_proses']?>">
 
 				<!-- Klien -->
 				<div class="form-group row">
@@ -46,6 +44,14 @@
 					</div>
 				</div>
 
+				<!-- Detail -->
+				<div class="form-group row">
+					<label for="detail" class="col-sm-3 col-form-label">Detail</label> 
+					<div class="col-sm">
+						<input type="text" name="detail" class="form-control" id="detail" value="<?=$pengiriman['detail']?>" readonly>
+					</div>
+				</div>
+
 				<!-- Output -->
 				<div class="form-group row">
 					<label for="nama_tugas" class="col-sm-3 col-form-label">Output</label> 
@@ -54,60 +60,43 @@
 					</div>
 				</div>
 
-				<!-- Masa -->
-				<div class="form-group row">
-					<label for="masa" class="col-sm-3 col-form-label">Masa</label> 
-					<div class="col-sm pr-0">
-						<input type="text" name="masa" class="form-control" id="masa" value="<?=$pengiriman['masa']?>" readonly>
-					</div>
-					<div class="col-sm">
-						<input type="text" name="tahun" class="form-control" id="tahun" value="<?=$pengiriman['tahun']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Permintaan -->
-				<div class="form-group row">
-					<label for="pembetulan" class="col-sm-3 col-form-label">Permintaan ke</label> 
-					<div class="col-sm">
-						<input type="text" name="pembetulan" class="form-control" id="pembetulan" value="<?=$pengiriman['request']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Pengiriman -->
-				<div class="form-group row">
-					<label for="pembetulan" class="col-sm-3 col-form-label">Pengiriman ke</label> 
-					<div class="col-sm">
-						<input type="text" name="pembetulan" class="form-control" id="pembetulan" value="<?=($pengiriman['pembetulan'] + 1)?>" readonly>
-					</div>
-				</div>
-
 				<!-- Mulai Proses -->
-				<div class="form-group row">
+				<div class="form-group row kalender">
 					<label for="tanggal_mulai" class="col-sm-3 col-form-label">Mulai Proses</label> 
 					<div class="col-sm pr-0">
-						<input type="text" name="tanggal_mulai" class="form-control docs-date" id="tanggal_mulai" placeholder="Tanggal Mulai" data-toggle="datepicker" required>
+						<div class="input-group">
+							<input type="text" name="tanggal_mulai" class="form-control date" id="tanggal_mulai" placeholder="Tanggal Mulai" autocomplete="off" value="<?=set_value('tanggal_mulai')?>" readonly required>
+							<div class="input-group-append">
+								<a class="btn btn-outline-secondary reset-date px-2" data-toggle="tooltip" data-placement="bottom" title="Reset Tanggal">
+									<i class="bi bi-x-circle" style="font-size:20px"></i>
+								</a>
+							</div>
+						</div>
 						<small class="form-text text-danger"><?= form_error('tanggal_mulai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 					<div class="col-sm">
-						<input type="text" name="jam_mulai" class="form-control bs-timepicker" id="jam_mulai" placeholder="Jam Mulai" required>
+						<input type="text" name="jam_mulai" class="form-control timepicker" id="jam_mulai" placeholder="Jam Mulai" autocomplete="off" value="<?=set_value('jam_mulai')?>" readonly required>
 						<small class="form-text text-danger"><?= form_error('jam_mulai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 				</div>
 
 				<!-- Selesai Proses -->
-				<div class="form-group row">
+				<div class="form-group row kalender">
 					<label for="tanggal_selesai" class="col-sm-3 col-form-label">Selesai Proses</label> 
 					<div class="col-sm pr-0">
-						<input type="text" name="tanggal_selesai" class="form-control docs-date" id="tanggal_selesai" placeholder="Tanggal Selesai" data-toggle="datepicker">
-						<?php if($this->session->flashdata('tanggal_selesai')) : ?>
-							<small class="form-text text-danger"><?= $this->session->flashdata('tanggal_selesai') ?></small>
-						<?php endif; ?>
+						<div class="input-group">
+							<input type="text" name="tanggal_selesai" class="form-control date" id="tanggal_selesai" placeholder="Tanggal Selesai" autocomplete="off" value="<?=set_value('tanggal_selesai')?>" readonly>
+							<div class="input-group-append">
+								<a class="btn btn-outline-secondary reset-date px-2" data-toggle="tooltip" data-placement="bottom" title="Reset Tanggal">
+									<i class="bi bi-x-circle" style="font-size:20px"></i>
+								</a>
+							</div>
+						</div>
+						<small class="form-text text-danger"><?= form_error('tanggal_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 					<div class="col-sm">
-						<input type="text" name="jam_selesai" class="form-control bs-timepicker" id="jam_selesai" placeholder="Jam Selesai">
-						<?php if($this->session->flashdata('jam_selesai')) : ?>
-							<small class="form-text text-danger"><?= $this->session->flashdata('jam_selesai') ?></small>
-						<?php endif; ?>
+						<input type="text" name="jam_selesai" class="form-control timepicker" id="jam_selesai" placeholder="Jam Selesai" autocomplete="off" readonly>
+						<small class="form-text text-danger"><?= form_error('jam_selesai', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 				</div>
 
@@ -123,10 +112,7 @@
 				<div class="row my-3 text-right">
 					<div class="col p-0">
 						<input class="btn btn-primary" type="submit" value="Mulai">
-						<input class="btn btn-secondary" type="reset" value="Reset">
-						<a href="<?= base_url(); ?>akuntan/proses_data_akuntansi" class="btn btn-secondary mr-3">
-							Batal
-						</a>
+						<a href="<?= base_url(); ?>akuntan/proses_data_akuntansi" class="btn btn-secondary mr-3">Batal</a>
 					</div>
 				</div>
 			</form>
@@ -134,16 +120,38 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/timepicker-tiny.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/mdtimepicker.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.en-us.js"></script>
+
 <script>
-	//memanggil date picker
-	const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
-		autoHide: true,
-		format: 'dd/mm/yyyy',
+	//memanggil time picker
+	mdtimepicker('.timepicker', {
+		is24hour	: true,
+		clearBtn	: true,
 	});
 
-	//memanggil time picker
-	$('.bs-timepicker').timepicker();
+	//memanggil datepicker
+	$(function() {
+		var startDate	= $('#tanggal_mulai');
+		var endDate		= $('#tanggal_selesai');
+		
+		startDate.datepicker({
+			autoHide	: true,
+			format		: 'dd/mm/yyyy',
+		});
+		endDate.datepicker({
+			autoHide	: true,
+			format		: 'dd/mm/yyyy',
+			startDate	: startDate.datepicker('getDate'),
+		});
+		
+		startDate.on('change', function () {
+			endDate.datepicker('setStartDate', startDate.datepicker('getDate'));
+		});
+	});
+	
+	$(".reset-date").click(function() {
+		$(this).closest('.kalender').find('.date').datepicker('reset');
+	});
 </script>

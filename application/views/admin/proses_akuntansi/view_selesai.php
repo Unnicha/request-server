@@ -2,34 +2,31 @@
 	<div class="row mb-2">
 		<div class="col form-inline">
 			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
-				<?php 
-					$bulan = date('m');
-					$sess_bulan = $this->session->userdata('bulan');
-					if($sess_bulan) {$bulan = $sess_bulan;}
+				<?php
+					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
-				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+						if ($m['id_bulan'] == $bulan) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
 			<select name="tahun" class="form-control mr-1" id="tahun_selesai">
 				<?php 
-					$tahun = date('Y');
-					$sess_tahun = $this->session->userdata('tahun');
+					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2010; $i--) :
-						if ($i == $sess_tahun) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
+						if ($i == $tahun) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
 				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
-
+			
 			<select name="klien" class="form-control mr-1" id="klien_selesai">
 				<option value="">--Tidak Ada Klien--</option>
 			</select> 
@@ -81,8 +78,11 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength': 8,
-			'ajax'		: {
+			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Belum ada proses"
+			},
+			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/proses/proses_data_akuntansi/page',
 				'type'	: 'post',
 				'data'	: function (e) { 

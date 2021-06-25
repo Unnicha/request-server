@@ -21,30 +21,31 @@
 
 			<form action="" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="id_permintaan" value="<?=$permintaan['id_permintaan']?>">
-				<input type="hidden" name="format_data" value="<?=$permintaan['format_data']?>">
+				<input type="hidden" name="tipe" value="baru">
 				
-				<?php for($i=0; $i<count($jenis_data); $i++) : ?>
+				<?php $num=0; foreach($isi as $i) : ?>
+				<input type="hidden" name="format_data[]" value="<?=$i['format_data']?>">
 				<div class="form-row mt-3">
-					<label class="col-form-label pt-0"><b><?= $i+1 ?>.</b></label>
+					<label class="col-form-label pt-0"><b><?= ++$num ?>.</b></label>
 					
 					<div class="col col-lg-5">
 						<div class="form-row mb-2">
 							<div class="col-4">Jenis Data</div>
-							<div class="col">: <?=$jenis_data[$i]['jenis_data']?></div>
+							<div class="col">: <?=$i['jenis_data']?></div>
 						</div>
 						<div class="form-row my-2">
 							<div class="col-4">Detail</div>
-							<div class="col">: <?=$detail[$i]?></div>
+							<div class="col">: <?=$i['detail']?></div>
 						</div>
 						<div class="form-row my-2">
 							<div class="col-4">Format Data</div>
-							<div class="col">: <?=$format_data[$i]?></div>
+							<div class="col">: <?=$i['format_data']?></div>
 						</div>
 					</div>
 					
 					<div class="col col-lg-4">
 						<div class="form-group row">
-							<?php if($format_data[$i] == 'Softcopy') : ?>
+							<?php if($i['format_data'] == 'Softcopy') : ?>
 							<!-- File -->
 							<div class="col">
 								<div class="custom-file">
@@ -77,7 +78,7 @@
 				</div>
 				
 				<hr class="my-0">
-				<?php endfor ?>
+				<?php endforeach ?>
 				
 				<!-- Tombol Simpan -->
 				<div class="row my-4">
@@ -108,8 +109,8 @@
 			startDate	: '<?= date('d-m-Y') ?>',
 		});
 		
-		$(".reset").click(function() {
-			$(this).closest('.kalender').find("input[type=text]").val("");
+		$(".reset-date").click(function() {
+			$(this).closest('.kalender').find("input[type=text]").datepicker('reset');
 		});
 		
 		$('[data-toggle="tooltip"]').mouseenter(function() {

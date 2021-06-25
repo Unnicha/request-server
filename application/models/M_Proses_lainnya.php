@@ -2,41 +2,28 @@
 
 	class M_Proses_lainnya extends CI_model {
 
-		public function getPerMasaTahun($bulan, $tahun) { // not used
-			return $this->db->from('proses_lainnya')
-							->join('tugas', 'tugas.id_tugas = proses_lainnya.id_tugas', 'left')
-							->join('pengiriman_lainnya', 'proses_lainnya.id_kirim = pengiriman_lainnya.id_pengiriman', 'left')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
-							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('user', 'proses_lainnya.id_akuntan = user.id_user', 'left')
-							->where(['masa'=>$bulan, 'tahun'=>$tahun])
-							->order_by('id_proses', 'ASC')
-							->get()->result_array();
-		}
-
-		public function getProses($start, $limit, $status, $bulan, $tahun, $klien='') {
+		public function getByMasa($status, $bulan, $tahun, $klien='', $start, $limit) {
 			if($klien) {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
 			if($status == 'belum') {
-				$this->db->where(['id_proses'=>null]);
+				$this->db->where(['tanggal_mulai'=>null]);
+			} elseif($status == 'onproses') {
+				$this->db->where(['tanggal_mulai !='=>null, 'tanggal_selesai'=>null]);
 			} elseif($status == 'selesai') {
-				$this->db->where(['id_proses !='=>null, 'tanggal_selesai !='=>null]);
-			} else {
-				$this->db->where(['id_proses !='=>null, 'tanggal_selesai'=>null]);
+				$this->db->where(['tanggal_mulai !='=>null, 'tanggal_selesai !='=>null]);
 			}
 			
-			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'id_permintaan', 'left')
-							->join('jenis_data', 'kode_jenis', 'left')
-							->join('klien', 'id_klien', 'left')
-							->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left')
-							->join('proses_lainnya', 'proses_lainnya.id_kirim = pengiriman_lainnya.id_pengiriman AND tugas.id_tugas = proses_lainnya.id_tugas', 'left')
-							->join('user', 'proses_lainnya.id_akuntan = user.id_user', 'left')
-							->where(['masa'=>$bulan, 'tahun'=>$tahun])
-							->order_by('pengiriman_lainnya.id_pengiriman', 'ASC')
-							->limit($limit, $start)
+			return $this->db->from('data_lainnya')
+							->join('proses_lainnya', 'proses_lainnya.id_proses = data_lainnya.id_kerja', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = data_lainnya.id_request', 'left')
+							->join('pengiriman_lainnya', 'pengiriman_lainnya.id_pengiriman = data_lainnya.id_kirim', 'left')
+							->join('jenis_data', 'jenis_data.kode_jenis = data_lainnya.id_jenis', 'left')
+							->join('klien', 'klien.id_klien = permintaan_lainnya.id_klien', 'left')
+							->join('tugas', 'tugas.id_jenis = jenis_data.kode_jenis AND tugas.status_pekerjaan = klien.status_pekerjaan', 'left')
+							->join('user', 'user.id_user = proses_lainnya.id_akuntan', 'left')
+							->where(['status'=>3, 'bulan'=>$bulan, 'tahun'=>$tahun])
+							->order_by('id_proses', 'ASC')
 							->get()->result_array();
 		}
 
@@ -45,85 +32,55 @@
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
 			if($status == 'belum') {
-				$this->db->where(['id_proses'=>null]);
+				$this->db->where(['tanggal_mulai'=>null]);
+			} elseif($status == 'onproses') {
+				$this->db->where(['tanggal_mulai !='=>null, 'tanggal_selesai'=>null]);
 			} elseif($status == 'selesai') {
-				$this->db->where(['id_proses !='=>null, 'tanggal_selesai !='=>null]);
-			} else {
-				$this->db->where(['id_proses !='=>null, 'tanggal_selesai'=>null]);
+				$this->db->where(['tanggal_mulai !='=>null, 'tanggal_selesai !='=>null]);
 			}
-			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
-							->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
-							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left')
-							->join('proses_lainnya', 'proses_lainnya.id_kirim = pengiriman_lainnya.id_pengiriman AND tugas.id_tugas = proses_lainnya.id_tugas', 'left')
-							->join('user', 'proses_lainnya.id_akuntan = user.id_user', 'left')
-							->where(['masa'=>$bulan, 'tahun'=>$tahun])
+			
+			return $this->db->from('data_lainnya')
+							->join('proses_lainnya', 'proses_lainnya.id_proses = data_lainnya.id_kerja', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = data_lainnya.id_request', 'left')
+							->join('pengiriman_lainnya', 'pengiriman_lainnya.id_pengiriman = data_lainnya.id_kirim', 'left')
+							->join('jenis_data', 'jenis_data.kode_jenis = data_lainnya.id_jenis', 'left')
+							->join('klien', 'klien.id_klien = permintaan_lainnya.id_klien', 'left')
+							->join('tugas', 'tugas.id_jenis = jenis_data.kode_jenis AND tugas.status_pekerjaan = klien.status_pekerjaan', 'left')
+							->join('user', 'user.id_user = proses_lainnya.id_akuntan', 'left')
+							->where(['status'=>3, 'bulan'=>$bulan, 'tahun'=>$tahun])
 							->count_all_results();
 		}
 
 		public function getById($id, $pengiriman=false) {
-			$this->db->from('pengiriman_lainnya')
-					->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_permintaan', 'left')
-					->join('jenis_data', 'permintaan_lainnya.kode_jenis = jenis_data.kode_jenis', 'left')
-					->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-					->join('tugas', 'jenis_data.kode_jenis = tugas.kode_jenis AND klien.status_pekerjaan = tugas.status_pekerjaan', 'left');
-			if($pengiriman == true) {
-				$this->db->where(['id_pengiriman'=>$id]);
-			} else {
-				$this->db->join('proses_lainnya', 'proses_lainnya.id_kirim = pengiriman_lainnya.id_pengiriman AND tugas.id_tugas = proses_lainnya.id_tugas', 'left')
-						->where(['id_proses'=>$id]);
-			}
-			return $this->db->get()->row_array();
+			return $this->db->from('data_lainnya')
+							->join('proses_lainnya', 'proses_lainnya.id_proses = data_lainnya.id_kerja', 'left')
+							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = data_lainnya.id_request', 'left')
+							->join('pengiriman_lainnya', 'pengiriman_lainnya.id_pengiriman = data_lainnya.id_kirim', 'left')
+							->join('jenis_data', 'jenis_data.kode_jenis = data_lainnya.id_jenis', 'left')
+							->join('klien', 'klien.id_klien = permintaan_lainnya.id_klien', 'left')
+							->join('tugas', 'tugas.id_jenis = jenis_data.kode_jenis AND tugas.status_pekerjaan = klien.status_pekerjaan', 'left')
+							->join('user', 'user.id_user = proses_lainnya.id_akuntan', 'left')
+							->where(['id_proses' => $id])
+							->get()->row_array();
 		}
 		
 		public function tambahProses() {
-			$id_pengiriman	= $this->input->post('id_pengiriman', true);
-			$id_akuntan		= $this->input->post('id_akuntan', true);
-			$id_tugas		= $this->input->post('id_tugas', true);
 			$mulai			= $this->input->post('tanggal_mulai', true).' '.$this->input->post('jam_mulai', true);
 			$selesai		= $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true);
 			
-			$id_tugas	= substr($id_tugas, 3);
-			$id_proses	= $id_pengiriman . $id_tugas . $id_akuntan;
-			
-			$flag = 0;
-			if( $this->input->post('tanggal_selesai', true) ) {
-				if($this->input->post('jam_selesai', true) == null) {
-					$this->session->set_flashdata('jam_selesai', '<b>Jam Selesai</b> harus diisi');
-					redirect('akuntan/proses_data_lainnya/mulai/'.$id_pengiriman);
-				} else {
-					$flag = 1;
-				}
-			} else {
-				$selesai = null;
-				if($this->input->post('jam_selesai', true) != null) {
-					$this->session->set_flashdata('tanggal_selesai', '<b>Tanggal Selesai</b> harus diisi');
-					redirect('akuntan/proses_data_lainnya/mulai/'.$id_pengiriman);
-				} else {
-					$flag = 1;
-				}
-			}
-
-			if($flag == 1) {
-				$data = [
-					'id_proses'			=> $id_proses,
-					'tanggal_proses'	=> date('d-m-Y H:i'),
-					'tanggal_mulai'		=> $mulai,
-					'tanggal_selesai'	=> $selesai,
-					'keterangan3'		=> $this->input->post('keterangan3', true),
-					'id_tugas'			=> $this->input->post('id_tugas', true),
-					'id_kirim'			=> $this->input->post('id_pengiriman', true),
-					'id_akuntan'		=> $this->input->post('id_akuntan', true),
-				];
-				$this->db->insert('proses_lainnya', $data);
-			}
+			$data = [
+				'tanggal_proses'	=> date('d-m-Y H:i'),
+				'tanggal_mulai'		=> $mulai,
+				'tanggal_selesai'	=> ($selesai == ' ') ? null : $selesai,
+				'ket_proses'		=> $this->input->post('keterangan3', true),
+				'id_akuntan'		=> $this->session->userdata('id_user'),
+			];
+			$this->db->where('id_proses', $this->input->post('id_proses', true))
+					->update('proses_lainnya', $data);
 		}
 		
 		public function ubahProses() {
 			$data = [
-				//'tanggal_proses'	=> date('d-m-Y H:i'),
-				'tanggal_mulai'		=> $this->input->post('tanggal_mulai', true).' '.$this->input->post('jam_mulai', true),
 				'tanggal_selesai'	=> $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true),
 				'keterangan3'		=> $this->input->post('keterangan3', true),
 			];

@@ -143,7 +143,7 @@
 			var status	= $('#myTab li a.active').data('nilai');
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/batal_'+status,
+				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/batal',
 				data	: 'id=' +id,
 				success	: function() {
 					$('.batalProses').modal('hide');

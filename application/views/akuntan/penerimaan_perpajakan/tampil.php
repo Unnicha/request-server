@@ -67,7 +67,7 @@
 
 <!-- Modal untuk Detail Pengiriman -->
 <div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:500px">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:600px">
 		<div class="modal-content" id="showDetailPengiriman">
 			<!-- Tampilkan Data Klien-->
 		</div>

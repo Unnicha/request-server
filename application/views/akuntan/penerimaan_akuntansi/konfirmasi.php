@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row row-child">
 		<div class="col">
-			<h3><?= $judul ?></h3>
+			<h3 class="mb-3"><?= $judul ?></h3>
 		</div>
 	</div>
 	
@@ -10,9 +10,10 @@
 	<div class="row row-child mb-3">
 		<div class="col px-lg-4">
 			<form action="" method="post">
-				<input type="hidden" name="id_pengiriman" value="<?=$id_pengiriman?>">
+				<input type="hidden" name="id_permintaan" value="<?=$id_permintaan?>">
 				
 				<?php $num=0; foreach($isi as $i) : ?>
+				<input type="hidden" name="id_data[]" value="<?=$i['id_data']?>">
 				<div class="form-row pt-1 mt-2">
 					<label class="col-form-label pt-0"><b><?= $num + 1 ?>.</b></label>
 					
@@ -30,8 +31,8 @@
 							<div class="col">: <?=$i['format_data']?></div>
 						</div>
 						<div class="form-row my-2">
-							<div class="col-4"><?=$i['fileTitle']?></div>
-							<div class="col">: <?=$i['file']?></div>
+							<div class="col-4"><?=$add[$num]['file_title']?></div>
+							<div class="col">: <?=$add[$num]['file']?></div>
 						</div>
 					</div>
 					
@@ -61,7 +62,7 @@
 						
 						<div class="form-row mt-2 mb-3">
 							<div class="col">
-								<textarea type="text" name="keterangan2[]" class="form-control" style="height:calc(1.5em + .75rem + 2px)" placeholder="Keterangan"><?=$i['keterangan2']?></textarea>
+								<textarea type="text" name="keterangan2[]" class="form-control" style="height:calc(1.5em + .75rem + 2px)" placeholder="Keterangan"><?=$i['ket_status']?></textarea>
 							</div>
 						</div>
 					</div>

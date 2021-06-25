@@ -27,36 +27,36 @@
 			</tr>
 			<tr>
 				<td scope="row">Pengirim</td>
-				<td><?= ucwords($permintaan['level']) ?> - <?= $permintaan['nama'] ?></td>
+				<td><?= ucwords($permintaan['level']) .' - '. $permintaan['nama'] ?></td>
 			</tr>
 			<tr>
-				<td colspan="2"><h6 class="mb-0">Data (<?=$jum_data?>)</h6></td>
+				<td colspan="2"><h6 class="my-1">Data (<?=count($isi)?>)</h6></td>
 			</tr>
-			<?php for($i=0; $i<$jum_data; $i++) : ?>
+			<?php $num=0; foreach($isi as $i) : ?>
 			<tr>
 				<td colspan="2">
 					<div class="form-row">
 						<div class="col-1 text-center">
-							<?= $i+1 ?>.
+							<?= ++$num ?>.
 						</div>
 						<div class="col">
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Jenis Data</div>
-								<div class="col">: <?= $jenis_data[$i]['jenis_data'] ?></div>
+								<div class="col">: <?= $i['jenis_data'] ?></div>
 							</div>
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Keterangan</div>
-								<div class="col">: <?= $detail[$i] ?></div>
+								<div class="col">: <?= $i['detail'] ?></div>
 							</div>
-							<div class="form-row">
+							<div class="form-row mb-1">
 								<div class="col-5">Format Data</div>
-								<div class="col">: <?= $format_data[$i] ?></div>
+								<div class="col">: <?= $i['format_data'] ?></div>
 							</div>
 						</div>
 					</div>
 				</td>
 			</tr>
-			<?php endfor ?>
+			<?php endforeach ?>
 		</tbody>
 	</table>
 	</div>

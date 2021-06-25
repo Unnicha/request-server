@@ -67,7 +67,6 @@
 					<th scope="col">Nama Klien</th>
 					<th scope="col">Request ke</th>
 					<th scope="col">Tanggal Permintaan</th>
-					<th scope="col">Status</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>

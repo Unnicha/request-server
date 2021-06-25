@@ -4,7 +4,6 @@
 		
 		public function __construct() {
 			parent::__construct();
-			$this->load->library('notif');
 			$this->load->library('form_validation');
 			
 			$this->load->model('M_Permintaan_lainnya');
@@ -63,16 +62,11 @@
 		
 		public function kirim($id_permintaan) {
 			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
-			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
-			foreach($kode_jenis as $kode) {
-				$jenis_data[] = $this->Jenis_data_model->getById($kode);
-			}
+			$isi			= $this->M_Permintaan_lainnya->getDetail($id_permintaan);
 			
 			$data['judul']			= "Form Pengiriman - Data Lainnya"; 
 			$data['permintaan']		= $permintaan;
-			$data['jenis_data']		= $jenis_data;
-			$data['format_data']	= explode('|', $permintaan['format_data']);
-			$data['detail']			= explode('|', $permintaan['detail']);
+			$data['isi']			= $isi;
 			$data['batal']			= 'klien/permintaan_data_lainnya';
 			
 			$this->form_validation->set_rules('id_permintaan', 'File', 'required');
@@ -96,18 +90,13 @@
 		public function detail() {
 			$id_permintaan	= $this->input->post('permintaan', true);
 			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_lainnya->getDetail($id_permintaan);
 			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
-			$kode_jenis		= explode('|', $pengiriman['kode_jenis']);
-			foreach($kode_jenis as $kode) {
-				$jenis_data[] = $this->Jenis_data_model->getById($kode);
-			}
 			
 			$data['judul']			= 'Detail Permintaan';
 			$data['permintaan']		= $permintaan;
 			$data['bulan']			= $bulan['nama_bulan'];
-			$data['jenis_data']		= $jenis_data;
-			$data['format_data']	= explode('|', $permintaan['format_data']);
-			$data['detail']			= explode('|', $permintaan['detail']);
+			$data['isi']			= $isi;
 			
 			$this->load->view('klien/permintaan_lainnya/detail', $data);
 		}

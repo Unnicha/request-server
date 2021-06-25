@@ -22,7 +22,7 @@
 		public function prosesOn() {
 			$unset = ['status', 'tampil', 'akuntan'];
 			$this->session->unset_userdata($unset);
-
+			
 			$status		= $_POST['status'];
 			$tampil		= $_POST['tampil'];
 			$akuntan	= $_POST['akuntan'] ? $_POST['akuntan'] : '';
@@ -32,7 +32,7 @@
 			
 			$data['header']	= "Proses Data Akuntansi";
 			$data['masa']	= $this->Klien_model->getMasa();
-
+			
 			$this->load->view('admin/proses_akuntansi/view_'.$status, $data);
 		}
 
@@ -85,7 +85,6 @@
 		}
 		
 		public function page() {
-			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
 			$bulan		= $this->input->post('bulan', true);
@@ -94,7 +93,6 @@
 			$jenis		= $this->session->userdata('tampil'); // jenis tampilan(per klien/per akuntan)
 			$akuntan	= $this->session->userdata('akuntan');
 			$status		= $this->session->userdata('status'); 
-			
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
 			
@@ -114,21 +112,29 @@
 				}
 			}
 			$countData	= $this->m_proses->countProses($status, $bulan, $tahun, $klien);
-			$proses		= $this->m_proses->getProses($offset, $limit, $status, $bulan, $tahun, $klien);
+			$proses		= $this->m_proses->getByMasa($status, $bulan, $tahun, $klien, $offset, $limit);
 			
 			$data = [];
 			foreach($proses as $k) {
 				$hari	= floor($k['lama_pengerjaan'] / 8);
 				$jam	= $k['lama_pengerjaan'] % 8;
 				$standar= $hari.' hari '.$jam.' jam';
-
-				if( $k['tanggal_mulai'] ) {
-					if( $k['tanggal_selesai'] ) {
-						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
-					} else {
-						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai']);
+				
+				if($k['tanggal_mulai']) {
+					$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
+					if($k['temp_selesai']) {
+						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['temp_selesai']);
+						$add	= $this->proses_admin->durasi($k['temp_mulai'], $k['tanggal_selesai']);
+						$durasi	= $durasi + $add;
 					}
 				}
+				$btn = '
+					<a class="btn btn-sm btn-primary btn-detail" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Detail">
+						<i class="bi bi-info-circle"></i>
+					</a>
+					<a class="btn btn-sm btn-danger btn-batal" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Batalkan Proses">
+						<i class="bi bi-trash"></i>
+					</a>';
 				
 				$row	= [];
 				$row[]	= ++$offset.'.';
@@ -136,8 +142,8 @@
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama_tugas'];
 					$row[]	= $k['jenis_data'];
-					$row[]	= 'ke-' . $k['request'];
-					$row[]	= 'ke-' . ($k['pembetulan'] + 1);
+					$row[]	= $k['request'];
+					$row[]	= $k['pembetulan'];
 					$row[]	= $standar;
 				} elseif($status == 'selesai') {
 					$row[]	= $k['nama_klien'];
@@ -145,13 +151,7 @@
 					$row[]	= $k['nama_tugas'];
 					$row[]	= $durasi;
 					$row[]	= $standar;
-					$row[]	= '
-						<a class="btn btn-sm btn-primary btn-detail" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Detail">
-							<i class="bi bi-info-circle"></i>
-						</a>
-						<a class="btn btn-sm btn-danger btn-batal" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Batalkan Proses">
-							<i class="bi bi-trash"></i>
-						</a>';
+					$row[]	= $btn;
 				} else {
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama'];
@@ -159,57 +159,47 @@
 					$row[]	= $k['tanggal_mulai'];
 					$row[]	= $durasi;
 					$row[]	= $standar;
-					$row[]	= '
-						<a class="btn btn-sm btn-primary btn-detail" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Detail">
-							<i class="bi bi-info-circle"></i>
-						</a>
-						<a class="btn btn-sm btn-danger btn-batal" data-nilai="'.$k['id_proses'].'" data-toggle="tooltip" data-placement="bottom" title="Batalkan Proses">
-							<i class="bi bi-trash"></i>
-						</a>';
+					$row[]	= $btn;
 				}
 				$data[] = $row;
 			}
 			
 			$callback	= [
-				'draw'			=> $_POST['draw'], // Ini dari datatablenya
-				'recordsTotal'	=> $countData,
-				'recordsFiltered'=>$countData,
-				'data'			=> $data,
+				'draw'				=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'		=> $countData,
+				'recordsFiltered'	=>$countData,
+				'data'				=> $data,
 			];
 			echo json_encode($callback);
 		}
 
 		public function detail() {
-			$id_proses	= $this->input->post('id', true);
-			$proses		= $this->m_proses->getById($id_proses);
-			$durasi		= '';
-
-			if( $proses['tanggal_mulai'] ) {
-				if( $proses['tanggal_selesai'] ) {
-					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
-				} else {
-					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai']);
-				}
-			}
+			$proses			= $this->m_proses->getById($this->input->post('id', true));
+			$add['durasi']	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
 			
+			if( $proses['tanggal_selesai'] ) {
+				$add['status']	= '<span class="badge badge-success">Proses Selesai</span>';
+			} else {
+				$add['status']	= '<span class="badge badge-warning">Belum Selesai</span>';
+			}
+			$hari			= floor($proses['lama_pengerjaan'] / 8);
+			$jam			= $proses['lama_pengerjaan'] % 8;
+			$add['standar']	= $hari.' hari '.$jam.' jam';
+
 			$data['judul']	= 'Detail Proses';
 			$data['proses']	= $proses;
-			$data['durasi']	= $durasi;
+			$data['add']	= $add;
+			
 			$this->load->view('admin/proses_akuntansi/detail', $data);
 		}
 
-		public function batal_onproses() {
-			$id_proses				= $_POST['id'];
-			$data					= $this->m_proses->getById($id_proses);
+		public function batal() {
+			$data					= $this->m_proses->getById($this->input->post('id'));
 			$data['id_disposer3']	= $this->session->userdata('id_user');
-			$this->m_proses->batalMulaiProses($data);
-		}
-
-		public function batal_selesai() {
-			$id_proses				= $_POST['id'];
-			$data					= $this->m_proses->getById($id_proses);
-			$data['id_disposer3']	= $this->session->userdata('id_user');
-			$this->m_proses->batalSelesaiProses($data);
+			$data['status_proses']	= $this->session->userdata('status');
+			
+			$this->m_proses->batalProses($data);
+			$this->session->set_flashdata('notification', 'Proses berhasil dibatalkan!'); 
 		}
 
 		public function export() {

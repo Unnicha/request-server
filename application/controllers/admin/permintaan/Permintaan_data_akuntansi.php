@@ -35,15 +35,12 @@
 			$permintaan	= $this->M_Permintaan_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
 			$data		= [];
-			foreach($permintaan as $k) {
-				$status = '<i class="bi bi-hourglass-split icon-status" style="color:red" data-toggle="tooltip" data-placement="bottom" title="Belum Diterima"></i>';
-
+			foreach($permintaan as $k) { 
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
-				$row[]	= (int) $k['request'];
+				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
-				$row[]	= $status;
 				$row[]	= '
 					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
 						<i class="bi bi-info-circle"></i>
@@ -65,7 +62,7 @@
 		}
 		
 		public function tambah() {
-			$data['judul']	= "Form Tambah Permintaan";
+			$data['judul']	= "Kirim Permintaan - Data Akuntansi";
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Akuntansi');
 			$bulan			= $this->Klien_model->getMasa(date('m'));
@@ -109,19 +106,13 @@
 		public function detail() {
 			$id_permintaan	= $this->input->post('permintaan', true);
 			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
 			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
-			$kode_jenis		= explode('|', $permintaan['kode_jenis']);
-			foreach($kode_jenis as $kode) {
-				$jenis_data[] = $this->Jenis_data_model->getById($kode);
-			}
 			
 			$data['judul']			= 'Detail Permintaan';
 			$data['permintaan']		= $permintaan;
 			$data['bulan']			= $bulan['nama_bulan'];
-			$data['jenis_data']		= $jenis_data;
-			$data['format_data']	= explode('|', $permintaan['format_data']);
-			$data['detail']			= explode('|', $permintaan['detail']);
-			$data['jum_data']		= count($data['jenis_data']);
+			$data['isi']			= $isi;
 			
 			$this->load->view('admin/permintaan_akuntansi/detail', $data);
 		}

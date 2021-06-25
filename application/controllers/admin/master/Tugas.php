@@ -8,8 +8,8 @@
 			
 			$this->load->model('Tugas_model');
 			$this->load->model('Jenis_data_model');
-		} 
-		 
+		}
+		
 		public function index() {
 			$data['judul'] = "Daftar Tugas"; 
 			$this->libtemplate->main('admin/tugas/tampil', $data);
@@ -30,7 +30,7 @@
 				$row[]	= $k['status_pekerjaan'];
 				$row[]	= $k['jenis_data'];
 				$row[]	= $k['lama_pengerjaan'];
-				$row[]	= '<a class="btn btn-sm btn-info" href="tugas/ubah/'.$k['id_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah"><i class="bi bi-pencil-square"></i></a> <a class="btn btn-sm btn-danger" href="tugas/hapus/'.$k['id_tugas'].'" onclick="return confirm("Yakin ingin menghapus KLU '.$k['id_tugas'].'?");" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="bi bi-trash"></i></a>';
+				$row[]	= '<a class="btn btn-sm btn-info" href="tugas/ubah/'.$k['kode_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah"><i class="bi bi-pencil-square"></i></a> <a class="btn btn-sm btn-danger" href="tugas/hapus/'.$k['kode_tugas'].'" onclick="return confirm("Yakin ingin menghapus KLU '.$k['kode_tugas'].'?");" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="bi bi-trash"></i></a>';
 
 				$data[] = $row;
 			}
@@ -44,15 +44,14 @@
 		}
 
 		public function tambah() {
-
 			$data['judul']		= 'Tambah Data Tugas'; 
 			$data['kategori']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['jenis_data']	= $this->Jenis_data_model->getAllJenisData();
-
+			
 			$this->form_validation->set_rules('nama_tugas', 'Nama Tugas', 'required');
 			$this->form_validation->set_rules('kode_jenis', 'Kode Jenis', 'required');
 			$this->form_validation->set_rules('status_pekerjaan', 'Status Pekerjaan', 'required');
-
+			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/tugas/tambah', $data);
 			} else {
@@ -62,19 +61,18 @@
 			}
 		}
 		
-		public function ubah($id_tugas) {
-
+		public function ubah($kode_tugas) {
 			$data['judul']		= 'Ubah Data Tugas'; 
-			$tugas				= $this->Tugas_model->getById($id_tugas);
+			$tugas				= $this->Tugas_model->getById($kode_tugas);
 			$lama_pengerjaan	= $tugas['lama_pengerjaan'];
 			$data['hari']		= floor($lama_pengerjaan / 8);
 			$data['jam']		= $lama_pengerjaan % 8;
 			$data['tugas']		= $tugas;
-
+			
 			$this->form_validation->set_rules('nama_tugas', 'Nama Tugas', 'required');
 			$this->form_validation->set_rules('status_pekerjaan', 'Status Pekerjaan', 'required');
 			$this->form_validation->set_rules('kode_jenis', 'Kode Jenis', 'required');
-
+			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/tugas/ubah', $data);
 			} else {
@@ -84,16 +82,15 @@
 			}
 		}
 
-		public function detail($id_tugas) {
-
+		public function detail($kode_tugas) {
 			$data['judul'] = 'Detail Tugas';
-			$data['tugas'] = $this->Tugas_model->getById($id_tugas);
+			$data['tugas'] = $this->Tugas_model->getById($kode_tugas);
 			
 			$this->libtemplate->main('admin/tugas/detail', $data);
 		}
 		
-		public function hapus($id_tugas) {
-			$this->Tugas_model->hapusTugas($id_tugas);
+		public function hapus($kode_tugas) {
+			$this->Tugas_model->hapusTugas($kode_tugas);
 			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
 			redirect('admin/master/tugas');
 		}

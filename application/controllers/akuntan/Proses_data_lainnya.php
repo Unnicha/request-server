@@ -25,7 +25,7 @@
 			
 			$data['header']	= "Proses Data Lainnya";
 			$data['masa']	= $this->Klien_model->getMasa();
-
+			
 			$this->load->view('akuntan/proses_lainnya/view_'.$status, $data);
 		}
 		
@@ -61,7 +61,6 @@
 		}
 		
 		public function page() {
-			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
 			$bulan		= $this->input->post('bulan', true);
@@ -89,21 +88,16 @@
 				}
 			}
 			$countData	= $this->m_proses->countProses($status, $bulan, $tahun, $klien);
-			$proses		= $this->m_proses->getProses($offset, $limit, $status, $bulan, $tahun, $klien);
+			$proses		= $this->m_proses->getByMasa($status, $bulan, $tahun, $klien, $offset, $limit);
 			
 			$data = [];
 			foreach($proses as $k) {
 				$hari		= floor($k['lama_pengerjaan'] / 8);
 				$jam		= $k['lama_pengerjaan'] % 8;
 				$standar	= $hari.' hari '.$jam.' jam';
-
-				//HITUNG DURASI
+				
 				if( $k['tanggal_mulai'] ) {
-					if( $k['tanggal_selesai'] ) {
-						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
-					} else {
-						$durasi	= $this->proses_admin->durasi($k['tanggal_mulai']);
-					}
+					$durasi = $this->proses_admin->durasi($k['tanggal_mulai'], $k['tanggal_selesai']);
 				}
 				
 				$row	= [];
@@ -112,11 +106,11 @@
 					$row[]	= $k['nama_klien'];
 					$row[]	= $k['nama_tugas'];
 					$row[]	= $k['jenis_data'];
-					$row[]	= 'ke-' . $k['request'];
-					$row[]	= 'ke-' . ($k['pembetulan'] + 1);
+					$row[]	= $k['request'];
+					$row[]	= $k['pembetulan'];
 					$row[]	= $standar;
 					$row[]	= '
-						<a href="proses_data_lainnya/mulai/'.$k['id_pengiriman'].'" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Proses">
+						<a href="proses_data_lainnya/mulai/'.$k['id_proses'].'" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Proses">
 							<i class="bi bi-journal-plus"></i>
 						</a>';
 				} elseif($status == 'selesai') {
@@ -156,30 +150,37 @@
 			echo json_encode($callback);
 		}
 		
-		public function mulai($id_pengiriman) {
-			
+		public function mulai($id_proses) {
 			$data['judul']		= "Mulai Proses Data"; 
-			$data['pengiriman']	= $this->m_proses->getById($id_pengiriman, true);
-
+			$data['pengiriman']	= $this->m_proses->getById($id_proses, true);
+			
 			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
 			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
+			if($this->input->post('tanggal_selesai')) {
+				if($this->input->post('jam_selesai') == null)
+				$this->form_validation->set_rules('jam_selesai', 'Jam Selesai', 'required');
+			} else {
+				if($this->input->post('jam_selesai'))
+				$this->form_validation->set_rules('tanggal_selesai', 'Tanggal Selesai', 'required');
+			}
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('akuntan/proses_lainnya/tambah', $data);
 			} else {
-				$this->m_proses->tambahProses();
-				$this->session->set_flashdata('notification', 'Proses data dimulai!');
-				redirect('akuntan/proses_data_lainnya');
+				if($this->m_proses->tambahProses() == 'ERROR') {
+					redirect('akuntan/proses_data_lainnya/mulai/'.$id_proses);
+				} else {
+					$this->session->set_flashdata('notification', 'Proses data dimulai!');
+					redirect('akuntan/proses_data_lainnya');
+				}
 			}
 		}
 		
 		public function selesai($id_proses) {
-			
-			$data['judul']		= "Perbarui Proses Data"; 
+			$data['judul']		= "Proses Selesai"; 
 			$data['pengiriman']	= $this->m_proses->getById($id_proses);
+			$data['mulai']		= explode(' ', $data['pengiriman']['tanggal_mulai']);
 			
-			$this->form_validation->set_rules('tanggal_mulai', 'Tanggal Mulai', 'required');
-			$this->form_validation->set_rules('jam_mulai', 'Jam Mulai', 'required');
 			$this->form_validation->set_rules('tanggal_selesai', 'Tanggal Selesai', 'required');
 			$this->form_validation->set_rules('jam_selesai', 'Jam Selesai', 'required');
 			
@@ -193,81 +194,75 @@
 		}
 
 		public function detail() {
-			$id_proses	= $this->input->post('id', true);
-			$proses		= $this->m_proses->getById($id_proses);
-			$durasi		= '';
-
-			if( $proses['tanggal_mulai'] ) {
-				if( $proses['tanggal_selesai'] ) {
-					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
-				} else {
-					$durasi	= $this->proses_admin->durasi($proses['tanggal_mulai']);
-				}
-			}
+			$proses			= $this->m_proses->getById($this->input->post('id', true));
+			$add['durasi']	= $this->proses_admin->durasi($proses['tanggal_mulai'], $proses['tanggal_selesai']);
 			
+			if( $proses['tanggal_selesai'] ) {
+				$add['status']	= '<span class="badge badge-success">Proses Selesai</span>';
+			} else {
+				$add['status']	= '<span class="badge badge-warning">Belum Selesai</span>';
+			}
+			$hari			= floor($proses['lama_pengerjaan'] / 8);
+			$jam			= $proses['lama_pengerjaan'] % 8;
+			$add['standar']	= $hari.' hari '.$jam.' jam';
+
 			$data['judul']	= 'Detail Proses';
 			$data['proses']	= $proses;
-			$data['durasi']	= $durasi;
+			$data['add']	= $add;
 			$this->load->view('akuntan/proses_lainnya/detail', $data);
+		}
+
+		public function export() {
+			$data['judul']	= 'Export Laporan Proses Data';
+			$data['masa']	= $this->Klien_model->getMasa();
+			$this->load->view('akuntan/proses_lainnya/export', $data);
 		}
 		
 		public function download() {
-			$bulan		= $this->input->post('bulan', true);
+			$masa		= $this->input->post('masa', true);
 			$tahun		= $this->input->post('tahun', true);
-			$get		= $this->input->post('klien', true);
-			$tampil		= $this->input->post('tampil', true);
-			$filename	= strtoupper($bulan).' '.$tahun;
+			$klien		= $this->input->post('klien', true);
+			$akuntan	= $this->session->userdata('id_user');
+			$filename	= strtoupper(substr($masa, 0, 3)).' '.substr($tahun, 2);
+			$bulan		= $this->Klien_model->getMasa($masa);
+			$kliens		= [];
 
-			if($get == null) {
-				$klien = $this->Klien_model->getAllKlien(); 
-			} else {
-				if($tampil == "Akuntan") {
-					$akses = $this->Akses_model->getByAkuntan($get, $bulan, $tahun);
-					$getNew = explode(",", $akses['klien']);
-					$filename = $filename.' '.$akses['nama'];
-					foreach($getNew as $e) {
-						$klien[] = $this->Klien_model->getById($e);
-					}
-				} else {
-					$get		= $this->Klien_model->getById($get);
-					$filename	= $filename.' '.$get['nama_klien'];
-					$klien[]	= $get;
+			if($klien == null) {
+				$akses		= $this->Akses_model->getByAkuntan($tahun, $akuntan);
+				if($akses) {
+					if($bulan['id_bulan'] < $akses['masa'])
+					$akses	= $this->Akses_model->getByAkuntan(($tahun - 1), $akuntan);
+				}
+				if($akses) {
+					$filename	= $filename.' '.$akses['nama'];
+					$klien		= explode(",", $akses['klien']);
+					implode(",", $klien);
 				}
 			}
-
-			$status = $this->session->userdata('status');
-			foreach($klien as $k) {
-				if($status == 'belum')
-				$perklien = $this->m_proses->getByKlienBelum($bulan, $tahun, $k['id_klien']);
-				elseif($status == 'selesai')
-				$perklien = $this->m_proses->getByKlienSelesai($bulan, $tahun, $k['id_klien']);
-				else
-				$perklien = $this->m_proses->getByKlienSedang($bulan, $tahun, $k['id_klien']);
-				
-				$proses[$k['id_klien']] = $perklien;
+			
+			if(is_array($klien) != 1) {
+				$klien = [$klien];
+			}
+			foreach($klien as $id_klien) {
+				$get				= $this->m_proses->getProses('', '', '', $masa, $tahun, $id_klien);
+				$proses[$id_klien]	= $get;
+				$kliens[]			= $this->Klien_model->getById($id_klien);
 			}
 			
 			$data['proses']		= $proses;
-			$data['bulan']		= $bulan;
+			$data['bulan']		= $masa;
 			$data['tahun']		= $tahun;
-			$data['klien']		= $klien;
+			$data['klien']		= $kliens;
 			$data['now']		= date('d/m/Y H:i');
 			$data['filename']	= 'Proses Data Lainnya '.$filename;
 			$data['judul']		= "Proses Data Lainnya";
 			
-			if($status == 'belum')
-			$data['subjudul']	= "Belum Diproses";
-			elseif($status == 'selesai')
-			$data['subjudul']	= "Selesai Diproses";
-			else
-			$data['subjudul']	= "Sedang Diproses";
-
-			if($this->input->post('xls', true)) {
-				echo "xls";
+			if($_POST['export'] == 'xls') {
 				return $this->exportproses->exportExcel($data);
 			}
-			elseif($this->input->post('pdf', true))
+			elseif($_POST['export'] == 'pdf') {
 				return $this->exportproses->exportPdf($data);
+			}
 		}
 	}
 ?>

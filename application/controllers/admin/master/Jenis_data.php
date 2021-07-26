@@ -20,15 +20,21 @@
 			
 			$countData	= $this->Jenis_data_model->countJenisData($cari); 
 			$jenis_data	= $this->Jenis_data_model->getAllJenisData($offset, $limit, $cari);
-			$data		= [];
+			
+			$data = [];
 			foreach($jenis_data as $k) {
-				//$no = $offset;
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['kode_jenis'];
 				$row[]	= $k['jenis_data'];
 				$row[]	= $k['kategori'];
-				$row[]	= "<a class='btn btn-sm btn-info' href='jenis_data/ubah/".$k['kode_jenis']."' data-toggle='tooltip' data-placement='bottom' title='Ubah'><i class='bi bi-pencil-square'></i></a> <a class='btn btn-sm btn-danger' href='jenis_data/hapus/".$k['kode_jenis']."' onclick='return confirm('Yakin ingin menghapus KLU ".$k['kode_jenis']."?');' data-toggle='tooltip' data-placement='bottom' title='Hapus'><i class='bi bi-trash'></i></a>";
+				$row[]	= "
+					<a class='btn btn-sm btn-info' href='jenis_data/ubah/".$k['kode_jenis']."' data-toggle='tooltip' data-placement='bottom' title='Ubah'>
+						<i class='bi bi-pencil-square'></i>
+					</a>
+					<a class='btn btn-sm btn-danger btn-hapus' data-id='".$k['kode_jenis']."' data-nama='".$k['jenis_data']."' data-toggle='tooltip' data-placement='bottom' title='Hapus'>
+						<i class='bi bi-trash'></i>
+					</a>";
 
 				$data[] = $row;
 			}
@@ -42,8 +48,7 @@
 		}
 
 		public function tambah() {
-
-			$data['judul'] = 'Form Tambah Jenis Data'; 
+			$data['judul']		= 'Form Tambah Jenis Data'; 
 			$data['kategori']	= $this->Jenis_data_model->kategori();
 			
 			$this->form_validation->set_rules('jenis_data', 'Jenis Data', 'required');
@@ -59,7 +64,6 @@
 		}
 		
 		public function ubah($kode_jenis) {
-
 			$data['judul']		= 'Form Ubah Jenis Data'; 
 			$data['jenis_data']	= $this->Jenis_data_model->getById($kode_jenis); 
 			$data['kategori']	= $this->Jenis_data_model->kategori();
@@ -77,18 +81,15 @@
 		}
 
 		public function detail($kode_jenis) {
-
-			$data['judul'] = 'Detail Jenis Data';
-			$data['jenis_data'] = $this->Jenis_data_model->getById($kode_jenis);
+			$data['judul']		= 'Detail Jenis Data';
+			$data['jenis_data']	= $this->Jenis_data_model->getById($kode_jenis);
 			
 			$this->libtemplate->main('admin/jenis_data/detail', $data);
 		}
 		
-		public function hapus($kode_jenis) {
-
-			$this->Jenis_data_model->hapusJenisData($kode_jenis);
+		public function hapus() {
+			$this->Jenis_data_model->hapusJenisData($_POST['id']);
 			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
-			redirect('admin/master/jenis_data');
 		}
 	}
 ?>

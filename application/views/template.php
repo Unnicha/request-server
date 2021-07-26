@@ -15,6 +15,7 @@
 		
 		<!-- Additional CSS -->
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/dashboard.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/select.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/select2.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datatables.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/dataTables.bootstrap4.min.css') ?>">
@@ -35,11 +36,9 @@
 		<!--
 		<script type="text/javascript" src="<?= base_url(); ?>asset/js/dashboard.js"></script>
 		-->
-
-		<div id="header">
-			<?= $head; ?>
-		</div>
-
+		
+		<?= $head; ?>
+		
 		<div class=""> <!-- container-fluid -->
 			<div class="row">
 				<?= $sidebar; ?>
@@ -76,12 +75,8 @@
 						</div>
 						<div class="row float-right">
 							<div class="col">
-								<button type="button" tabindex="1" class="btn btn-outline-secondary" data-dismiss="modal">
-									Batal
-								</button>
-								<a class="btn btn-danger" href="<?= base_url(); ?>login/logout">
-									Keluar
-								</a>
+								<button type="button" tabindex="1" class="btn btn-outline-secondary" data-dismiss="modal">Batal</button>
+								<a class="btn btn-danger" href="<?= base_url(); ?>login/logout">Keluar</a>
 							</div>
 						</div>
 					</div>

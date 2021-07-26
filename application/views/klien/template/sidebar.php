@@ -2,13 +2,32 @@
 	<div class="sidebar-sticky pt-md-1">
 		<div class="">
 			<!-- Menu Permintaan Data -->
+			<ul class="nav d-md-none flex-column">
+				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
+					<span><?= $this->session->userdata('nama') ?></span>
+				</h6>
+				<div class="">
+					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/profile">
+						<i class="bi bi-person-fill sidebar-icon mr-1"></i>
+						Profile
+					</a>
+				</div>
+			</ul>
+			
+			<!-- Profile -->
+			<a href="<?= base_url(); ?>klien/profile" class="nav d-none d-md-flex flex-column">
+				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
+					<span>Profile</span>
+				</h6>
+			</a>
+			
+			<!-- Menu Permintaan Data -->
 			<ul class="nav flex-column">
 				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
 					<span>Permintaan Data</span>
 					<span class="badge badge-light float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan'); ?></span>
 				</h6>
-
-				<div class="mt-1 mb-2">
+				<div class="">
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_akuntansi">
 						<i class="bi bi-file-earmark-text sidebar-icon mr-1"></i>
 						Data Akuntansi
@@ -33,8 +52,7 @@
 					<span>Pengiriman Data</span>
 					<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman'); ?></span>
 				</h6>
-				
-				<div class="mt-1 mb-2">
+				<div class="">
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_akuntansi">
 						<i class="bi bi-file-earmark-arrow-up sidebar-icon mr-1"></i>
 						Data Akuntansi

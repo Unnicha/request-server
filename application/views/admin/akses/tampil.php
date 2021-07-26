@@ -2,40 +2,34 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
 	
-	<!-- Judul Table-->
 	<h2 class="text-center"><?=$judul?></h2>
 	
-	<div class="row">
-		<!-- Tombol Tambah Akuntan -->
+	<div class="row mb-2">
 		<div class="col col-sm">
 			<a href="<?= base_url(); ?>admin/master/akses/tambah" class="btn btn-success">
 				<i class="bi bi-plus"></i>
 				Tambah
 			</a>
 		</div>
-		
-		<!-- Ganti Tampilan -->
 		<div class="col col-sm">
-			<form action="" method="post">
-				<div class="row form-inline form-group float-right mb-2">
-						<!-- Ganti Tahun -->
-						<select name='tahun' class="form-control" id="tahun">
-							<?php 
-								$tahun = date('Y');
-								$sess_tahun = $this->session->userdata('tahun');
-								for($i=$tahun; $i>=2010; $i--) :
-									if ($i == $sess_tahun) 
-										{ $pilih="selected"; } 
-									else 
-										{ $pilih=""; }
-							?>
-							<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
-							<?php endfor ?>
-						</select>
+			<div class="form-row form-inline float-right">
+				<label class="col-form-label"><b>Tahun</b></label>
+				<div class="col">
+					<select name='tahun' class="form-control" id="tahun">
+						<?php
+							$tahun = $_SESSION['tahun'] ? $_SESSION['tahun'] : date('Y');
+							for($i=$tahun; $i>=2010; $i--) :
+								if ($i == $tahun) {
+									$pilih="selected";
+								} else {
+									$pilih="";
+								} ?>
+						<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
+						<?php endfor ?>
+					</select>
 				</div>
-			</form>
+			</div>
 		</div>
 	</div>
 	
@@ -47,14 +41,31 @@
 					<th scope="col">Nama Akuntan</th>
 					<th scope="col">Mulai akses</th>
 					<th scope="col">Klien</th>
-					<th scope="col">Detail</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>
-
-			<tbody align="center">
-			</tbody>
+			
+			<tbody align="center"></tbody>
+			
+			<tfoot class="text-center">
+				<tr>
+					<th scope="col">No.</th>
+					<th scope="col">Nama Akuntan</th>
+					<th scope="col">Mulai akses</th>
+					<th scope="col">Klien</th>
+					<th scope="col">Action</th>
+				</tr>
+			</tfoot>
 		</table>
+	</div>
+</div>
+
+<!-- Modal untuk Detail -->
+<div class="modal fade" id="detailAkses" tabindex="-1" aria-labelledby="detailAksesLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable">
+		<div class="modal-content profile-klien" id="showAkses">
+			<!-- Tampilkan Data -->
+		</div>
 	</div>
 </div>
 
@@ -68,13 +79,18 @@
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
 		
+		// Setup - add a text input to each footer cell
+		$('#myTable tfoot th').each( function () {
+			var title = $('#myTable thead th').eq( $(this).index() ).text();
+			$(this).html( '<input type="text" placeholder="Cari '+title+'">' );
+		});
+	
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			//'pageLength'	: 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>admin/master/akses/page',
 				'type'	: 'post',
@@ -83,45 +99,19 @@
 					e.tahun = $('#tahun').val();
 					},
 			},
-			'columnDefs'	: [
-				{
-					'targets'	: 4,
-					'visible'	: false,
-				},
-				{
-					'targets'	: 3,
-					'className'	: 'detail_klien',
-				}
-			]
+			/*'columnDefs'	: [
+				{ 'targets': [0,1,2,4], 'searchable': false, }
+			],*/
 		});
-		
-		//add row child
-		function format ( d ) { // `d` is the original data object for the row
-			var child = '<table class="table-bordered table-striped my-1" cellpadding="5" cellspacing="0" width=99%>';
-			var n = d[4];
-			for (var i = 0; i < n.length; i++) {
-				var j = i+1;
-				child += '<tr><td>Klien '+j+'</td><td>'+n[i]+'</td></tr>';
-			}
-			child += '</table>';
-			return child;
-		}
-		//detail klien
-		$('#myTable tbody').on('click', 'td.detail_klien', function () {
-			var tr	= $(this).parents('tr');
-			var row	= table.row( tr );
-		
-			if ( row.child.isShown() ) {
-				// This row is already open - close it
-				row.child.hide();
-				tr.removeClass('shown');
-			}
-			else {
-				// Open this row (the format() function would return the data to be shown)
-				row.child( format(row.data()) ).show();
-				tr.addClass('shown');
-			}
-		} );
+		// Apply the filter
+		table.columns().each( function () {
+			var that = this;
+			$( 'input', this.footer() ).on( 'keyup change clear', function () {
+				if ( that.search() !== this.value ) {
+					that.search( this.value ).draw();
+				}
+			});
+		});
 		
 		$('#bulan').change(function() {
 			table.draw();
@@ -129,5 +119,17 @@
 		$('#tahun').change(function() {
 			table.draw();
 		})
+		
+		$('#myTable tbody').on('click', 'a.btn-detail', function() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/master/akses/detail',
+				data	: 'action='+ $(this).data('nilai'),
+				success	: function(data) {
+					$("#detailAkses").modal('show');
+					$("#showAkses").html(data);
+				}
+			})
+		});
 	})
 </script>

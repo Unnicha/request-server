@@ -29,7 +29,11 @@
 			
 			<select name="klien" class="form-control mr-1" id="klien_selesai">
 				<option value="">--Tidak Ada Klien--</option>
-			</select> 
+			</select>
+			
+			<a href="javascript:window.location.reload()" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Refresh">
+				<i class="bi bi-arrow-counterclockwise"></i>
+			</a>
 		</div>
 	</div>
 	
@@ -104,7 +108,7 @@
 			table.draw();
 		})
 
-		$('#myTable_selesai tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
+		$('.container-fluid').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		})
 

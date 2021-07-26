@@ -27,7 +27,13 @@
 				$row[]	= $k['kode_klu'];
 				$row[]	= $k['bentuk_usaha'];
 				$row[]	= $k['jenis_usaha'];
-				$row[]	= '<a class="btn btn-sm btn-info" href="klu/ubah/'.$k['kode_klu'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah"><i class="bi bi-pencil-square"></i></a> <a class="btn btn-sm btn-danger" href="klu/hapus/'.$k['kode_klu'].'" onclick="return confirm("Yakin ingin menghapus KLU '.$k['kode_klu'].'?");" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="bi bi-trash"></i></a>';
+				$row[]	= '
+					<a class="btn btn-sm btn-info" href="klu/ubah/'.$k['kode_klu'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
+						<i class="bi bi-pencil-square"></i>
+					</a>
+					<a class="btn btn-sm btn-danger btn-hapus" data-id="'.$k['kode_klu'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+						<i class="bi bi-trash"></i>
+					</a>';
 
 				$data[] = $row;
 			}
@@ -80,10 +86,9 @@
 			$this->libtemplate->main('admin/klu/detail', $data);
 		}
 		
-		public function hapus($kode_klu) {
-			$this->Klu_model->hapusDataKlu($kode_klu);
+		public function hapus() {
+			$this->Klu_model->hapusDataKlu($_POST['id']);
 			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
-			redirect('admin/master/klu');
 		}
 	}
 ?>

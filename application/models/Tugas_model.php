@@ -38,75 +38,49 @@
 			return $this->db->get_where('tugas', ['status_pekerjaan'=>$status])->result_array();
 		}
 
-		public function getMax($jenis_data, $status) {
+		public function getMax($jenis_data) {
 			$max = $this->db->select_max('kode_tugas')
-							->where(['id_jenis'=>$jenis_data, 'status_pekerjaan'=>$status])
+							->where(['id_jenis'=>$jenis_data])
 							->get('tugas')->row_array();
-			$kodeMax = $max['kode_tugas']; //masukkan max id ke variabel
 			
-			$kategori = $this->status_pekerjaan(); 
-			foreach($kategori as $k => $val) {
-				if($val['value'] == $status) {
-					$pekerjaan = $kategori[$k];
-				}
-			}
-			$default = $jenis_data . $pekerjaan['id']; 
-			//$id_kategori = $this->db->get_where('status_pekerjaan', ['nama_pekerjaan' => $status])->row_array();
+			$tambah	= $max['kode_tugas'] ? substr($max['kode_tugas'], 3) : 0;
+			$new	= sprintf("%02s", ++$tambah);
 			
-			if($kodeMax == null) { 
-				$newId = $default .'01'; 
-			} else { 
-				//ambil kode tugas dari kode_tugas => substr("dari $kodeMax", "index ke", "sebanyak x char") 
-				//jadikan integer => (int) 
-				$tambah = (int) substr($kodeMax, 4, 2);
-				$tambah++; //kode pembetulan +1
-				$kode_tugas = sprintf("%02s", $tambah); //kode pembetulan baru, jadikan 2 char
-
-				$newId = $default . $kode_tugas; //tambahkan kode pembetulan baru
-			}
-			return $newId;
-		}
-
-		public function status_pekerjaan() {
-			$kategori = array(
-				array('id' => '1', 'value' => 'Accounting Service'),
-				array('id' => '2', 'value' => 'Review'),
-				array('id' => '3', 'value' => 'Semi Review'),
-			);
-			return $kategori;
+			return $newId = $jenis_data . $new;
 		}
 
 		public function tambahTugas() {
-			$jenis_data	= $this->input->post('kode_jenis', true);
-			$status		= $this->input->post('status_pekerjaan', true);
-			$kode_tugas	= $this->getMax($jenis_data, $status);
-			$hari		= $this->input->post('hari', true);
-			$jam		= $this->input->post('jam', true);
-			$durasi		= ($hari * 8) + $jam;
-
+			$kode_tugas	= $this->getMax($this->input->post('kode_jenis', true));
+			$durasi		= [];
+			for($i=0; $i<count($_POST['hari']); $i++) {
+				$durasi[] = ($_POST['hari'][$i] * 8) + $_POST['jam'][$i];
+			}
+			
 			$data = [
 				"kode_tugas"		=> $kode_tugas,
 				"nama_tugas"		=> $this->input->post('nama_tugas', true),
-				"status_pekerjaan"	=> $this->input->post('status_pekerjaan', true),
-				"lama_pengerjaan"	=> $durasi,
+				"accounting_service"=> $durasi[0],
+				"review"			=> $durasi[1],
+				"semi_review"		=> $durasi[2],
 				"id_jenis"			=> $this->input->post('kode_jenis', true),
 			];
 			$this->db->insert('tugas', $data);
 		}
 
 		public function ubahTugas() {
-			$hari		= $this->input->post('hari', true);
-			$jam		= $this->input->post('jam', true);
-			$durasi		= ($hari * 8) + $jam;
+			$durasi = [];
+			for($i=0; $i<count($_POST['hari']); $i++) {
+				$durasi[] = ($_POST['hari'][$i] * 8) + $_POST['jam'][$i];
+			}
 			
 			$data = [
-				"kode_tugas"		=> $this->input->post('id_tugas', true),
 				"nama_tugas"		=> $this->input->post('nama_tugas', true),
-				"status_pekerjaan"	=> $this->input->post('status_pekerjaan', true),
-				"lama_pengerjaan"	=> $durasi,
+				"accounting_service"=> $durasi[0],
+				"review"			=> $durasi[1],
+				"semi_review"		=> $durasi[2],
 				"id_jenis"			=> $this->input->post('kode_jenis', true),
 			];
-			$this->db->where('kode_tugas', $this->input->post('id_tugas', true));
+			$this->db->where('kode_tugas', $this->input->post('kode_tugas', true));
 			$this->db->update('tugas', $data);
 		}
 		

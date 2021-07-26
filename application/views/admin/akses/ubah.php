@@ -1,103 +1,129 @@
 <div class="container-fluid">
-    <div class="row row-child mt-3">
-        <div class="col">
-            <!-- Judul Form -->
-            <h3><?=$judul?></h3>
-        </div>
-    </div>
+	<div class="row row-child">
+		<div class="col">
+			<h3><?=$judul?></h3>
+		</div>
+	</div>
 
-    <hr class="my-0">
-    
-    <?php if($this->session->flashdata('sudah')) : ?>
-    <div class="row mt-3">
-        <div class="col">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                Data akses <?= $this->session->flashdata('sudah'); ?>!
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
+	<hr class="my-0">
 
-    <!-- Isi Form -->
-    <form action="" method="post"> 
-        <div class="row row-child">
-            <div class="col col-tambah">
-                <input type="hidden" id="id_akses" name="id_akses" value="<?=$akses['id_akses']?>">
-                <input type="hidden" id="id_akuntan" name="id_akuntan" value="<?=$akses['id_akuntan']?>">
-                <!-- ID Akuntan -->
-                <div class="form-group row mt-4">
-                    <label for="nama" class="col-sm-4 col-form-label">
-                        Nama Akuntan
-                    </label> 
-                    <div class="col-sm">
-                        <input type="text" class="form-control" name="nama" id="nama" value="<?=$akses['nama']?>" readonly>
-                    </div>
-                </div>
+	<!-- Isi Form -->
+	<form action="" method="post">
+		<div class="row row-child">
+			<div class="col col-tambah">
+				<input type="hidden" id="id_akses" name="id_akses" value="<?=$akses['id_akses']?>">
+				<input type="hidden" id="id_akuntan" name="id_akuntan" value="<?=$akses['id_akuntan']?>">
+				<input type="hidden" id="masa" name="masa" value="<?=$akses['masa']?>">
+				
+				<!-- Tahun -->
+				<div class="form-group row mt-3">
+					<label class="col-sm-4 col-form-label">Tahun Akses</label>
+					<div class="col-sm">
+						<input type="text" class="form-control" name="tahun" value="<?=$akses['tahun']?>" readonly>
+					</div>
+				</div>
 
-                <!-- Masa -->
-                <div class="form-group row">
-                    <label for="masa" class="col-sm-4 col-form-label">
-                        Masa
-                    </label> 
-                    <div class="col-sm">
-                        <input type="text" class="form-control" name="masa" id="masa" value="<?=$akses['masa']?>" readonly>
-                    </div>
-                </div>
+				<!-- Masa -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Bulan Mulai</label>
+					<div class="col-sm">
+						<input type="text" class="form-control" name="bulan" value="<?=$bulan?>" readonly>
+					</div>
+				</div>
+				
+				<!-- Akuntan -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Nama Akuntan</label>
+					<div class="col-sm">
+						<input type="text" class="form-control" name="nama" value="<?=$akses['nama']?>" readonly>
+					</div>
+				</div>
+				
+				<!-- Akses -->
+				<div class="form-group row">
+					<label for="akuntansi" class="col-sm-4 col-form-label">
+						<b>Akses Data Klien</b>
+					</label>
+				</div>
 
-                <!-- Tahun -->
-                <div class="form-group row">
-                    <label for="tahun" class="col-sm-4 col-form-label">
-                        Tahun
-                    </label> 
-                    <div class="col-sm">
-                        <input type="text" class="form-control" name="tahun" id="tahun" value="<?=$akses['tahun']?>" readonly>
-                    </div>
-                </div>
-
-                <!-- Klien -->
-                <div class="form-group row mt-4">
-                    <label for="klien" class="col-sm-4 col-form-label">Klien</label> 
-                    <div class="col-sm">
-						<div class="overflow-auto container-akses">
+				<!-- Data Akuntansi -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Akuntansi</label>
+					<div class="col-sm">
+						<select name='akuntansi[]' class="form-control select-multiple" multiple="multiple" required>
 							<?php 
-								$id = explode(",",$akses['klien']);
-								foreach($klien as $k) :
-									if($id == null) {
-										$pilih = "";
+								$data1 = explode(',', $akses['akuntansi']);
+								foreach ($klien as $k) :
+									if(in_array($k['id_klien'], $data1)) {
+										$pilih = 'selected="selected"';
 									} else {
-										foreach($id as $i => $value) :
-								if($value == $k['id_klien']) {
-									$pilih="checked"; break;
-								} else {
-									$pilih="";
-								}
-										endforeach; 
-									}
-							?>
-							<div class="form-group form-check mb-2">
-								<input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>" <?=$pilih?>>
-								<label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>">
-									<?= $k['nama_klien'] ?>
-								</label>
-							</div>
-							<?php endforeach; ?>
-						</div>
-						<small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
-                    </div>
-                </div>
-                
-                <div class="row mt-3">
-                    <div class="col">
-                        <button type="submit" name="tambah" class="btn btn-primary mr-2">
-                            Ubah
-                        </button>
-                        <a href="<?= base_url(); ?>admin/master/akses" class="btn btn-secondary">Batal</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+										$pilih = '';
+									} ?>
+							<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+							<?php endforeach ?>
+						</select>
+						<small class="form-text text-danger"><?= form_error('akuntansi[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<!-- Data Perpajakan -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Perpajakan</label>
+					<div class="col-sm">
+						<select name='perpajakan[]' class="form-control select-multiple" multiple="multiple" required>
+							<?php
+								$data2 = explode(',', $akses['perpajakan']);
+								foreach ($klien as $k) :
+									if(in_array($k['id_klien'], $data2)) {
+										$pilih = 'selected="selected"';
+									} else {
+										$pilih = '';
+									} ?>
+							<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+							<?php endforeach ?>
+						</select>
+						<small class="form-text text-danger"><?= form_error('perpajakan[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<!-- Data Lainnya -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Lainnya</label>
+					<div class="col-sm">
+						<select name='lainnya[]' class="form-control select-multiple" multiple="multiple" required>
+							<?php
+								$data3 = explode(',', $akses['lainnya']);
+								foreach ($klien as $k) :
+									if(in_array($k['id_klien'], $data3)) {
+										$pilih = 'selected="selected"';
+									} else {
+										$pilih = '';
+									} ?>
+							<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+							<?php endforeach ?>
+						</select>
+						<small class="form-text text-danger"><?= form_error('lainnya[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<div class="row mt-4">
+					<div class="col">
+						<button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
+						<a href="javascript:history.go(-1)" class="btn btn-secondary"> Batal </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
+
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/select.min.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/select2.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('.select-multiple').select2({
+			placeholder: '--Tambahkan Klien--',
+			tags: true,
+		});
+	});
+</script>

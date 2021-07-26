@@ -1,13 +1,12 @@
 <div class="container-fluid">
-	<div class="row row-child mt-3">
+	<div class="row row-child">
 		<div class="col">
-			<!-- Judul Form -->
 			<h3><?=$judul?></h3>
 		</div>
 	</div>
 
 	<hr class="my-0">
-	
+
 	<?php if($this->session->flashdata('sudah')) : ?>
 	<div class="row mt-3">
 		<div class="col">
@@ -22,37 +21,12 @@
 	<?php endif; ?>
 
 	<!-- Isi Form -->
-	<form action="" method="post"> 
+	<form action="" method="post">
 		<div class="row row-child">
 			<div class="col col-tambah">
-				<!-- ID Akuntan -->
-				<div class="form-group row mt-4">
-					<label for="id_akuntan" class="col-sm-4 col-form-label">
-						Nama Akuntan
-					</label> 
-					<div class="col-sm">
-						<select name="id_akuntan" class="form-control" id="id_akuntan" required>
-							<option value="">--Pilih Akuntan--</option>
-							<?php
-								foreach($akuntan as $ak) :
-									if($ak['id_user'] == set_value('id_user')) {
-										$pilih = "selected";
-									} else {
-										$pilih = "";
-									}
-							?>
-							<option value="<?=$ak['id_user'];?>" <?=$pilih?>> <?=$ak['nama'];?> </option>
-							<?php endforeach ?>
-						</select>
-						<small class="form-text text-danger"><?= form_error('id_akuntan', '<p class="mb-0">', '</p>') ?></small>
-					</div>
-				</div>
-
 				<!-- Tahun -->
-				<div class="form-group row">
-					<label for="tahun" class="col-sm-4 col-form-label">
-						Tahun
-					</label> 
+				<div class="form-group row mt-3">
+					<label class="col-sm-4 col-form-label">Tahun Akses</label>
 					<div class="col-sm">
 						<select name="tahun" class="form-control" id="tahun" required>
 							<?php
@@ -68,15 +42,12 @@
 
 				<!-- Masa -->
 				<div class="form-group row">
-					<label for="masa" class="col-sm-4 col-form-label">
-						Bulan Mulai
-					</label> 
+					<label class="col-sm-4 col-form-label">Bulan Mulai</label>
 					<div class="col-sm">
 						<select name="masa" class="form-control" id="masa" required>
 							<?php
-								$bulan = date('m');
-								foreach($masa as $m) : 
-									if($m['id_bulan'] == $bulan) { $pilih = "selected"; } 
+								foreach($masa as $m) :
+									if($m['id_bulan'] == date('m')) { $pilih = "selected"; }
 									else { $pilih = ""; }
 							?>
 							<option value="<?=$m['id_bulan']?>" <?=$pilih?>>
@@ -88,31 +59,99 @@
 					</div>
 				</div>
 				
-				<!-- Klien -->
+				<!-- ID Akuntan -->
 				<div class="form-group row">
-					<label for="klien" class="col-sm-4 col-form-label">Klien</label> 
+					<label class="col-sm-4 col-form-label">Nama Akuntan</label>
 					<div class="col-sm">
-						<div class="overflow-auto container-akses">
-							<?php foreach ($klien as $k) : ?>
-							<div class="form-group form-check mb-2">
-								<input class="form-check-input" name="klien[]" type="checkbox" value="<?= $k['id_klien'] ?>" id="<?= $k['id_klien'] ?>">
-								<label class="form-check-label ml-2" for="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></label>
-							</div>
-							<?php endforeach ?>
-						</div>
-						<small class="form-text text-danger"><?= form_error('klien[]', '<p class="mb-0">', '</p>') ?></small>
+						<select name="id_akuntan" class="form-control" id="id_akuntan" required>
+						</select>
+						<small class="form-text text-danger"><?= form_error('id_akuntan', '<p class="mb-0">', '</p>') ?></small>
 					</div>
 				</div>
 
-				<div class="row mt-3">
+				<!-- Akses -->
+				<div class="form-group row">
+					<label for="akuntansi" class="col-sm-4 col-form-label">
+						<b>Akses Data Klien</b>
+					</label>
+				</div>
+
+				<!-- Data Akuntansi -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Akuntansi</label>
+					<div class="col-sm">
+						<select name='akuntansi[]' class="form-control select-multiple" multiple="multiple" required>
+							<?php foreach ($klien as $k) : ?>
+							<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+							<?php endforeach ?>
+						</select>
+						<small class="form-text text-danger"><?= form_error('akuntansi[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<!-- Data Perpajakan -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Perpajakan</label>
+					<div class="col-sm">
+						<div class="input-group">
+							<select name='perpajakan[]' class="form-control select-multiple" multiple="multiple" required>
+								<?php foreach ($klien as $k) : ?>
+								<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+								<?php endforeach ?>
+							</select>
+						</div>
+						<small class="form-text text-danger"><?= form_error('perpajakan[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<!-- Data Lainnya -->
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Data Lainnya</label>
+					<div class="col-sm">
+						<div class="input-group">
+							<select name='lainnya[]' class="form-control select-multiple" multiple="multiple" required>
+								<?php foreach ($klien as $k) : ?>
+								<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+								<?php endforeach ?>
+							</select>
+						</div>
+						<small class="form-text text-danger"><?= form_error('lainnya[]', '<p class="mb-0">', '</p>') ?></small>
+					</div>
+				</div>
+
+				<div class="row mt-4">
 					<div class="col">
-						<button type="submit" name="tambah" class="btn btn-primary mr-2">
-							Simpan
-						</button>
-						<a href="<?= base_url(); ?>admin/master/akses" class="btn btn-secondary mr-3"> Batal </a>
+						<button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
+						<a href="javascript:history.go(-1)" class="btn btn-secondary"> Batal </a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</form>
 </div>
+
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/select.min.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>asset/js/select2.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('.select-multiple').select2({
+			placeholder: '--Tambahkan Klien--'
+		});
+		
+		function getAkuntan() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?=base_url()?>admin/master/akses/akuntan',
+				data	: 'tahun=' +$('#tahun').val(),
+				success	: function(e) {
+					$('#id_akuntan').html(e);
+				}
+			})
+		}
+		getAkuntan();
+		
+		$('#tahun').change(function() {
+			getAkuntan();
+		})
+	});
+</script>

@@ -4,13 +4,12 @@
 		
 		public function __construct() {
 			parent::__construct();
-					}	
-
+		}
+		
 		public function index() {
-
 			$username	= $this->session->userdata('username');
 			$nama_user	= $this->session->userdata('nama');
-			$user	= $this->db->get_where('user', ['username'=>$username])->row_array();
+			$user		= $this->db->get_where('user', ['username'=>$username])->row_array();
 			if ($user == null) {
 				redirect('login');
 			}

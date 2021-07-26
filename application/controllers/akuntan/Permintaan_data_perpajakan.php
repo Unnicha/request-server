@@ -13,7 +13,6 @@
 		}
 		
 		public function index() {
-			
 			$data['judul']	= "Permintaan Data Perpajakan";
 			$data['masa']	= $this->Klien_model->getMasa();
 			
@@ -21,12 +20,9 @@
 		}
 		
 		public function page() {
-			$klien	= $_POST['klien'];
-			$tahun	= $_POST['tahun'];
-			$bulan	= $_POST['bulan'];
-			$this->session->set_flashdata('klien', $klien);
-			$this->session->set_userdata('tahun', $tahun);
-			$this->session->set_userdata('bulan', $bulan);
+			$klien	= $_POST['klien'];		$this->session->set_flashdata('klien', $klien);
+			$tahun	= $_POST['tahun'];		$this->session->set_userdata('tahun', $tahun);
+			$bulan	= $_POST['bulan'];		$this->session->set_userdata('bulan', $bulan);
 			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
@@ -36,7 +32,7 @@
 						$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
 					}
 					if( $akses ) {
-						$klien = explode(',', $akses['klien']);
+						$klien = explode(',', $akses['perpajakan']);
 					}
 				}
 			}
@@ -53,6 +49,7 @@
 				$row[]	= $k['nama_klien'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= ucwords($k['level']).' - '.$k['nama'];
 				$row[]	= '
 					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
 						<i class="bi bi-info-circle"></i>
@@ -83,7 +80,7 @@
 				$lists	= "<option value=''>--Tidak ada akses--</option>";
 			} else {
 				$lists		= "<option value=''>--".$_POST['jenis']." Klien--</option>";
-				$id_klien	= explode(",", $akses['klien']);
+				$id_klien	= explode(",", $akses['perpajakan']);
 				foreach($id_klien as $id) {
 					$klien = $this->Klien_model->getById($id);
 					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 

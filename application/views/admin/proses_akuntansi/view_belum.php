@@ -1,6 +1,13 @@
 <div class="container-fluid p-0">
 		<div class="row mb-2">
 			<div class="col form-inline">
+				<select name="akuntan" class="form-control mr-1" id="akuntan_belum">
+					<option value="">--Semua Akuntan--</option>
+					<?php foreach ($akuntan as $ak) : ?>
+					<option value="<?= $ak['id_user']; ?>"> <?= $ak['nama'] ?> </option>
+					<?php endforeach ?>
+				</select>
+				
 				<select name="bulan" class="form-control mr-1" id="bulan_belum">
 					<?php
 						$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
@@ -59,11 +66,12 @@
 	$(document).ready(function() {
 		function gantiKlien() {
 			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
-				data: {
-					'bulan': $('#bulan_belum').val(), 
-					'tahun': $('#tahun_belum').val(), 
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
+				data	: {
+					'akuntan'	: $('#akuntan_belum').val(), 
+					'bulan'		: $('#bulan_belum').val(), 
+					'tahun'		: $('#tahun_belum').val(), 
 					},
 				success: function(data) {
 					$("#klien_belum").html(data);
@@ -93,6 +101,10 @@
 			},
 		});
 
+		$("#akuntan_belum").change(function() {
+			gantiKlien();
+			table.draw();
+		});
 		$("#bulan_belum").change(function() {
 			gantiKlien();
 			table.draw();

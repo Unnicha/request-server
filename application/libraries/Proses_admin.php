@@ -7,146 +7,88 @@
 			$this->ci =& get_instance();
 		}
 
-		function durasi($mulai, $selesai) {
-			$mulai			= date_create_from_format("d/m/Y H:i", $mulai);
-			$tanggal_mulai	= date_format($mulai, "d/m/Y H:i");
-			$waktu_mulai	= date_format($mulai, "H:i");
+		function durasi($mulai, $selesai=null) {
+			$tanggal_mulai	= date_create_from_format("d/m/Y H:i", $mulai);
+			$waktu_mulai	= date_create(date_format($tanggal_mulai, "H:i"));
 			
-			$selesai		= date_create_from_format("d/m/Y H:i", $selesai);
-			$tanggal_selesai= date_format($selesai, "d/m/Y H:i");
-			$waktu_selesai	= date_format($selesai, "H:i");
-
+			$selesai		= ($selesai) ? $selesai : date('d/m/Y H:i');
+			$tanggal_selesai= date_create_from_format("d/m/Y H:i", $selesai);
+			$waktu_selesai	= date_create(date_format($tanggal_selesai, "H:i"));
+			
 			$durasi			= date_diff($tanggal_mulai, $tanggal_selesai);
-			$durasi_hari	= $durasi->days;
-			
+			$durasi_hari	= $durasi->days; //string
+
 			// HITUNG HARI
-			$hari_selesai	= date_format($tanggal_selesai, "w");
-			$hari_selesai	= ($waktu_selesai < $waktu_mulai) ? $hari_selesai - 1 : $hari_selesai;
-			$mingguTengah	= ($durasi_hari<$hari_selesai) ? $durasi_hari-$hari_selesai : $durasi_hari; 
-			$minggu_awal	= $mingguTengah % 7; 
-			$minggu_utuh	= floor($mingguTengah / 7); 
-			$cut_awal		= 2;
-			if($durasi_hari < 5) {
-				if($hari_selesai == 6) {
-					$cut_awal = 1;
-				} elseif($hari_selesai > 0) {
-					$cut_awal = 0; 
+			$hariMulai		= date_format($tanggal_mulai, "w"); //string
+			$hariSelesai	= date_format($tanggal_selesai, "w"); //string
+			$hariSelesai	= ($waktu_selesai < $waktu_mulai) ? $hariSelesai - 1 : $hariSelesai;
+			$mingguAwal		= ($durasi_hari > $hariSelesai) ? $durasi_hari - $hariSelesai : $durasi_hari;
+			
+			if($mingguAwal == $durasi_hari) {
+				if($hariMulai > 0 && $hariMulai < 6) {
+					$dikurang = 0;
+				} else {
+					if($hariSelesai < 6) {
+						$dikurang = 1;
+					} else {
+						$dikurang = 2;
+					}
 				}
 			} else {
-
+				$jumMinggu = ceil($mingguAwal / 7);
+				$cut = 0;
+				if($hariMulai == 0) {
+					$cut = $cut + 1;
+				}
+				if($hariSelesai == 6) {
+					$cut = $cut + 1;
+				}
+				$dikurang = ($jumMinggu * 2) + $cut;
 			}
-			$dikurang = ($minggu_utuh * 2) + $cut_awal; 
-			
+			$hari = $durasi_hari - $dikurang;
+
 			// HITUNG JAM
 			$jam_start	= date_create("08:30");
 			$jam_end	= date_create("17:30");
-
-			if($jam_mulai < $jam_selesai) {
-				if($jam_mulai < $jam_start) {
-					$durasi_jam = 0;
-					if($jam_selesai >= $jam_start && $jam_selesai <= $jam_end) {
-						$diff		= date_diff($jam_selesai, $jam_start);
-						$diff		= date_create("$diff->h:$diff->i");
-						$istirahat	= $this->cekIstirahat($diff, $waktu_mulai, $waktu_selesai);
-						$durasi_jam		= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					}
-					elseif($jam_selesai < $jam_start)
-						$durasi_hari = $durasi_hari + 1;
-				}
-				elseif($jam_mulai > $jam_end) {
-					$durasi_jam = 0;
-				} else {
-					if($jam_selesai > $jam_end) {
-						$diff			= date_diff($jam_end, $jam_mulai);
-						$diff			= date_create("$diff->h:$diff->i");
-						$istirahat		= $this->cekIstirahat($diff, $waktu_mulai, $waktu_selesai);
-						$durasi_jam		= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					} else {
-						$diff			= date_diff($jam_selesai, $jam_mulai);
-						$diff			= date_create("$diff->h:$diff->i");
-						$istirahat		= $this->cekIstirahat($diff, $waktu_mulai, $waktu_selesai);
-						$durasi_jam		= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					}
-				}
+			$breakTime	= date_create('01:00');
+			$breakStart	= date_create('12:00');
+			$breakEnd	= date_create('13:00');
+			
+			if($waktu_mulai < $jam_start) {
+				$waktu_mulai = $jam_start;
+			} elseif($waktu_mulai>$breakStart && $waktu_mulai<$breakEnd) {
+				$waktu_mulai = $breakEnd;
 			}
-			elseif($jam_mulai > $jam_selesai) {
-				if($jam_mulai < $jam_start) {
-					$durasi_jam		= 0;
-					$durasi_hari	= $durasi_hari + 1;
-				}
-				elseif($jam_mulai > $jam_end) {
-					$durasi_jam = 0;
-					if($jam_selesai >= $jam_start && $jam_selesai <= $jam_end) {
-						$diff			= date_diff($jam_selesai, $jam_start);
-						$diff			= date_create("$diff->h:$diff->i");
-						$istirahat		= $this->cekIstirahat($diff, $waktu_mulai, $waktu_selesai);
-						$durasi_jam 	= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					}
-					elseif($jam_selesai > $jam_end)
-						$durasi_hari = $durasi_hari + 1;
-				} else {
-					$diff = date_diff($jam_mulai, $jam_end);
-					$diff = date_create("$diff->h:$diff->i");
-					
-					if($jam_selesai < $jam_start) {
-						$istirahat		= $this->cekIstirahat($diff, $waktu_mulai, $waktu_selesai);
-						$durasi_jam		= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					} else {
-						$diff2			= date_diff($jam_selesai, $jam_start);
-						$result			= date_add($diff, date_interval_create_from_date_string("$diff2->h hours $diff2->i minutes"));
-						$istirahat		= $this->cekIstirahat($result, $waktu_mulai, $waktu_selesai);
-						$durasi_jam		= date_format($istirahat, "G");
-						$durasi_menit	= date_format($istirahat, "i");
-					}
-				}
+			if($waktu_selesai > $jam_end) {
+				$waktu_selesai = $jam_end;
+			} elseif($waktu_selesai>$breakStart && $waktu_selesai<$breakEnd) {
+				$waktu_selesai = $breakStart;
+			}
+			$waktu	= date_diff($waktu_mulai, $waktu_selesai);
+			
+			if($waktu_mulai < $breakEnd && $waktu_selesai > $breakEnd) {
+				$waktu	= date_diff(date_create($waktu->format('%H:%I')), $breakTime);
 			}
 			
-			$total_hari		= $durasi_hari - $dikurang;
-			return $total	= "$total_hari hari $durasi_jam jam $durasi_menit min";
+			return "$hari $waktu->h $waktu->i";
 		} 
 		// end durasi
-
-		function cekIstirahat($selisih, $jam_mulai, $jam_selesai) {
-			$waktu_mulai	= explode(":", $jam_mulai);
-			$waktu_selesai	= explode(":", $jam_selesai);
-			
-			if($jam_mulai < $jam_selesai) {
-				if($waktu_mulai[0] < 12) {
-					if($waktu_selesai[0] == 12) 
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-$waktu_selesai[1] minutes"));
-					elseif($waktu_selesai[0] > 12) 
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-1 hours"));
-				} 
-				elseif($waktu_mulai[0] == 12) {
-					$selisih = date_add($selisih, date_interval_create_from_date_string("-$waktu_mulai[1] minutes"));
-				}
+		
+		function addDurasi($dur='', $add) {
+			$add = explode(' ', $add);
+			if($dur) {
+				$dur = explode(' ', $dur);
+				
+				$min		= ($dur[2] + $add[2]) % 60;
+				$jamAdd		= floor(($dur[2] + $add[2]) % 60);
+				$jam		= ($dur[1] + $jamAdd) % 8;
+				$hariAdd	= floor(($dur[1] + $jamAdd) % 8);
+				$hari		= $dur[0] + $hariAdd;
+				
+				return "$hari $jam $min";
+			} else {
+				return "$add[0] $add[1] $add[2]";
 			}
-			elseif($jam_mulai > $jam_selesai) {
-				if($waktu_mulai[0] < 12) {
-					if($waktu_selesai[0] < 12) 
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-1 hours"));
-				}
-				elseif($waktu_mulai[0] == 12) {
-					if($waktu_selesai[0] < 12) {
-						$menit	= 60 - $waktu_mulai[1];
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-$menit minutes"));
-					}
-					elseif($waktu_selesai[0] == 12) 
-					$menit	= (60 - $waktu_mulai[1]) + $waktu_selesai[1];
-				} else {
-					if($waktu_selesai[0] == 12)
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-$waktu_selesai[1] minutes"));
-					elseif($waktu_selesai > 12)
-						$selisih = date_add($selisih, date_interval_create_from_date_string("-1 hours"));
-				}
-			}
-			return $selisih;
 		}
-		// end cekIstirahat
 	}
 ?>

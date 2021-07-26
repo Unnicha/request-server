@@ -38,14 +38,11 @@
 			$max = $this->db->select_max('kode_jenis', 'maxId')
 							->where('kategori', $kategori)
 							->get('jenis_data')->row_array();
-			$kodeMax = $max['maxId']; 
 			
-			// ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 3 char) 
+			// ambil kode angka => substr(dari $max['maxId'], index 1, sebanyak 3 char) 
 			// jadikan integer => (int) 
-			$tambah = (int) substr($kodeMax, 1);
-			$tambah++;  //kode lama +1
-			$baru = sprintf("%02s", $tambah); 
-
+			$tambah			= (int) substr($max['maxId'], 1);
+			$baru			= sprintf("%02s", ++$tambah); 
 			$kategori_data	= $this->kategori();
 			$id_kategori	= array_search($kategori, $kategori_data);
 			
@@ -57,7 +54,6 @@
 		}
 		
 		public function tambahJenisData() {
-			
 			$kode_jenis = $this->getMax($this->input->post('kategori', true));
 			$data = [
 				"kode_jenis"	=> $kode_jenis,
@@ -68,20 +64,12 @@
 		}
 
 		public function ubahJenisData() {
-			
-			$data = [
-				"kode_jenis"	=> $this->input->post('kode_jenis', true),
-				"jenis_data"	=> $this->input->post('jenis_data', true),
-				"kategori"		=> $this->input->post('kategori', true),
-			];
-			$this->db->where('kode_jenis', $this->input->post('kode_jenis', true));
-			$this->db->update('jenis_data', $data);
+			$this->db->where('kode_jenis', $this->input->post('kode_jenis', true))
+					->update('jenis_data', ['jenis_data' => $this->input->post('jenis_data', true)]);
 		}
 		
 		public function hapusJenisData($kode_jenis) {
-			
-			$this->db->where('kode_jenis', $kode_jenis);
-			$this->db->delete('jenis_data');
+			$this->db->where('kode_jenis', $kode_jenis)->delete('jenis_data');
 		}
 	}
 ?>

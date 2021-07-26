@@ -1,6 +1,13 @@
 <div class="container-fluid p-0">
 	<div class="row mb-2">
 		<div class="col form-inline">
+			<select name="akuntan" class="form-control mr-1" id="akuntan_selesai">
+				<option value="">--Semua Akuntan--</option>
+				<?php foreach ($akuntan as $ak) : ?>
+				<option value="<?= $ak['id_user']; ?>"> <?= $ak['nama'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
 			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
 				<?php
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');

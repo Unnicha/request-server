@@ -18,9 +18,8 @@
 			
 			// Add some data
 			$index = 1;
-			foreach($data['klien'] as $klien) {
-				$proses = $data['proses'][$klien['id_user']];
-				$this->newSheet($spreadsheet, $data, $proses, $klien, $index);
+			foreach($data['proses'] as $proses) {
+				$this->newSheet($spreadsheet, $data, $proses, $index);
 				$index++;
 			}
 			$spreadsheet->removeSheetByIndex(0);
@@ -36,60 +35,73 @@
 			exit;
 		}
 		
-		public function newSheet($spreadsheet, $data, $proses, $klien, $index) {
+		public function newSheet($spreadsheet, $data, $proses, $index) {
+			$this->ci->load->library('proses_admin');
 			$sheet = $spreadsheet->createSheet();
 			$sheet = $spreadsheet->setActiveSheetIndex($index)
-				->setCellValue('A1', $data['judul'])
-
-				//->setCellValue('A2', 'Akuntan')
-				//->setCellValue('B2', $akuntan['nama'])
-				->setCellValue('A3', 'Bulan')
-				->setCellValue('B3', $data['bulan'])
-				->setCellValue('A4', 'Tahun')
-				->setCellValue('B4', $data['tahun'])
-
-				->setCellValue('A5', 'No.')
-				->setCellValue('B5', 'Tugas')
-				->setCellValue('C5', 'Status')
-				->setCellValue('D5', 'Mulai')
-				->setCellValue('E5', 'Selesai')
-				->setCellValue('F5', 'Durasi')
-				->setCellValue('G5', 'Time Table');
-
-			// Miscellaneous glyphs, UTF-8
-			$i=6; $num=1;
-			foreach($proses as $o) {
-				if($o['id_proses'] == null) { // Status Pengiriman
-					$status = 'Belum Diproses';
-				} else {
-					if($o['tanggal_selesai'] == null)
-					$status = 'Sedang Diproses';
-					else
-					$status = 'Selesai Diproses';
-				}
-				$durasi = '';
-				if($o['tanggal_mulai']) {
-					$durasi = $this->durasi_cetak($o['tanggal_mulai'], $o['tanggal_selesai']);
-				}
-
+					->setCellValue('A1', $data['judul'])
+					->setCellValue('A2', 'Akuntan')
+					->setCellValue('B2', $proses[0]['nama_akuntan'])
+					->setCellValue('A3', 'Bulan')
+					->setCellValue('B3', $data['masa']['bulan'])
+					->setCellValue('A4', 'Tahun')
+					->setCellValue('B4', $data['masa']['tahun'])
+					->setCellValue('A4', 'Klien')
+					->setCellValue('B4', $proses[0]['nama_klien']);
+					
+			if($proses) {
 				$sheet = $spreadsheet->setActiveSheetIndex($index)
-					->setCellValue('A'.$i, $num.'.')
-					->setCellValue('B'.$i, $o['nama_tugas'])
-					->setCellValue('C'.$i, $status)
-					->setCellValue('D'.$i, $o['tanggal_mulai'])
-					->setCellValue('E'.$i, $o['tanggal_selesai'])
-					->setCellValue('F'.$i, $durasi)
-					->setCellValue('G'.$i, $o['lama_pengerjaan'].' jam');
-				$i++; $num++;
+						->setCellValue('A6', 'No.')
+						->setCellValue('B6', 'Tugas')
+						->setCellValue('C6', 'Status')
+						->setCellValue('D6', 'Mulai')
+						->setCellValue('E6', 'Selesai')
+						->setCellValue('F6', 'Durasi')
+						->setCellValue('G6', 'Time Table');
+				
+				$i=7; $num=1;
+				foreach($proses as $o) {
+					if($o['tanggal_mulai'] == null) { // Status Pengiriman
+						$status = 'Belum Diproses';
+					} elseif($o['tanggal_selesai'] == null) {
+						$status = 'Sedang Diproses';
+					} else {
+						$status = 'Selesai Diproses';
+					}
+					
+					$dur = $this->ci->proses_admin->durasi($o['tanggal_mulai'], $o['tanggal_selesai']);
+					if($o['temp_selesai']) {
+						$dur1	= $this->ci->proses_admin->durasi($o['tanggal_mulai'], $o['temp_selesai']);
+						$dur2	= $this->ci->proses_admin->durasi($o['temp_mulai'], $o['tanggal_selesai']);
+						$dur	= $this->ci->proses_admin->addDurasi($dur1, $dur2);
+					}
+					$dur	= explode(' ', $dur);
+					$jam	= ($dur[0] * 8) + $dur[1];
+					$durasi	= $jam.' jam '. $dur[2].' min';
+					
+					$standar	= str_replace(' ', '_', strtolower($o['status_pekerjaan']));
+					
+					$sheet = $spreadsheet->setActiveSheetIndex($index)
+						->setCellValue('A'.$i, $num.'.')
+						->setCellValue('B'.$i, $o['nama_tugas'])
+						->setCellValue('C'.$i, $status)
+						->setCellValue('D'.$i, $o['tanggal_mulai'])
+						->setCellValue('E'.$i, $o['tanggal_selesai'])
+						->setCellValue('F'.$i, $durasi)
+						->setCellValue('G'.$i, $standar.' jam');
+					$i++; $num++;
+				}
+			} else {
+				$sheet = $spreadsheet->setActiveSheetIndex($index)
+						->setCellValue('A6', 'Tidak ada proses data');
 			}
 			
-			$spreadsheet->getActiveSheet()->setTitle($klien['nama_klien'])
+			$spreadsheet->getActiveSheet()->setTitle($proses[0]['nama_klien'])
 										->mergeCells('A1:G1');
 			return $spreadsheet;
 		}
 
 		public function exportPdf($data) {
-			
 			$pdf = new FPDF();
 			foreach($data['klien'] as $k) { 
 				$this->newPdf($data, $pdf, $k);
@@ -99,7 +111,6 @@
 		}
 		
 		public function newPdf($data, $pdf, $k) {
-
 			$now = date('d/m/Y H:i');
 			$this->ci->load->model('Akses_model');
 			$akses = $this->ci->Akses_model->getByKlien($k['id_klien'], $data['bulan'], $data['tahun']);
@@ -138,7 +149,6 @@
 		}
 
 		public function pdfBelum($data, $pdf, $k) {
-			
 			$proses = $data['proses'];
 			if($proses[$k['id_user']] == null) {
 				$pdf->SetFont('Arial', 'B', '12');
@@ -173,7 +183,6 @@
 		}
 
 		public function pdfSelesai($data, $pdf, $k) {
-			
 			$proses = $data['proses'];
 			if($proses[$k['id_user']] == null) {
 				$pdf->SetFont('Arial', 'B', '12');
@@ -217,7 +226,7 @@
 			return $pdf;
 		}
 		
-		function durasi_cetak($mulai, $selesai = null) {
+		function durasi($mulai, $selesai) {
 			$this->ci->load->library('proses_admin');
 			$durasi = $this->ci->proses_admin->durasi($mulai, $selesai);
 			return $durasi;

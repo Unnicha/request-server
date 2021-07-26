@@ -20,12 +20,9 @@
 		}
 		
 		public function page() {
-			$klien	= $_POST['klien'];
-			$bulan	= $_POST['bulan'];
-			$tahun	= $_POST['tahun'];
-			$this->session->set_flashdata('klien', $klien);
-			$this->session->set_userdata('bulan', $bulan); 
-			$this->session->set_userdata('tahun', $tahun);
+			$klien	= $_POST['klien'];		$this->session->set_flashdata('klien', $klien);
+			$tahun	= $_POST['tahun'];		$this->session->set_userdata('tahun', $tahun);
+			$bulan	= $_POST['bulan'];		$this->session->set_userdata('bulan', $bulan);
 			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
@@ -36,7 +33,7 @@
 						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
 					}
 					if( $akses ) {
-						$klien = explode(',', $akses['klien']);
+						$klien = explode(',', $akses['perpajakan']);
 					}
 				}
 			}
@@ -105,7 +102,7 @@
 				$lists = "<option value=''>--Tidak ada akses--</option>";
 			} else {
 				$lists		= "<option value=''>Semua Klien</option>";
-				$id_klien	= explode(",", $akses['klien']);
+				$id_klien	= explode(",", $akses['perpajakan']);
 				foreach($id_klien as $id) {
 					$klien	= $this->Klien_model->getById($id);
 					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 

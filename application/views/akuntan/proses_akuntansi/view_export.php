@@ -1,8 +1,8 @@
 <div class="container">
-	<h5 class="px-4 my-3"><?= $judul ?></h5>
+	<h5 class="px-4 mb-3"><?= $judul ?></h5>
 
 	<div class="row">
-		<div class="col">
+		<div class="col col-proses">
 			<form action="<?=base_url('akuntan/proses_data_akuntansi/download')?>" method="post" > 
 				<div class="form-group row">
 					<label for="tahun" class="col-sm-4 col-form-label">Tahun</label> 
@@ -24,12 +24,9 @@
 							<?php 
 								$bulan = date('m');
 								foreach ($masa as $m) : 
-									if ($m['id_bulan'] == $bulan) 
-									$pilih="selected";
-									else
-									$pilih="";
+									$pilih = ($m['id_bulan'] == $bulan) ? "selected" : "";
 							?>
-							<option <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+							<option value="<?= $m['id_bulan'] ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 							<?php endforeach ?>
 						</select>
 					</div>
@@ -43,17 +40,20 @@
 					</div>
 				</div>
 				
-				<div class="row mt-4">
+				<div class="row">
 					<div class="col">
-						<button type="submit" name="export" value="xls" class="btn btn-primary">
-							Export Excel 
-						</button>
-						<button type="submit" name="export" value="pdf" class="btn btn-info">
-							Export PDF 
-						</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
-							Batal
-						</button>
+						<a href="#" class="btn btn-primary float-right cek">Cek Data</a>
+					</div>
+				</div>
+				
+				<div class="row mt-3 export">
+					<div class="col export-alert">
+					</div>
+				</div>
+				<div class="row export">
+					<div class="col export-button">
+						<button type="submit" name="export" value="xls" class="btn btn-success">Export Excel</button>
+						<button type="submit" name="export" value="pdf" class="btn btn-danger">Export PDF</button>
 					</div>
 				</div>
 			</form>
@@ -63,6 +63,12 @@
 
 <script>
 	$(document).ready(function() {
+		function ganti() {
+			$('.export').hide();
+			$('.export-button').hide();
+		}
+		ganti();
+		
 		function getKlien() {
 			$.ajax({
 				type	: 'POST',
@@ -80,10 +86,34 @@
 		
 		$('#masa').change(function() {
 			getKlien();
+			ganti();
 		});
 		$('#tahun').change(function() {
 			getKlien();
+			ganti();
+		});
+		$('#klien').change(function() {
+			ganti();
 		});
 		
+		$('.cek').click(function() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?=base_url()?>akuntan/proses_data_akuntansi/cek_proses',
+				data	: {
+					bulan	: $('#masa').val(),
+					tahun	: $('#tahun').val(),
+					klien	: $('#klien').val(),
+					},
+				success	: function(e) {
+					var data = JSON.parse(e);
+					$('.export').show();
+					$('.export-alert').html(data.alert);
+					if(data.button == 'ok') {
+						$('.export-button').show();
+					}
+				}
+			})
+		})
 	})
 </script>

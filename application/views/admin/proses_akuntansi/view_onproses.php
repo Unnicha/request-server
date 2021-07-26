@@ -1,6 +1,13 @@
 <div class="container-fluid p-0">
 	<div class="row mb-2">
 		<div class="col form-inline">
+			<select name="akuntan" class="form-control mr-1" id="akuntan_proses">
+				<option value="">--Semua Akuntan--</option>
+				<?php foreach ($akuntan as $ak) : ?>
+				<option value="<?= $ak['id_user']; ?>"> <?= $ak['nama'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
 			<select name="bulan" class="form-control mr-1" id="bulan_proses">
 				<?php
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
@@ -62,8 +69,9 @@
 			$.ajax({
 				type	: 'POST',
 				data	: {
-					'bulan'	: $('#bulan_proses').val(), 
-					'tahun'	: $('#tahun_proses').val(), 
+					'akuntan'	: $('#akuntan_proses').val(), 
+					'bulan'		: $('#bulan_proses').val(), 
+					'tahun'		: $('#tahun_proses').val(), 
 					},
 				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
 				success	: function(data) {
@@ -86,14 +94,19 @@
 			'ajax'			: {
 				'type'	: 'post',
 				'data'	: function (e) { 
-					e.klien = $('#klien_proses').val(); 
-					e.bulan = $('#bulan_proses').val(); 
-					e.tahun = $('#tahun_proses').val();
+					e.akuntan	= $('#akuntan_proses').val(); 
+					e.klien		= $('#klien_proses').val(); 
+					e.bulan		= $('#bulan_proses').val(); 
+					e.tahun		= $('#tahun_proses').val();
 					},
 				'url'	: '<?=base_url()?>admin/proses/proses_data_akuntansi/page',
 			},
 		});
 
+		$("#akuntan_proses").change(function() {
+			gantiKlien();
+			table.draw();
+		});
 		$("#bulan_proses").change(function() {
 			gantiKlien();
 			table.draw();

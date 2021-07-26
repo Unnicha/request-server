@@ -78,8 +78,8 @@
 		
 		public function tambahPermintaan() { 
 			$id_klien		= $this->input->post('id_klien', true);
-			$bulan			= $this->input->post('bulan', true);
-			$tahun			= $this->input->post('tahun', true);
+			$bulan			= date('m');
+			$tahun			= date('Y');
 			$newId			= $this->getMax($id_klien, $bulan, $tahun);
 			$id_permintaan	= $newId['permintaan'];
 			$id_data		= $newId['data'];

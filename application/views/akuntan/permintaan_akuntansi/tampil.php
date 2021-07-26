@@ -67,6 +67,7 @@
 					<th scope="col">Nama Klien</th>
 					<th scope="col">Request ke</th>
 					<th scope="col">Tanggal Permintaan</th>
+					<th scope="col">Requestor</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>
@@ -120,6 +121,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
+			'language'		: {
+				emptyTable	: "Belum ada permintaan"
+			},
 			'ajax'		: {
 				'url'	: '<?=base_url()?>akuntan/permintaan_data_akuntansi/page',
 				'type'	: 'post',

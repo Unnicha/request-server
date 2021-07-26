@@ -7,10 +7,10 @@
 
 	<div class="modal-body p-3">
 		<div class="container-fluid p-0">
-			<table class="table table-striped table-detail mb-3" id="data">
+			<table class="table table-striped table-detail mb-0" id="data">
 				<tbody>
 					<tr>
-						<td scope="row">Tanggal Input</td>
+						<td scope="row" width="30%">Tanggal Input</td>
 						<td>: <?= $proses['tanggal_proses'] ?></td>
 					</tr>
 					<tr>
@@ -46,7 +46,7 @@
 						<td>: <?= $add['status'] ?></td>
 					</tr>
 					<tr>
-						<td scope="row">Durasi</td>
+						<td scope="row">Durasi Proses</td>
 						<td>: <?= $add['durasi'] ?></td>
 					</tr>
 					<tr>

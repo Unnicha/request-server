@@ -1,7 +1,21 @@
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 mt-sm-1 mt-md-0 pt-sm-2 pt-md-5 d-md-block bg-light sidebar collapse">
 	<div class="sidebar-sticky pt-md-1 pt-sm-1 pb-5">
 		<div class="accordion" id="accordion">
-
+			<!-- Profile -->
+			<ul class="nav flex-column mt-0 profile">
+				<a class="btn btn-block text-left collapsed" data-toggle="collapse" data-target="#menu0" aria-expanded="false" aria-controls="menu0">
+					<h6 id="headingOne" class="sidebar-heading px-2 py-1 d-flex justify-content-between my-0">
+						<span><?=$this->session->userdata('nama');?></span>
+					</h6>
+				</a>
+				<div class="collapse accordion-submenu" id="menu0" aria-labelledby="headingOne" data-parent="#accordion" data-menu="profile">
+					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/profile">
+						<i class="bi bi-sidebar bi-person sidebar-icon mr-1 ml-2"></i>
+						Profile
+					</a>
+				</div>
+			</ul>
+			
 			<!-- Menu Master -->
 			<ul class="nav flex-column mt-0 master">
 				<a class="btn btn-block text-left collapsed" data-toggle="collapse" data-target="#menu1" aria-expanded="false" aria-controls="menu1">
@@ -40,7 +54,7 @@
 					</a>
 				</div>
 			</ul>
-
+			
 			<!-- Menu Permintaan Data -->
 			<ul class="nav flex-column mt-0 permintaan">
 				<a class="btn btn-block text-left collapsed" data-toggle="collapse" data-target="#menu2" aria-expanded="false" aria-controls="menu2">
@@ -125,10 +139,8 @@
 	$(document).ready(function() {
 		var menu = '<?= $this->uri->segment(2); ?>';
 		
-		$("#accordion ul div").each(function()
-		{
-			if($(this).data('menu') == menu)
-			{
+		$("#accordion ul div").each(function() {
+			if($(this).data('menu') == menu) {
 				$('#accordion ul.'+menu+' div').addClass("show");
 			}
 		});

@@ -8,35 +8,32 @@
 	
 	<hr class="my-0">
 
-	<div class="row row-child my-4">
+	<div class="row row-child my-3">
 		<div class="col">
 			<form action="" method="post">
 				<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">
-				<input type="hidden" name="bulan" value="<?=date('m')?>">
-				<input type="hidden" name="tahun" value="<?=date('Y')?>">
 				
-				<div class="col-tambah">
-					<!-- Klien -->
-					<div class="form-group row">
-						<label for="id_klien" class="col-sm-4 col-form-label">Klien</label> 
-						<div class="col-sm">
-							<select name='id_klien' class="form-control" id="id_klien" required>
-							</select>
-						</div>
+				<!-- Klien -->
+				<div class="form-group row">
+					<label for="id_klien" class="col-sm-4 col-form-label">Nama Klien</label> 
+					<div class="col-sm col-md-4 p-0">
+						<select name='id_klien' class="form-control" id="id_klien" required>
+						</select>
 					</div>
 				</div>
 				
 				<div class="row px-3">
-					<h6 class="mb-0">Data</h6>
+					<h6 class="mb-0">Data :</h6>
 				</div>
-				<hr class="m-3">
-				<div class="data px-4">
+				
+				<!-- Data -->
+				<div class="data px-3 mt-3">
 					<div class="add-after mb-3">
 						<div class="form-row">
 							<div class="col">
 								<div class="form-row">
 									<!-- Jenis Data -->
-									<div class="col-md">
+									<div class="col-sm">
 										<select name="kode_jenis[]" class="form-control" required>
 											<option value="" selected>--Pilih Jenis Data--</option>
 												<?php foreach ($jenis as $j) : ?>
@@ -46,12 +43,12 @@
 									</div>
 									
 									<!-- Keterangan -->
-									<div class="col-md">
+									<div class="col-sm">
 										<input type="text" name="detail[]" class="form-control" placeholder="Detail">
 									</div>
 									
 									<!-- Format Data -->
-									<div class="col-md">
+									<div class="col-sm">
 										<select name="format_data[]" class="form-control" required>
 											<option value="" selected>--Pilih Format Data--</option>
 											<option value="Softcopy">Softcopy</option>
@@ -72,23 +69,20 @@
 				<!-- Tombol Simpan -->
 				<div class="row my-4">
 					<div class="col">
-						<button type="submit" name="tambah" class="btn btn-primary mr-1">
-							Kirim
-						</button>
-						<a href="<?= base_url(); ?>akuntan/permintaan_data_lainnya" class="btn btn-secondary">
-							Batal
-						</a>
+						<button type="submit" name="tambah" class="btn btn-primary mr-1">Kirim</button>
+						<a href="javascript:history.go(-1)" class="btn btn-secondary">Batal</a>
 					</div>
 				</div>
 			</form>
 			
+			<!-- Add Data -->
 			<div class="clone invisible">
 				<div class="control-group mb-3">
 					<div class="form-row">
 						<div class="col">
 							<div class="form-row">
 								<!-- Jenis Data -->
-								<div class="col-md">
+								<div class="col-sm">
 									<select name="kode_jenis[]" class="form-control" required>
 										<option value="" selected>--Pilih Jenis Data--</option>
 											<?php foreach ($jenis as $j) : ?>
@@ -98,12 +92,12 @@
 								</div>
 								
 								<!-- Keterangan -->
-								<div class="col-md">
+								<div class="col-sm">
 									<input type="text" name="detail[]" class="form-control" placeholder="Detail">
 								</div>
 								
 								<!-- Format Data -->
-								<div class="col-md">
+								<div class="col-sm">
 									<select name="format_data[]" class="form-control" required>
 										<option value="" selected>--Pilih Format Data--</option>
 										<option value="Softcopy">Softcopy</option>

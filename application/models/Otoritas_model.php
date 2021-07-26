@@ -83,66 +83,48 @@
 		}
 
 		public function getMax($level) {
-
 			$max = $this->db->select_max('id_user', 'maxId')
 							->where('level', $level) 
 							->get('user')->row_array();
 			
-			//ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 2 char) 
-			//jadikan integer => (int) 
-			$tambah = (int) substr($max['maxId'], 1, 3);
-			$tambah++;  //kode lama +1
-			$baru = sprintf("%03s", $tambah); //kode baru, jadikan 2 char
-			$kode_baru = "1".$baru; //tambahkan dengan kode baru
-
+			$tambah		= (int) substr($max['maxId'], 1, 3);
+			$baru		= sprintf('%03s', ++$tambah);
+			$kode_baru	= '1'.$baru;
+			
 			return $kode_baru;
 		}
 
 		public function tambahOtoritas() {
-			$level		= $this->input->post('level');
-			$id_user	= $this->getMax($level);
+			$id_user	= $this->getMax($this->input->post('level'));
 			
 			$user = [
-				"id_user"	=> $id_user,
-				"level"		=> $this->input->post('level'),
-				"username"	=> $this->input->post('username'),
-				"password"	=> password_hash($this->input->post('password'), PASSWORD_DEFAULT),
-				"nama"		=> $this->input->post('nama'),
-				"email_user"=> $this->input->post('email'),
+				'id_user'	=> $id_user,
+				'level'		=> $this->input->post('level'),
+				'username'	=> $this->input->post('username'),
+				'password'	=> password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+				'passlength'=> strlen($this->input->post('password')),
+				'nama'		=> $this->input->post('nama'),
+				'email_user'=> $this->input->post('email'),
 			];
 			$this->db->insert('user', $user);
-			return $this->db->affected_rows();
 		}
 
 		public function ubahOtoritas() {
-			
-			$this->db->where('username', $this->input->post('username'));
-			$this->db->where('id_user !=', $this->input->post('id_user'));
-			$cek_user = $this->db->get('user')->row_array();
-
-			if($cek_user == null) {
-				$user = [
-					"id_user"	=> $this->input->post('id_user'),
-					"level"		=> $this->input->post('level'),
-					"username"	=> $this->input->post('username'),
-					"password"	=> password_hash($this->input->post('password'), PASSWORD_DEFAULT),
-					"nama"		=> $this->input->post('nama'),
-					"email_user"=> $this->input->post('email'),
+			$tipe = $this->session->userdata('tipe', true);
+			if($tipe == 'nama') {
+				$data = [ 'nama' => $this->input->post('nama', true) ];
+			} elseif($tipe == 'email') {
+				$data = [ 'email_user' => $this->input->post('email', true) ];
+			} elseif($tipe == 'username') {
+				$data = [ 'username' => $this->input->post('username', true) ];
+			} else {
+				$data = [
+					'password'		=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
+					'passlength'	=> strlen($this->input->post('password', true)),
 				];
-				$this->db->where('id_user', $this->input->post('id_user'));
-				$this->db->update('user', $user);
-
-				$sess_id = $this->session->userdata('id_user');
-				if($id_user == $sess_id) {
-					array_splice($user, 3, 1);
-					$this->session->set_userdata($data);
-				}
-				return $this->db->affected_rows();
 			}
-			else {
-				$this->session->set_flashdata('flash', 'sudah digunakan'); 
-				redirect('admin/master/otoritas/ubah/'.$id_user);
-			}
+			$this->db->where('id_user', $this->input->post('id_user', true));
+			$this->db->update('user', $data);
 		}
 
 		public function ubahPassword($password, $id_user) {

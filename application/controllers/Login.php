@@ -10,15 +10,13 @@
 		} 
 	
 		public function index() {
-	
 			if ($this->input->post() == NULL) {
 				$this->load->view('login');
 			} 
 			else {
-				$cek    = $this->Otoritas_model->getByUsername($this->input->post('username', true));
-				$verify = password_verify($this->input->post('password', true), $cek['password']);
-	
-				//if($cek == null) {
+				$cek	= $this->Otoritas_model->getByUsername($this->input->post('username', true));
+				$verify	= password_verify($this->input->post('password', true), $cek['password']);
+				
 				if($cek == null || $verify == false) {
 					$this->session->set_flashdata('flash', 'tidak sesuai');
 					redirect('login');
@@ -34,16 +32,15 @@
 					$this->Otoritas_model->ubahPassword($this->input->post('password', true), $cek['id_user']); // update hashing password
 	
 					switch ($cek['level']) { // redirect ke home berdasarkan level user
-						case "admin"    : redirect('admin/home'); break;
-						case "akuntan"  : redirect('akuntan/home'); break;
-						case "klien"    : redirect('klien/home'); break;
+						case "admin"	: redirect('admin/home'); break;
+						case "akuntan"	: redirect('akuntan/home'); break;
+						case "klien"	: redirect('klien/home'); break;
 					}
 				}
 			}
 		}
 	
 		public function forget_password() {
-			
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 			
 			if($this->form_validation->run() == FALSE) {
@@ -72,10 +69,9 @@
 		}
 	
 		public function reset_password() {
-	
-			$token      = $this->base64url_decode($this->uri->segment(4));
-			$cleanToken = $this->security->xss_clean($token);
-			$user_info  = $this->Otoritas_model->validToken($cleanToken); 
+			$token		= $this->base64url_decode($this->uri->segment(4));
+			$cleanToken	= $this->security->xss_clean($token);
+			$user_info	= $this->Otoritas_model->validToken($cleanToken); 
 	
 			if (!$user_info) {
 				$this->session->set_flashdata('sukses', 'Token tidak valid atau kadaluarsa');

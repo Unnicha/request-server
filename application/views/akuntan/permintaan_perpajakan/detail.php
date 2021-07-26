@@ -26,7 +26,7 @@
 				<td><?= $permintaan['request'] ?></td>
 			</tr>
 			<tr>
-				<td scope="row">Pengirim</td>
+				<td scope="row">Requestor</td>
 				<td><?= ucwords($permintaan['level']) .' - '. $permintaan['nama'] ?></td>
 			</tr>
 			<tr>

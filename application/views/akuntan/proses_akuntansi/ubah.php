@@ -1,5 +1,4 @@
 <div class="container-fluid">
-	<!-- Judul Form -->
 	<div class="row row-child">
 		<div class="col">
 			<h2 class="mb-2"><?= $judul; ?></h2>
@@ -7,48 +6,46 @@
 	</div>
 	
 	<hr class="my-0">
-
+	
 	<div class="row row-child mt-3">
 		<div class="col col-proses">
+			<!-- Klien -->
+			<div class="row mb-3">
+				<div class="col col-sm-3">Klien</div> 
+				<div class="col col-sm">: <?=$pengiriman['nama_klien']?></div>
+			</div>
+			
+			<!-- Jenis Data -->
+			<div class="row mb-3">
+				<div class="col col-sm-3">Jenis Data</div> 
+				<div class="col col-sm">: <?=$pengiriman['jenis_data']?></div>
+			</div>
+			
+			<!-- Detail -->
+			<div class="row mb-3">
+				<div class="col col-sm-3">Detail</div> 
+				<div class="col col-sm">: <?=$pengiriman['detail']?></div>
+			</div>
+			
+			<!-- Output -->
+			<div class="row mb-3">
+				<div class="col col-sm-3">Output</div> 
+				<div class="col col-sm">: <?=$pengiriman['nama_tugas']?></div>
+			</div>
+			
+			<!-- Lama Pengerjaan -->
+			<div class="row mb-3">
+				<div class="col col-sm-3">Lama Pengerjaan</div> 
+				<div class="col col-sm">: <?=$pengiriman['standar']?></div>
+			</div>
+			
 			<!-- Isi Form -->
 			<form action="" method="post"> 
 				<input type="hidden" id="id_proses" name="id_proses" value="<?=$pengiriman['id_proses']?>">
 
-				<!-- Klien -->
-				<div class="form-group row">
-					<label for="id_klien" class="col-sm-3 col-form-label">Klien</label> 
-					<div class="col-sm">
-						<input type="text" name="nama_klien" class="form-control" id="nama_klien" value="<?=$pengiriman['nama_klien']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Jenis Data -->
-				<div class="form-group row">
-					<label for="jenis_data" class="col-sm-3 col-form-label">Jenis Data</label> 
-					<div class="col-sm">
-						<input type="text" name="jenis_data" class="form-control" id="jenis_data" value="<?=$pengiriman['jenis_data']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Detail -->
-				<div class="form-group row">
-					<label for="detail" class="col-sm-3 col-form-label">Detail</label> 
-					<div class="col-sm">
-						<input type="text" name="detail" class="form-control" id="detail" value="<?=$pengiriman['detail']?>" readonly>
-					</div>
-				</div>
-
-				<!-- Output -->
-				<div class="form-group row">
-					<label for="nama_tugas" class="col-sm-3 col-form-label">Output</label> 
-					<div class="col-sm">
-						<input type="text" name="nama_tugas" class="form-control" id="nama_tugas" value="<?=$pengiriman['nama_tugas']?>" readonly>
-					</div>
-				</div>
-				
 				<!-- Mulai Proses -->
 				<div class="form-group row">
-					<label for="tanggal_mulai" class="col-sm-3 col-form-label"> Mulai Proses </label> 
+					<label for="tanggal_mulai" class="col-sm-3 col-form-label">Mulai Proses</label> 
 					<div class="col-sm pr-0">
 						<input type="text" name="tanggal_mulai" class="form-control" id="tanggal_mulai" value="<?=$mulai[0]?>" readonly>
 					</div>
@@ -59,7 +56,7 @@
 
 				<!-- Selesai Proses -->
 				<div class="form-group row kalender">
-					<label for="tanggal_selesai" class="col-sm-3 col-form-label"> Selesai Proses </label> 
+					<label for="tanggal_selesai" class="col-sm-3 col-form-label">Selesai Proses</label> 
 					<div class="col-sm pr-0">
 						<div class="input-group">
 							<input type="text" name="tanggal_selesai" class="form-control date" id="tanggal_selesai" placeholder="Tanggal Selesai" autocomplete="off" required readonly>
@@ -89,7 +86,7 @@
 				<div class="row my-3 text-right">
 					<div class="col p-0">
 						<input class="btn btn-primary" type="submit" value="Selesai">
-						<a href="<?= base_url(); ?>akuntan/proses_data_akuntansi" class="btn btn-secondary mr-3">Batal</a>
+						<a href="javascript:history.go(-1)" class="btn btn-secondary mr-3">Batal</a>
 					</div>
 				</div>
 			</form>

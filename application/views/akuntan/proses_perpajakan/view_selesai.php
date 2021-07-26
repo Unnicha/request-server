@@ -1,37 +1,41 @@
 <div class="container-fluid p-0">
-		<div class="row mb-2">
-			<div class="col form-inline">
-				<select name="bulan" class="form-control mr-1" id="bulan_selesai">
-					<?php
-						$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-						foreach ($masa as $m) : 
-							if ($m['id_bulan'] == $bulan) {
-								$pilih="selected";
-							} else {
-								$pilih="";
-							} ?>
-					<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-					<?php endforeach ?>
-				</select>
-				
-				<select name="tahun" class="form-control mr-1" id="tahun_selesai">
-					<?php 
-						$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
-						for($i=$tahun; $i>=2010; $i--) :
-							if ($i == $tahun) {
-								$pilih="selected";
-							} else {
-								$pilih="";
-							} ?>
-					<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-					<?php endfor ?>
-				</select>
-
-				<select name="klien" class="form-control mr-1" id="klien_selesai">
-					<option value="">--Tidak Ada Klien--</option>
-				</select> 
-			</div>
+	<div class="row mb-2">
+		<div class="col form-inline">
+			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
+				<?php 
+					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+					foreach ($masa as $m) : 
+						if ($m['id_bulan'] == $bulan) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
+			<select name="tahun" class="form-control mr-1" id="tahun_selesai">
+				<?php 
+					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
+					for($i=$tahun; $i>=2010; $i--) :
+						if ($i == $tahun) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+				<?php endfor ?>
+			</select>
+			
+			<select name="klien" class="form-control mr-1" id="klien_selesai">
+				<option value="">--Tidak Ada Klien--</option>
+			</select>
+			
+			<a href="javascript:window.location.reload()" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Refresh">
+				<i class="bi bi-arrow-counterclockwise"></i>
+			</a>
 		</div>
+	</div>
 	
 	<div id="mb-4">
 		<table id="myTable_selesai" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
@@ -71,7 +75,6 @@
 			})
 		}
 		gantiKlien();
-		
 		var table = $('#myTable_selesai').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
@@ -92,7 +95,7 @@
 				},
 			},
 		});
-
+		
 		$("#bulan_selesai").change(function() {
 			gantiKlien();
 			table.draw();
@@ -105,7 +108,7 @@
 			table.draw();
 		})
 
-		$('#myTable_selesai tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
+		$('.container-fluid').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		})
 

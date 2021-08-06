@@ -83,7 +83,7 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<!-- Modal untuk Notifikasi -->
 		<div class="modal fade" id="modalNotif" tabindex="-1" aria-labelledby="notifLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
@@ -92,6 +92,21 @@
 						<div class="container">
 							<h3 class="my-4"><?= $this->session->flashdata('notification'); ?></h3>
 							<i class="bi bi-check-circle-fill" style="font-size:100px; color:green"></i>
+						</div>
+					</div>
+					<small class="mt-5"></small>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal untuk Warning -->
+		<div class="modal fade" id="modalWarning" tabindex="-1" aria-labelledby="warningLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content text-center" style="border-radius : 2rem">
+					<div class="modal-body p-4">
+						<div class="container">
+							<h3 class="my-4"><?= $this->session->flashdata('warning'); ?></h3>
+							<i class="bi bi-x-circle-fill" style="font-size:100px; color:red"></i>
 						</div>
 					</div>
 					<small class="mt-5"></small>

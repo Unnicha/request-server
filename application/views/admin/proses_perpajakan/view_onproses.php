@@ -1,35 +1,39 @@
 <div class="container-fluid p-0">
 	<div class="row mb-2">
 		<div class="col form-inline">
+			<select name="akuntan" class="form-control mr-1" id="akuntan_proses">
+				<option value="">--Semua Akuntan--</option>
+				<?php foreach ($akuntan as $ak) : ?>
+				<option value="<?= $ak['id_user']; ?>"> <?= $ak['nama'] ?> </option>
+				<?php endforeach ?>
+			</select>
+			
 			<select name="bulan" class="form-control mr-1" id="bulan_proses">
-				<?php 
-					$bulan = date('m');
-					$sess_bulan = $this->session->userdata('bulan');
-					if($sess_bulan) {$bulan = $sess_bulan;}
+				<?php
+					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan || $m['nama_bulan'] == $bulan) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
-				<option value="<?= $m['nama_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+						if ($m['id_bulan'] == $bulan) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
 			<select name="tahun" class="form-control mr-1" id="tahun_proses">
 				<?php 
-					$tahun = date('Y');
-					$sess_tahun = $this->session->userdata('tahun');
+					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2010; $i--) :
-						if ($i == $sess_tahun) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
+						if ($i == $tahun) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
 				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
-
+			
 			<select name="klien" class="form-control mr-1" id="klien_proses">
 				<option value="">--Tidak Ada Klien--</option>
 			</select> 
@@ -65,8 +69,9 @@
 			$.ajax({
 				type	: 'POST',
 				data	: {
-					'bulan'	: $('#bulan_proses').val(), 
-					'tahun'	: $('#tahun_proses').val(), 
+					'akuntan'	: $('#akuntan_proses').val(), 
+					'bulan'		: $('#bulan_proses').val(), 
+					'tahun'		: $('#tahun_proses').val(), 
 					},
 				url		: '<?= base_url(); ?>admin/proses/proses_data_perpajakan/gantiKlien',
 				success	: function(data) {
@@ -83,17 +88,25 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Belum ada proses"
+			},
 			'ajax'			: {
 				'type'	: 'post',
 				'data'	: function (e) { 
-					e.klien = $('#klien_proses').val(); 
-					e.bulan = $('#bulan_proses').val(); 
-					e.tahun = $('#tahun_proses').val();
+					e.akuntan	= $('#akuntan_proses').val(); 
+					e.klien		= $('#klien_proses').val(); 
+					e.bulan		= $('#bulan_proses').val(); 
+					e.tahun		= $('#tahun_proses').val();
 					},
 				'url'	: '<?=base_url()?>admin/proses/proses_data_perpajakan/page',
 			},
 		});
 
+		$("#akuntan_proses").change(function() {
+			gantiKlien();
+			table.draw();
+		});
 		$("#bulan_proses").change(function() {
 			gantiKlien();
 			table.draw();

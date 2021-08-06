@@ -40,10 +40,11 @@
 			<thead class="text-center ">
 				<tr>
 					<th scope="col">No.</th>
-					<th scope="col">Permintaan ke</th>
+					<th scope="col">ID Permintaan</th>
+					<th scope="col">Permintaan</th>
 					<th scope="col">Tanggal Permintaan</th>
-					<th scope="col">Status</th>
-					<th scope="col">Action</th>
+					<th scope="col">Requestor</th>
+					<th scope="col">Detail</th>
 				</tr>
 			</thead>
 
@@ -55,7 +56,7 @@
 
 <!-- Modal untuk Detail Akun -->
 <div class="modal fade" id="detailPermintaan" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
 		<div class="modal-content" id="showDetailPermintaan">
 			<!-- Tampilkan Data Klien-->
 		</div>
@@ -66,9 +67,27 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	function format ( rowData ) {
+		var div = $('<div/>')
+					.addClass( 'loading' )
+					.text( 'Loading...' );
+		
+		$.ajax( {
+			url		: '<?= base_url(); ?>klien/permintaan_data_perpajakan/detail',
+			data	: {
+				id: rowData[1]
+			},
+			success	: function ( e ) {
+				div
+					.html( e )
+					.removeClass( 'loading' );
+			},
+		} );
+		return div;
+	}
+	
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if( $('.notification').data('val') == 'yes' ) {
 			$('#modalNotif').modal('show');
 				setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
@@ -79,6 +98,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
+			'language'		: {
+				emptyTable	: "Belum ada permintaan"
+			},
 			'ajax'			: {
 				'url'	: '<?=base_url()?>klien/permintaan_data_perpajakan/page',
 				'type'	: 'post',
@@ -103,11 +125,25 @@
 		
 		// Detail Permintaan
 		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
-			var permintaan = $(this).data('nilai');
+			var tr	= $(this).closest('tr');
+			var row	= table.row( tr );
+			
+			if ( row.child.isShown() ) {
+				// This row is already open - close it
+				row.child.hide();
+				tr.removeClass('shown');
+			} else {
+				// Open this row
+				row.child( format(row.data()) ).show();
+				tr.addClass( 'shown' );
+			}
+		});
+		
+		$('#myTable tbody').on('click', 'a.btn-history', function() {
 			$.ajax({
-				type	: 'POST',
-				url		: '<?= base_url(); ?>klien/permintaan_data_perpajakan/detail',
-				data	: 'permintaan='+ permintaan,
+				type	: 'GET',
+				url		: '<?= base_url(); ?>klien/permintaan_data_perpajakan/detail_data',
+				data	: 'id='+ $(this).data('id'),
 				success	: function(data) {
 					$("#detailPermintaan").modal('show');
 					$("#showDetailPermintaan").html(data);

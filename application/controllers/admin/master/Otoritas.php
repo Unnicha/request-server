@@ -127,5 +127,11 @@
 				redirect('admin/master/otoritas/view/'.$_POST['id_user']);
 			}
 		}
+		
+		public function hapus() {
+			$this->Otoritas_model->hapusOtoritas($_POST['id']);
+			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			redirect('admin/master/klien');
+		}
 	}
 ?>

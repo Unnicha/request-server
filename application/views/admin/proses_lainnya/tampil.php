@@ -1,42 +1,41 @@
 <div class="container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
+	<?php endif; ?> 
+	
+	<?php if($this->session->flashdata('warning')) : ?>
+		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 
-	<h2 class="mb-2" align=center><?=$judul?></h2>
-
-	<div class="row mb-3">
-		<div class="col form-inline">
-			<label>Tampilan per</label>
-			<select name="tampil" class="form-control ml-2" id="tampil">
-				<option>Klien</option>
-				<option>Akuntan</option>
-			</select>
-			<select name="akuntan" class="form-control ml-2" id="akuntan">
-			</select>
-		</div>
-		<div class="col-3 text-right">
-			<button class="btn btn-primary btn-export">Export</button>
-		</div>
-	</div>
+	<h2 class="mb-3" align=center><?=$judul?></h2>
+	<?php $status = @$_GET['p']; ?>
 
 	<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
 		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link" id="tab-belum" data-toggle="tab" data-nilai="belum" href="#belum" role="tab" aria-controls="belum" aria-selected="false" style="color:black">Belum Diproses</a>
+			<a class="nav-link <?= ($status=='belum') ? 'active' : '' ?>" href="<?=$link?>?p=belum" id="belum" style="color:black">
+				Belum Diproses
+			</a>
 		</li>
 		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link active" id="tab-onproses" data-toggle="tab" data-nilai="onproses" href="#onproses" role="tab" aria-controls="onproses" aria-selected="true" style="color:black">Sedang Diproses</a>
+			<a class="nav-link <?= ($status=='onproses' || $status=='') ? 'active' : '' ?>" href="<?=$link?>?p=onproses" id="onproses" style="color:black">
+				Sedang Diproses
+			</a>
 		</li>
 		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link" id="tab-selesai" data-toggle="tab" data-nilai="selesai" href="#selesai" role="tab" aria-controls="selesai" aria-selected="false" style="color:black">Selesai Diproses</a>
+			<a class="nav-link <?= ($status=='selesai') ? 'active' : '' ?>" href="<?=$link?>?p=selesai" id="selesai" style="color:black">
+				Selesai Diproses
+			</a>
+		</li>
+		<li class="nav-item tab-proses" role="presentation">
+			<a class="nav-link <?= ($status=='export') ? 'active' : '' ?>" href="<?=$link?>?p=export" id="export" style="color:black">
+				Export
+			</a>
 		</li>
 	</ul>
 
 
 	<div class="tab-content container-proses py-3 mb-3" id="myTabContent">
-		<div class="tab-pane fade" id="belum" role="tabpanel" aria-labelledby="tab-belum">belum</div>
-		<div class="tab-pane fade show active" id="onproses" role="tabpanel" aria-labelledby="tab-onproses">onproses</div>
-		<div class="tab-pane fade" id="selesai" role="tabpanel" aria-labelledby="tab-selesai">selesai</div>
+		<div class="tab-pane fade show active"></div>
 	</div>
 </div>
 
@@ -86,56 +85,26 @@
 
 <script>
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
-
-		function tampilan() {
+		if($('.warning').data('val') == 'yes') {
+			$('#modalWarning').modal('show');
+			//setTimeout(function(){ $('#modalWarning').modal('hide'); },2000);
+		}
+		
+		function view() {
 			$.ajax({
 				type	: 'POST',
-				data	: { tampil : $('#tampil').val() },
-				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/gantiTampilan',
+				data	: 'tab='+$('.nav-link.active').attr('id'),
+				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/prosesOn',
 				success	: function(data) {
-					$("#akuntan").html(data);
+					$('.tab-pane').html(data);
 				}
 			})
 		}
-		function view(status) {
-			$.ajax({
-				type: 'POST',
-				data: {
-					status	: status,
-					tampil	: $('#tampil').val(),
-					akuntan	: $('#akuntan').val(),
-					},
-				url: '<?= base_url(); ?>admin/proses/proses_data_lainnya/prosesOn',
-				success: function(data) {
-					$('#'+status).html(data);
-				}
-			})
-		}
-		tampilan();
-		view( $('#myTab li a.active').data('nilai') );
-
-		$('#tampil').on('change', function() {
-			tampilan();
-			view( $('#myTab li a.active').data('nilai') );
-		});
-		$('#akuntan').on('change', function() {
-			view( $('#myTab li a.active').data('nilai') );
-		});
-		
-		$('#tab-onproses').click(function() {
-			view( $(this).data('nilai') );
-		});
-		$('#tab-belum').click(function() {
-			view( $(this).data('nilai') );
-		});
-		$('#tab-selesai').click(function() {
-			view( $(this).data('nilai') );
-		});
+		view();
 
 		// Batal
 		$('.showBatalProses').click(function() {
@@ -143,7 +112,7 @@
 			var status	= $('#myTab li a.active').data('nilai');
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/batal_'+status,
+				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/batal',
 				data	: 'id=' +id,
 				success	: function() {
 					$('.batalProses').modal('hide');

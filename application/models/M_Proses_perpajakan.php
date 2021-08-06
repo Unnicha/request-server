@@ -94,35 +94,38 @@
 		}
 
 		public function batalProses($data) {
-			$max = $this->db->select_max('idt_proses')
-							->where('id_proses', $data['id_proses'])
-							->get('trash_proses_perpajakan')->row_array();
-			if($max) {
-				$idt		= substr($max['idt_proses'], -2);
-				$idt_proses	= $data['id_proses'] . ++$idt;
-			} else {
-				$idt_proses	= $data['id_proses'] . '00';
-			}
-			
-			$trow = [
-				'idt_proses'		=> $idt_proses,
-				'tanggal_cancel'	=> date('d-m-Y H:i'),
-				'id_proses'			=> $data['id_proses'],
-				'tanggal_proses'	=> $data['tanggal_proses'],
-				'tanggal_mulai'		=> $data['tanggal_mulai'],
-				'tanggal_selesai'	=> $data['tanggal_selesai'],
-				'ket_proses'		=> $data['ket_proses'],
-				'id_data'			=> $data['id_data'],
-				'id_disposer3'		=> $data['id_disposer3'],
-			];
-			$this->db->insert('trash_proses_perpajakan', $trow);
-			
 			if($data['jenis_proses'] == 'onproses') {
+				$max = $this->db->select_max('idt_proses')
+								->where('id_proses', $data['id_proses'])
+								->get('trash_proses_perpajakan')->row_array();
+				if($max) {
+					$idt		= substr($max['idt_proses'], -2);
+					$idt_proses	= $data['id_proses'] . ++$idt;
+				} else {
+					$idt_proses	= $data['id_proses'] . '00';
+				}
+				
+				$trow = [
+					'idt_proses'		=> $idt_proses,
+					'tanggal_cancel'	=> date('d-m-Y H:i'),
+					'id_proses'			=> $data['id_proses'],
+					'tanggal_proses'	=> $data['tanggal_proses'],
+					'tanggal_mulai'		=> $data['tanggal_mulai'],
+					'tanggal_selesai'	=> $data['tanggal_selesai'],
+					'ket_proses'		=> $data['ket_proses'],
+					'id_data'			=> $data['id_data'],
+					'id_disposer3'		=> $data['id_disposer3'],
+				];
+				$this->db->insert('trash_proses_perpajakan', $trow);
 				$this->db->delete('proses_perpajakan', ['id_proses' => $data['id_proses']]);
 			} else {
+				$selesai		= $data['temp_selesai'].'|'.$data['tanggal_selesai'];
+				$mulai			= $data['temp_mulai'].'|'.date('d/m/Y H:i');
+				$temp_selesai	= $data['temp_selesai'] ? $selesai : $data['tanggal_selesai'];
+				$temp_mulai		= $data['temp_mulai'] ? $mulai : date('d/m/Y H:i');
 				$row = [
-					'temp_selesai'		=> $data['tanggal_selesai'],
-					'temp_mulai'		=> date('d/m/Y H:i'),
+					'temp_selesai'		=> $temp_selesai,
+					'temp_mulai'		=> $temp_mulai,
 					'tanggal_selesai'	=> null,
 				];
 				$this->db->update('proses_perpajakan', $row, ['id_proses' => $data['id_proses']]);

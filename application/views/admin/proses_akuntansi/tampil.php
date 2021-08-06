@@ -1,6 +1,10 @@
 <div class="container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
+	<?php endif; ?> 
+	
+	<?php if($this->session->flashdata('warning')) : ?>
+		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 
 	<h2 class="mb-3" align=center><?=$judul?></h2>
@@ -81,10 +85,13 @@
 
 <script>
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
+		}
+		if($('.warning').data('val') == 'yes') {
+			$('#modalWarning').modal('show');
+			//setTimeout(function(){ $('#modalWarning').modal('hide'); },2000);
 		}
 		
 		function view() {

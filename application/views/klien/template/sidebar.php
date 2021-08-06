@@ -25,7 +25,7 @@
 			<ul class="nav flex-column">
 				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
 					<span>Permintaan Data</span>
-					<span class="badge badge-light float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan'); ?></span>
+					<span class="badge badge-light float-right mt-1" id="notif"><?= $this->session->userdata('permintaan'); ?></span>
 				</h6>
 				<div class="">
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_akuntansi">

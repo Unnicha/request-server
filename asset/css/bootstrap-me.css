@@ -210,8 +210,8 @@ hr.hr-profil {
 }
 .nav-link.active {
 	color: #fff!important;
-	background-color:#0096ff!important; 
-	border-color:#0096ff!important; 
+	background-color:#1e97ec!important; 
+	border-color:#1e97ec!important; 
 }
 .nav-profile {
 	color:white; 
@@ -233,6 +233,14 @@ hr.hr-profil {
 .navbar {
 	background-color: #3381bf
 }
+.notif-berhasil {
+	font-size:100px;
+	color:green;
+}
+.notif-gagal {
+	font-size:100px;
+	color:red;
+}
 .reset-date {
 	background-color: #e9ecef;
 	border-color: #ced4da;
@@ -240,6 +248,9 @@ hr.hr-profil {
 .row.row-child {
 	margin-left: 0;
 	margin-right: 0;
+}
+.row-detail {
+	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
 }
 .sidebar-icon {
 	font-size: 18px;
@@ -268,7 +279,7 @@ hr.hr-profil {
 	*/
 }
 .tab-proses {
-	background-color: #c1e5ff; 
+	background-color: #95d4ff; 
 	border: .5px solid #e6f4ff;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;

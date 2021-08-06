@@ -1,25 +1,24 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
+	use PhpOffice\PhpSpreadsheet\Spreadsheet;
 	use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-    class ExportPengiriman {
-        protected $ci;
+	class ExportPengiriman {
+		protected $ci;
 		
-        function __construct() {
+		function __construct() {
 			$this->ci =& get_instance();
-            require_once APPPATH.'third_party/fpdf/fpdf.php';
-        }
+			require_once APPPATH.'third_party/fpdf/fpdf.php';
+		}
 		
-        public function exportExcel($data) {
-			
+		public function exportExcel($data) {
 			$spreadsheet = new Spreadsheet();
 			$spreadsheet->getProperties()->setCreator('HRWConsulting');
 			
 			// Add some data
 			$index = 1;
-			foreach($data['klien'] as $k) {
-				$this->newSheet($data, $spreadsheet, $k, $index);
+			foreach($data['pengiriman'] as $pengiriman) {
+				$this->newSheet($data, $spreadsheet, $pengiriman, $index);
 				$index++;
 			}
 			$spreadsheet->removeSheetByIndex(0);
@@ -34,32 +33,24 @@
 			exit;
 		}
 		
-		public function newSheet($data, $spreadsheet, $k, $index) {
-			
+		public function newSheet($data, $spreadsheet, $pengiriman, $index) {
 			$sheet = $spreadsheet->createSheet();
 			$sheet = $spreadsheet->setActiveSheetIndex($index)
-			/*
-				->setCellValue('A1', 'Klien')
-				->setCellValue('B1', ' ')
-				->setCellValue('A2', 'Masa')
-				->setCellValue('B2', $data['bulan'])
-				->setCellValue('A3', 'Tahun')
-				->setCellValue('B3', $data['tahun'])
-			*/
-				->setCellValue('A1', 'No.')
-				->setCellValue('B1', 'Jenis Data')
-				->setCellValue('C1', 'Format Data')
-				->setCellValue('D1', 'Status')
-				->setCellValue('E1', 'Jenis Pengiriman')
-				->setCellValue('F1', 'File')
-				->setCellValue('G1', 'Tanggal Ambil')
-				->setCellValue('H1', 'Tanggal Pengiriman')
-				->setCellValue('I1', 'Keterangan');
-
+								->setCellValue('A1', 'No.')
+								->setCellValue('B1', 'Permintaan ke')
+								->setCellValue('B1', 'Pengiriman ke')
+								->setCellValue('C1', 'Tanggal permintaan')
+								->setCellValue('D1', 'Requestor')
+								->setCellValue('E1', 'Jenis Data')
+								->setCellValue('F1', 'Detail')
+								->setCellValue('G1', 'Format Data')
+								->setCellValue('H1', 'Tanggal Pengiriman')
+								->setCellValue('I1', 'Keterangan');
+			
 			// Miscellaneous glyphs, UTF-8
 			$i=2; $num=1;
 			$permintaan = $data['permintaan'];
-			foreach($permintaan[$k['id_klien']] as $o) {
+			foreach($permintaan[$pengiriman['id_klien']] as $o) {
 				// Status Pengiriman
 				if($o['id_pengiriman'] == null)
 					$status = 'Belum Diterima';
@@ -84,7 +75,7 @@
 				$i++; $num++;
 			}
 			
-			$spreadsheet->getActiveSheet()->setTitle($k['nama_klien']);
+			$spreadsheet->getActiveSheet()->setTitle($pengiriman['nama_klien']);
 			return $spreadsheet;
 		}
 		

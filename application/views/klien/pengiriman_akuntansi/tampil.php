@@ -2,10 +2,9 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
-	<!-- Judul -->
+	
 	<h2 class="text-center"> <?= $judul; ?> </h2>
-
+	
 	<div class="row form-inline"> 
 		<div class="col">
 			<!-- Ganti Bulan -->
@@ -13,11 +12,11 @@
 				<?php 
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-							?>
+						if ($m['id_bulan'] == $bulan) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
 				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
@@ -25,15 +24,14 @@
 			<!-- Ganti Tahun -->
 			<select name='tahun' class="form-control" id="tahun">
 				<?php 
-					$tahun = date('Y');
-					$sess_tahun = $this->session->userdata('tahun');
-					for($i=$tahun; $i>=2016; $i--) :
-						if ($i == $sess_tahun) 
-						{ $pilih="selected"; } 
-						else 
-						{ $pilih=""; }
-				?>
-				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+					$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
+					for($i=date('Y'); $i>=2016; $i--) :
+						if ($i == $sess_tahun) {
+							$pilih="selected";
+						} else {
+							$pilih="";
+						} ?>
+				<option value="<?=$i?>" <?=$pilih?>><?=$i?></option>
 				<?php endfor ?>
 			</select>
 		</div>
@@ -44,11 +42,11 @@
 			<thead class="text-center">
 				<tr>
 					<th scope="col">No.</th>
+					<th scope="col">ID Permintaan</th>
 					<th scope="col">Permintaan</th>
-					<th scope="col">Pengiriman</th>
-					<th scope="col">Tanggal Pengiriman</th>
+					<th scope="col">Tanggal Permintaan</th>
 					<th scope="col">Status</th>
-					<th scope="col">Action</th>
+					<th scope="col">Detail</th>
 				</tr>
 			</thead>
 
@@ -61,7 +59,7 @@
 
 <!-- Modal untuk Detail Pengiriman -->
 <div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
 		<div class="modal-content" id="showDetailPengiriman">
 			<!-- Tampilkan Data Klien-->
 		</div>
@@ -72,6 +70,25 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	function format ( rowData ) {
+		var div = $('<div/>')
+					.addClass( 'loading' )
+					.text( 'Loading...' );
+		
+		$.ajax( {
+			url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail',
+			data	: {
+				id: rowData[1]
+			},
+			success	: function ( e ) {
+				div
+					.html( e )
+					.removeClass( 'loading' );
+			},
+		} );
+		return div;
+	}
+	
 	$(document).ready(function() {
 		// Pop-up message success
 		var notif = $('.notification').data('val');
@@ -88,7 +105,7 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'language'		: {
-				emptyTable	: "Belum ada data terkirim"
+				emptyTable	: "Belum ada pengiriman selesai"
 			},
 			//'pageLength': 9,
 			'ajax'		: {
@@ -118,16 +135,32 @@
 		});
 		
 		// Detail Pengiriman
-		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
-			var id = $(this).data('nilai');
+		
+		
+		// Detail Permintaan
+		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
+			var tr	= $(this).closest('tr');
+			var row	= table.row( tr );
+			
+			if ( row.child.isShown() ) {
+				// This row is already open - close it
+				row.child.hide();
+				tr.removeClass('shown');
+			} else {
+				// Open this row
+				row.child( format(row.data()) ).show();
+				tr.addClass( 'shown' );
+			}
+		});
+		
+		$('#myTable tbody').on('click', 'a.btn-history', function() {
 			$.ajax({
-				type	: 'POST',
-				url		: '<?= base_url(); ?>klien/pengiriman_data_akuntansi/detail',
-				//data	: 'action ='+ id,
-				data	: {action : id},
+				type	: 'GET',
+				url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail_data',
+				data	: 'id='+ $(this).data('id'),
 				success	: function(data) {
-					$("#detailPengiriman").modal('show');
-					$("#showDetailPengiriman").html(data);
+					$("#detailPermintaan").modal('show');
+					$("#showDetailPermintaan").html(data);
 				}
 			})
 		});

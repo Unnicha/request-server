@@ -7,67 +7,96 @@
 
 <div class="modal-body">
 	<div class="container-fluid p-0">
-	<table class="table table-striped table-detail" id="data">
+	<table class="table table-striped table-bordered table-detail" id="data">
 		<tbody>
 			<tr>
-				<td scope="row">Tanggal Permintaan</td>
+				<td colspan="2">Tanggal Permintaan</td>
 				<td><?= $pengiriman['tanggal_permintaan']; ?></td>
 			</tr>
 			<tr>
-				<td scope="row">Permintaan / Pengiriman</td>
-				<td><?= $pengiriman['request'].' / '.$pengiriman['pembetulan'] ?></td>
+				<td colspan="2">Permintaan</td>
+				<td><?= $pengiriman['request'] ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">Pengiriman</td>
+				<td><?= $pengiriman['pembetulan'] ?></td>
 			</tr>
 			
 			<!-- DATA -->
 			<tr>
-				<td scope="row"><h6 class="my-1">Data (<?= count($isi) ?>)</h6></td>
+				<td colspan="2" style="border-right-color:#fff">
+					<h6 class="my-1">Data (<?= count($isi) ?>)</h6>
+				</td>
 				<td>
 					<?php if($button == true) : ?>
-						<a href="<?=base_url('klien/pengiriman_data_perpajakan/lengkapi/'.$pengiriman['id_pengiriman'])?>" class="btn btn-sm btn-primary">Lengkapi Data</a>
+						<a href="<?=base_url('klien/pengiriman_data_perpajakan/lengkapi/'.$pengiriman['id_pengiriman'])?>" class="btn btn-sm btn-primary float-right">Lengkapi Data</a>
 					<?php endif ?>
 				</td>
 			</tr>
 			
 			<?php $num=0; foreach($isi as $i) : ?>
 			<tr>
-				<td colspan="2">
+				<td class="align-top"><?= ++$num ?>.</td>
+				<td>
 					<div class="form-row">
-						<div class="col-1 text-center">
-							<b><?= ++$num ?>.</b>
-						</div>
 						<div class="col">
 							<div class="form-row mb-1">
-								<div class="col-5">Jenis Data</div>
-								<div class="col">: <?= $i['jenis_data'] ?></div>
+								<div class="col">Jenis Data</div>
 							</div>
 							<div class="form-row mb-1">
-								<div class="col-5">Detail</div>
-								<div class="col">: <?= $i['detail'] ?></div>
+								<div class="col">Detail</div>
 							</div>
 							
 							<?php if($i['tanggal_pengiriman']) : ?>
 							<div class="form-row mb-1">
-								<div class="col-5">Tanggal Pengiriman</div>
-								<div class="col">: <?= $i['tanggal_pengiriman'] ?></div>
+								<div class="col">Tanggal Pengiriman</div>
 							</div>
 							<div class="form-row mb-1">
-								<div class="col-5"><?= $add[$num]['file_title'] ?></div>
-								<div class="col">: <?= $add[$num]['file'] ?></div>
+								<div class="col"><?= $add[$num]['file_title'] ?></div>
 							</div>
 							<div class="form-row mb-1">
-								<div class="col-5">Note</div>
-								<div class="col">: <?= $i['ket_file'] ?></div>
+								<div class="col">Note</div>
 							</div>
 							<?php else : ?>
 							<div class="form-row mb-1">
-								<div class="col-5">Format Data</div>
-								<div class="col">: <?= $i['format_data'] ?></div>
+								<div class="col">Format Data</div>
 							</div>
 							<?php endif ?>
 							
 							<div class="form-row mb-1">
-								<div class="col-5">Status</div>
-								<div class="col">: <?= $add[$num]['status'] ?></div>
+								<div class="col">Status</div>
+							</div>
+						</div>
+					</div>
+				</td>
+				<td>
+					<div class="form-row">
+						<div class="col">
+							<div class="form-row mb-1">
+								<div class="col"><?= $i['jenis_data'] ?></div>
+							</div>
+							<div class="form-row mb-1">
+								<div class="col"><?= $i['detail'] ?></div>
+							</div>
+							
+							<?php if($i['tanggal_pengiriman']) : ?>
+							<div class="form-row mb-1">
+								<div class="col"><?= $i['tanggal_pengiriman'] ?></div>
+							</div>
+							<div class="form-row mb-1">
+								<div class="col"><?= $add[$num]['file'] ?></div>
+							</div>
+							<div class="form-row mb-1">
+								<div class="col"><?= $i['ket_file'] ? $i['ket_file'] : '<br>' ?></div>
+							</div>
+							<?php else : ?>
+							<div class="form-row mb-1">
+								<div class="col"><?= $i['format_data'] ?></div>
+							</div>
+							<?php endif ?>
+							
+							<div class="form-row mb-1">
+								<div class="col"><?= $add[$num]['status'] ?></div>
 							</div>
 						</div>
 					</div>

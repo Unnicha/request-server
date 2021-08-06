@@ -7,74 +7,77 @@
 
 <div class="modal-body">
 	<div class="container-fluid p-0">
-	<table class="table table-striped table-detail" id="data">
-		<tbody>
-			<tr>
-				<td scope="row">Tanggal Permintaan</td>
-				<td><?= $pengiriman['tanggal_permintaan']; ?></td>
-			</tr>
-			<tr>
-				<td scope="row">Permintaan / Pengiriman</td>
-				<td><?= $pengiriman['request'].' / '.$pengiriman['pembetulan'] ?></td>
-			</tr>
-			
-			<!-- DATA -->
-			<tr>
-				<td scope="row"><h6 class="my-1">Data (<?= count($isi) ?>)</h6></td>
-				<td>
-					<?php if($button == true) : ?>
-						<a href="<?=base_url('klien/pengiriman_data_akuntansi/lengkapi/'.$pengiriman['id_pengiriman'])?>" class="btn btn-sm btn-primary">Lengkapi Data</a>
-					<?php endif ?>
-				</td>
-			</tr>
-			
-			<?php $num=0; foreach($isi as $i) : ?>
-			<tr>
-				<td colspan="2">
-					<div class="form-row">
-						<div class="col-1 text-center">
-							<b><?= ++$num ?>.</b>
-						</div>
-						<div class="col">
-							<div class="form-row mb-1">
-								<div class="col-5">Jenis Data</div>
-								<div class="col">: <?= $i['jenis_data'] ?></div>
-							</div>
-							<div class="form-row mb-1">
-								<div class="col-5">Detail</div>
-								<div class="col">: <?= $i['detail'] ?></div>
-							</div>
-							
-							<?php if($i['tanggal_pengiriman']) : ?>
-							<div class="form-row mb-1">
-								<div class="col-5">Tanggal Pengiriman</div>
-								<div class="col">: <?= $i['tanggal_pengiriman'] ?></div>
-							</div>
-							<div class="form-row mb-1">
-								<div class="col-5"><?= $add[$num]['file_title'] ?></div>
-								<div class="col">: <?= $add[$num]['file'] ?></div>
-							</div>
-							<div class="form-row mb-1">
-								<div class="col-5">Note</div>
-								<div class="col">: <?= $i['ket_file'] ?></div>
-							</div>
-							<?php else : ?>
-							<div class="form-row mb-1">
-								<div class="col-5">Format Data</div>
-								<div class="col">: <?= $i['format_data'] ?></div>
-							</div>
-							<?php endif ?>
-							
-							<div class="form-row mb-1">
-								<div class="col-5">Status</div>
-								<div class="col">: <?= $add[$num]['status'] ?></div>
-							</div>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php endforeach ?>
-		</tbody>
-	</table>
+		<table class="table table-striped table-bordered table-detail" id="data">
+			<tbody>
+				<tr>
+					<td colspan="2">Tanggal Permintaan</td>
+					<td><?= $pengiriman['tanggal_permintaan']; ?></td>
+				</tr>
+				<tr>
+					<td colspan="2">Permintaan ke</td>
+					<td><?= $pengiriman['request'] ?></td>
+				</tr>
+				<tr>
+					<td colspan="2">Pengiriman ke</td>
+					<td><?= $pengiriman['pengiriman'] ?></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<div class="row py-2">
+			<div class="col"><h5 class="my-1">Detail Data (<?= count($isi) ?>)</h5></div>
+		</div>
+		
+		<table class="table table-striped table-bordered mb-0">
+			<tbody>
+			<?php foreach($isi as $i => $val) : ?>
+				<!-- Data <?=$i+1?> -->
+				<tr>
+					<td class="text-center"><?=$i+1?>.</td>
+					<td>Jenis Data</td>
+					<td><?= $val['jenis_data'] ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Detail</td>
+					<td><?= $val['detail'] ?></td>
+				</tr>
+				<?php if($val['tanggal_pengiriman']) : ?>
+				<tr>
+					<td></td>
+					<td>Tanggal Pengiriman</td>
+					<td><?= $val['tanggal_pengiriman'] ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><?= $add[$i]['file_title'] ?></td>
+					<td><?= $add[$i]['file'] ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Note</td>
+					<td><?= $val['ket_file'] ? $val['ket_file'] : '<br>' ?></td>
+				</tr>
+				<?php else : ?>
+				<tr>
+					<td></td>
+					<td>Format Data</td>
+					<td><?= $val['format_data'] ?></td>
+				</tr>
+				<?php endif ?>
+				<tr>
+					<td></td>
+					<td>Status</td>
+					<td><?= $add[$i]['status'] ?></td>
+				</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
 	</div>
 </div>
+
+<script>
+	$('[data-toggle="tooltip"]').mouseover(function() {
+		$(this).tooltip();
+	});
+</script>

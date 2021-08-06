@@ -5,13 +5,11 @@
 	
 	<?php if($this->session->flashdata('warning')) : ?>
 		<div class="warning" data-val="yes"></div>
-	<?php endif; ?> 
-
-	<!-- Judul Table-->
+	<?php endif; ?>
+	
 	<h2 align="center"><?= $judul ?></h2>
 	
 	<div class="row float-left mt-1">
-		<!-- Tombol Tambah Data -->
 		<div class="col">
 			<a href="<?= base_url(); ?>admin/master/otoritas/tambah" class="btn btn-success">
 				<i class="bi-plus"></i>

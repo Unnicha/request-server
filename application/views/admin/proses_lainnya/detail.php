@@ -5,13 +5,17 @@
 	</button>
 </div>
 
-<div class="modal-body">
-	<div class="container p-0">
-		<table class="table table-striped table-detail" id="data">
+<div class="modal-body p-3">
+	<div class="container-fluid p-0">
+		<table class="table table-striped table-bordered table-detail mb-0" id="data">
 			<tbody>
 				<tr>
-					<td scope="row">ID Proses</td>
-					<td><?= $proses['id_pengiriman'] ?></td>
+					<td scope="row" width="35%">Tanggal Input</td>
+					<td><?= $proses['tanggal_proses'] ?></td>
+				</tr>
+				<tr>
+					<td scope="row">Akuntan</td>
+					<td><?= $proses['nama'] ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Klien</td>
@@ -22,24 +26,12 @@
 					<td><?= $proses['jenis_data'] ?></td>
 				</tr>
 				<tr>
+					<td scope="row">Detail</td>
+					<td><?= $proses['detail'] ?></td>
+				</tr>
+				<tr>
 					<td scope="row">Nama Tugas</td>
 					<td><?= $proses['nama_tugas'] ?></td>
-				</tr>
-				<tr>
-					<td scope="row">Masa</td>
-					<td><?= $proses['masa'] ?></td>
-				</tr>
-				<tr>
-					<td scope="row">Tahun</td>
-					<td><?= $proses['tahun'] ?></td>
-				</tr>
-				<tr>
-					<td scope="row">Permintaan ke</td>
-					<td><?= $proses['request'] ?></td>
-				</tr>
-				<tr>
-					<td scope="row">Pengiriman ke</td>
-					<td><?= ($proses['pembetulan'] + 1) ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Mulai Proses</td>
@@ -50,16 +42,20 @@
 					<td><?= $proses['tanggal_selesai'] ?></td>
 				</tr>
 				<tr>
-					<td scope="row">Durasi</td>
-					<td><?= $durasi ?></td>
+					<td scope="row">Status</td>
+					<td><?= $add['status'] ?></td>
+				</tr>
+				<tr>
+					<td scope="row">Durasi Proses</td>
+					<td><?= $add['durasi'] ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Standar durasi</td>
-					<td><?= $proses['lama_pengerjaan'] ?></td>
+					<td><?= $add['standar'] ?></td>
 				</tr>
 				<tr>
 					<td scope="row">Keterangan</td>
-					<td><?= $proses['keterangan3'] ?></td>
+					<td><?= $proses['ket_proses'] ?></td>
 				</tr>
 			</tbody>
 		</table>

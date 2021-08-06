@@ -113,6 +113,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
+			'language'		: {
+				emptyTable	: "Belum ada permintaan"
+			},
 			//'pageLength': 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>admin/permintaan/permintaan_data_lainnya/page',

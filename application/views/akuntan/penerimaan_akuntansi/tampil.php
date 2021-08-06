@@ -2,47 +2,65 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
-	<!-- Judul -->
-	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
+	<?php if($this->session->flashdata('warning')) : ?>
+		<div class="warning" data-val="yes"></div>
+	<?php endif; ?>
 	
-	<div class="row form-inline">
-		<div class="col">
-			<!-- Ganti Bulan -->
-			<select name='bulan' class="form-control" id="bulan">
-				<?php 
-					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-							?>
-				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-				<?php endforeach ?>
-			</select>
+	<h2 class="mb-3" align="center"><?=$judul?></h2>
+	
+	<form action="<?=base_url()?>akuntan/penerimaan_data_akuntansi/export" method="post">
+		<div class="row">
+			<div class="col-sm px-0">
+				<div class="row form-inline">
+					<div class="col">
+						<!-- Ganti Bulan -->
+						<select name='bulan' class="form-control" id="bulan">
+							<?php 
+								$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+								foreach ($masa as $m) :
+									if ($m['id_bulan'] == $bulan) {
+										$pilih="selected";
+									} else {
+										$pilih="";
+									} ?>
+							<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+							<?php endforeach ?>
+						</select>
+						
+						<!-- Ganti Tahun -->
+						<select name='tahun' class="form-control" id="tahun">
+							<?php 
+								$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
+								for($i=date('Y'); $i>=2010; $i--) :
+									if ($i == $sess_tahun) {
+										$pilih="selected";
+									} else {
+										$pilih="";
+									} ?>
+							<option value="<?=$i?>" <?=$pilih?>> <?=$i?> </option>
+							<?php endfor ?>
+						</select>
+						
+						<!-- Ganti Klien -->
+						<select name='klien' class="form-control" id="klien">
+							<option value=""> Semua Klien </option>
+						</select> 
+					</div>
+				</div>
+			</div>
 			
-			<!-- Ganti Tahun -->
-			<select name='tahun' class="form-control" id="tahun">
-				<?php 
-					$tahun = date('Y');
-					$sess_tahun = $this->session->userdata('tahun');
-					for($i=$tahun; $i>=2010; $i--) :
-						if ($i == $sess_tahun) 
-							{ $pilih="selected"; } 
-						else 
-							{ $pilih=""; }
-				?>
-				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-				<?php endfor ?>
-			</select>
-			
-			<!-- Ganti Klien -->
-			<select name='klien' class="form-control" id="klien">
-				<option value=""> Semua Klien </option>
-			</select> 
+			<div class="col-sm-3">
+				<div class="btn-group float-right" role="group" aria-label="Basic example">
+					<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
+						<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
+					</button>
+					<button type="submit" name="export" value="pdf" class="btn btn-pdf" data-toggle="tooltip" data-placement="bottom" title="Export PDF">
+						<i class="bi bi-file-earmark-pdf" style="font-size:20px"></i>
+					</button>
+				</div>
+			</div>
 		</div>
-	</div>
+	</form>
 	
 	<div class="mt-2 mb-4">
 		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
@@ -50,11 +68,11 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
+					<th scope="col">ID Permintaan</th>
 					<th scope="col">Permintaan</th>
-					<th scope="col">Pengiriman</th>
-					<th scope="col">Tanggal Pengiriman</th>
-					<th scope="col">Status</th>
-					<th scope="col">Detail</th>
+					<th scope="col">Tanggal Permintaan</th>
+					<th scope="col">Requestor</th>
+					<th scope="col">Action</th>
 				</tr>
 			</thead>
 
@@ -64,25 +82,36 @@
 	</div>
 </div>
 
-
-<!-- Modal untuk Detail Pengiriman -->
-<div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:600px">
-		<div class="modal-content" id="showDetailPengiriman">
-			<!-- Tampilkan Data Klien-->
-		</div>
-	</div>
-</div>
-
-
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	function format ( rowData ) {
+		var div = $('<div/>')
+					.addClass( 'loading' )
+					.text( 'Loading...' );
+		
+		$.ajax( {
+			url		: '<?= base_url(); ?>akuntan/penerimaan_data_akuntansi/pageChild',
+			data	: {
+				id: rowData[2]
+			},
+			success	: function ( e ) {
+				div
+					.html( e )
+					.removeClass( 'loading' );
+			},
+		} );
+		return div;
+	}
+	
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
+		}
+		if($('.warning').data('val') == 'yes') {
+			$('#modalWarning').modal('show');
+			//setTimeout(function(){ $('#modalWarning').modal('hide'); },2000);
 		}
 		
 		function klien() {
@@ -119,7 +148,13 @@
 				},
 			},
 			'columnDefs'	: [ 
-				{ className: "align-top", targets: "_all" },
+				{
+					className: "align-top",
+					targets: "_all" },
+				{
+					'targets'	: 2,
+					'visible'	: false,
+				},
 			],
 		});
 		
@@ -141,18 +176,18 @@
 		
 		// Detail Permintaan
 		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
-			var pengiriman = $(this).data('nilai');
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>akuntan/penerimaan_data_akuntansi/detail',
-				data: 'action='+ pengiriman,
-				success: function(data) {
-					$("#detailPengiriman").modal('show');
-					$("#showDetailPengiriman").html(data);
-				}
-			})
+			var tr	= $(this).closest('tr');
+			var row	= table.row( tr );
+			
+			if ( row.child.isShown() ) {
+				// This row is already open - close it
+				row.child.hide();
+				tr.removeClass('shown');
+			} else {
+				// Open this row
+				row.child( format(row.data()) ).show();
+				tr.addClass( 'shown' );
+			}
 		});
 	});
 </script>
-<!--
--->

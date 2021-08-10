@@ -33,26 +33,16 @@
 			
 			$data = [];
 			foreach($pengiriman as $k) {
-				$action	= '
-					<a class="btn-detail_permintaan" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Detail">
-						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
-					</a>';
-				
-				if(isset($k['id_pengiriman'])) {
-					$badge = '<span class="badge badge-warning">Belum Lengkap</span>';
-					//$action .= '<a href="permintaan_data_akuntansi/lengkapi/'.$k['id_pengiriman'].'" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="bottom" title="Lengkapi Data"><i class="bi bi-file-earmark-plus"></i></a>';
-				} else {
-					$badge = '<span class="badge badge-danger">Belum Dikirim</span>';
-					//$action .= '<a href="permintaan_data_akuntansi/kirim/'.$k['id_permintaan'].'" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="bottom" title="Kirim Data"><i class="bi bi-file-earmark-arrow-up"></i></a>';
-				}
-				
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
-				$row[]	= $badge;
-				$row[]	= $action;
+				$row[]	= $k['nama'];
+				$row[]	= '
+					<a class="btn-detail_pengiriman" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Detail">
+						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
+					</a>';
 				
 				$data[] = $row;
 			}
@@ -65,65 +55,45 @@
 			echo json_encode($callback);
 		}
 		
-		public function detail() {
-			$pengiriman	= $this->M_Pengiriman_akuntansi->getById($this->input->post('action', true));
-			$isi		= $this->M_Pengiriman_akuntansi->getDetail($pengiriman['id_permintaan']);
-			$bulan		= $this->Klien_model->getMasa($pengiriman['bulan']);
-			$lokasi		= 'asset/uploads/'.$pengiriman['nama_klien'].'/'.$pengiriman['tahun'].'/';
+		public function pageChild() {
+			$id_permintaan	= $_GET['id'];
+			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
 			
 			foreach($isi as $i => $val) {
-				$linkFile = '<a href="'. base_url() . $lokasi . $val['file'].'">'. $val['file'] .'</a>';
-				
-				if($val['status'] == 1) {
-					$badge = '<span class="badge badge-warning">Belum Dikonfirmasi</span>';
-				} elseif($val['status'] == 2) {
-					$badge = '<span class="badge badge-danger">Kurang Lengkap</span>';
-				} elseif($val['status'] == 3) {
-					$badge = '<span class="badge badge-success">Sudah Dikonfirmasi</span>
-						<a href="pengiriman_data_akuntansi/revisi/'.$val['id_data'].'" class ="badge badge-primary" data-toggle="tooltip" data-placement="right" title="Kirim Revisi">
-							Revisi <i class="bi bi-file-earmark-arrow-up"></i>
-						</a>';
+				if($val['status'] == 'yes') {
+					$badge	= '<span class="badge badge-success">Lengkap</span>';
+				} elseif($val['status'] == 'no') {
+					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
 				} else {
-					$badge = '<span class="badge badge-danger">Belum Dikirim</span>';
+					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
 				}
-				
-				$add[$i] = [
-					'file_title'	=> ($val['format_data'] == 'Softcopy') ? 'File' : 'Tanggal Ambil',
-					'file'			=> ($val['format_data'] == 'Softcopy') ? $linkFile : $val['file'],
-					'status'		=> $badge,
-				];
+				$add[$i] = $badge;
 			}
-			
-			$data['judul']		= 'Detail Pengiriman Data';
-			$data['pengiriman']	= $pengiriman;
-			$data['bulan']		= $bulan['nama_bulan'];
+			$data['judul']		= 'Detail Pengiriman';
+			$data['permintaan']	= $permintaan;
 			$data['isi']		= $isi;
-			$data['add']		= $add;
+			$data['badge']		= $add;
+			$data['link']		= 'klien/pengiriman_data_akuntansi/detail/';
 			
-			$this->load->view('klien/pengiriman_akuntansi/detail', $data);
+			$this->load->view('klien/permintaan_akuntansi/rincian', $data);
 		}
 		
-		public function revisi($id_data) {
-			$data['judul']	= "Data Akuntansi - Form Revisi"; 
-			$data['isi']	= $this->M_Pengiriman_akuntansi->getDetail('', $id_data);
-			$data['batal']	= 'klien/pengiriman_data_akuntansi';
-			
-			$this->form_validation->set_rules('id_permintaan', 'File', 'required');
-			$this->form_validation->set_rules('keterangan[]', 'Keterangan', '');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('klien/pengiriman_akuntansi/revisi', $data);
+		public function detail($id_data) {
+			$detail = $this->M_Pengiriman_akuntansi->getByIdData($id_data);
+			if($detail['status'] == 'yes') {
+				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
+			} elseif($detail['status'] == 'no') {
+				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
 			} else {
-				$send = $this->M_Pengiriman_akuntansi->kirim();
-				if($send == 'ERROR') {
-					redirect('klien/pengiriman_data_akuntansi/revisi/'.$id_data);
-				} else {
-					if($send == 'OK') {
-						$this->session->set_flashdata('notification', 'Data berhasil dikirim!'); 
-					}
-					redirect('klien/pengiriman_data_akuntansi');
-				}
+				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
 			}
+			
+			$data['judul']		= "Detail Pengiriman"; 
+			$data['detail']		= $detail;
+			$data['pengiriman']	= $this->M_Pengiriman_akuntansi->getDetail($id_data);
+			
+			$this->libtemplate->main('klien/pengiriman_akuntansi/detail', $data);
 		}
 	}
 ?>

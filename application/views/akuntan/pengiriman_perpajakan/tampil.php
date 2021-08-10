@@ -8,7 +8,7 @@
 	
 	<h2 class="mb-3" align="center"><?=$judul?></h2>
 	
-	<form action="<?=base_url()?>akuntan/penerimaan_data_akuntansi/export" method="post">
+	<form action="<?=base_url()?>akuntan/pengiriman_data_perpajakan/export" method="post">
 		<div class="row">
 			<div class="col-sm px-0">
 				<div class="row form-inline">
@@ -50,7 +50,7 @@
 			</div>
 			
 			<div class="col-sm-3">
-				<div class="btn-group float-right" role="group" aria-label="Basic example">
+				<div class="btn-group float-right" role="group" aria-label="Export">
 					<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
 						<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
 					</button>
@@ -91,7 +91,7 @@
 					.text( 'Loading...' );
 		
 		$.ajax( {
-			url		: '<?= base_url(); ?>akuntan/penerimaan_data_akuntansi/pageChild',
+			url		: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/pageChild',
 			data	: {
 				id: rowData[2]
 			},
@@ -119,8 +119,11 @@
 			var tahun = $('#tahun').val();
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url(); ?>akuntan/penerimaan_data_akuntansi/klien',
-				data: {'bulan':bulan, 'tahun': tahun},
+				url: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/klien',
+				data: {
+					'bulan':bulan,
+					'tahun': tahun
+				},
 				success: function(data) {
 					$("#klien").html(data);
 				}
@@ -135,11 +138,11 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'language'		: {
-				emptyTable	: "Belum ada data diterima"
+				emptyTable	: "Belum ada pengiriman selesai"
 			},
 			//'pageLength': 9,
 			'ajax'		: {
-				'url'	: '<?=base_url()?>akuntan/penerimaan_data_akuntansi/page',
+				'url'	: '<?=base_url()?>akuntan/pengiriman_data_perpajakan/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.klien = $('#klien').val(); 

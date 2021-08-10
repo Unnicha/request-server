@@ -5,33 +5,31 @@
 	
 	<h2 class="text-center"> <?= $judul; ?> </h2>
 	
-	<div class="row form-inline"> 
+	<div class="row form-inline">
 		<div class="col">
-			<!-- Ganti Bulan -->
 			<select name='bulan' class="form-control" id="bulan">
 				<?php 
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) : 
 						if ($m['id_bulan'] == $bulan) {
-							$pilih="selected";
+							$pilih = "selected";
 						} else {
-							$pilih="";
+							$pilih = "";
 						} ?>
 				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
-			<!-- Ganti Tahun -->
 			<select name='tahun' class="form-control" id="tahun">
 				<?php 
-					$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
-					for($i=date('Y'); $i>=2016; $i--) :
-						if ($i == $sess_tahun) {
-							$pilih="selected";
+					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
+					for($i=$tahun; $i>=2016; $i--) :
+						if ($i == $tahun) {
+							$pilih = "selected";
 						} else {
-							$pilih="";
+							$pilih = "";
 						} ?>
-				<option value="<?=$i?>" <?=$pilih?>><?=$i?></option>
+				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
 		</div>
@@ -39,13 +37,13 @@
 	
 	<div class="mt-2 mb-4">
 		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
-			<thead class="text-center">
+			<thead class="text-center ">
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">ID Permintaan</th>
 					<th scope="col">Permintaan</th>
 					<th scope="col">Tanggal Permintaan</th>
-					<th scope="col">Status</th>
+					<th scope="col">Requestor</th>
 					<th scope="col">Detail</th>
 				</tr>
 			</thead>
@@ -56,11 +54,10 @@
 	</div>
 </div>
 
-
-<!-- Modal untuk Detail Pengiriman -->
-<div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
+<!-- Modal untuk Detail Akun -->
+<div class="modal fade" id="detailPermintaan" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-lg">
-		<div class="modal-content" id="showDetailPengiriman">
+		<div class="modal-content" id="showDetailPermintaan">
 			<!-- Tampilkan Data Klien-->
 		</div>
 	</div>
@@ -76,7 +73,7 @@
 					.text( 'Loading...' );
 		
 		$.ajax( {
-			url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail',
+			url		: '<?= base_url(); ?>klien/pengiriman_data_akuntansi/pageChild',
 			data	: {
 				id: rowData[1]
 			},
@@ -90,14 +87,11 @@
 	}
 	
 	$(document).ready(function() {
-		// Pop-up message success
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if( $('.notification').data('val') == 'yes' ) {
 			$('#modalNotif').modal('show');
 				setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
 		
-		// Menampilkan data dengan DataTable
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
@@ -105,40 +99,32 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'language'		: {
-				emptyTable	: "Belum ada pengiriman selesai"
+				emptyTable	: "Belum ada pengiriman"
 			},
-			//'pageLength': 9,
-			'ajax'		: {
+			'ajax'			: {
 				'url'	: '<?=base_url()?>klien/pengiriman_data_akuntansi/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
+					e.klien = $('#klien').val(); 
 					e.bulan = $('#bulan').val(); 
-					e.tahun = $('#tahun').val();
+					e.tahun = $('#tahun').val(); 
 				},
 			},
-			'columnDefs'	: [ 
-				{ className: "align-top", targets: "_all" },
-			],
-		});
-
-		// Fungsi untuk ganti tampilan
-		$("#bulan").change(function() { 
-			table.draw();
-		});
-		$("#tahun").change(function() { 
-			table.draw();
 		});
 		
-		// Mengaktifkan tooltip
+		$('#bulan').change(function() {
+			table.draw();
+		})
+		$('#tahun').change(function() {
+			table.draw();
+		})
+		
 		$('#myTable tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		});
 		
-		// Detail Pengiriman
-		
-		
 		// Detail Permintaan
-		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
+		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
 			var tr	= $(this).closest('tr');
 			var row	= table.row( tr );
 			
@@ -151,18 +137,6 @@
 				row.child( format(row.data()) ).show();
 				tr.addClass( 'shown' );
 			}
-		});
-		
-		$('#myTable tbody').on('click', 'a.btn-history', function() {
-			$.ajax({
-				type	: 'GET',
-				url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail_data',
-				data	: 'id='+ $(this).data('id'),
-				success	: function(data) {
-					$("#detailPermintaan").modal('show');
-					$("#showDetailPermintaan").html(data);
-				}
-			})
 		});
 	});
 </script>

@@ -53,8 +53,11 @@
 				$row[]	= $k['tanggal_permintaan'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
-						<i class="bi bi-info-circle"></i>
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
+						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
+					</a>
+					<a href="permintaan_data_akuntansi/edit/'.$k['id_permintaan'].'" class="btn-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
+						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
 					</a>';
 				
 				$data[] = $row;
@@ -88,13 +91,14 @@
 			$data['permintaan']	= $permintaan;
 			$data['isi']		= $isi;
 			$data['badge']		= $add;
+			$data['link']		= 'akuntan/permintaan_data_akuntansi/detail/';
 			
 			$this->load->view('akuntan/permintaan_akuntansi/rincian', $data);
 		}
 		
 		public function klien() {
-			$bulan		= ($_POST['bulan']) ? $_POST['bulan'] : date('m');
-			$tahun		= ($_POST['tahun']) ? $_POST['tahun'] : date('Y');
+			$bulan		= isset($_POST['bulan']) ? $_POST['bulan'] : date('m');
+			$tahun		= isset($_POST['tahun']) ? $_POST['tahun'] : date('Y');
 			$id_akuntan	= $this->session->userdata('id_user');
 			
 			$bulan		= $this->Klien_model->getMasa($bulan);
@@ -115,12 +119,10 @@
 			}
 			echo $lists;
 		}
-
+		
 		public function tambah() {
-			$data['judul']	= "Kirim Permintaan - Data Akuntansi"; 
+			$data['judul']	= "Kirim Permintaan"; 
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Akuntansi');
-			$bulan			= $this->Klien_model->getMasa(date('m'));
-			$data['bulan']	= $bulan['nama_bulan'];
 			
 			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
 			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
@@ -136,6 +138,25 @@
 			}
 		}
 		
+		public function edit($id_permintaan) {
+			$data['judul']		= "Edit Permintaan";
+			$data['jenis']		= $this->Jenis_data_model->getByKategori('Data Akuntansi');
+			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$data['detail']		= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
+			
+			$this->form_validation->set_rules('id_permintaan', 'ID Permintaan', 'required');
+			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
+			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
+			
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('akuntan/permintaan_akuntansi/edit', $data);
+			} else {
+				$this->M_Permintaan_akuntansi->ubahPermintaan();
+				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+				redirect('akuntan/permintaan_data_akuntansi');
+			}
+		}
+		
 		public function detail($id_data) {
 			$detail		= $this->M_Pengiriman_akuntansi->getByIdData($id_data);
 			$pengiriman	= $this->M_Pengiriman_akuntansi->getDetail($id_data);
@@ -146,6 +167,7 @@
 			} else {
 				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
 			}
+			
 			$button = '';
 			if(count($pengiriman) > 0) {
 				if($detail['status'] != 'yes') {

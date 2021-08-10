@@ -2,58 +2,52 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
-	<!-- Judul -->
+	
 	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
-		
+	
 	<div class="row"> 
-		<!-- Form Ganti Tampilan -->
 		<div class="col-sm">
-			<form action="" method="post">
-				<div class="row form-inline">
-					<div class="col px-0">
-						<!-- Ganti Bulan -->
-						<select name='bulan' class="form-control" id="bulan">
-							<?php 
-								$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-								foreach ($masa as $m) : 
-									if ($m['id_bulan'] == $bulan) 
-										{ $pilih="selected"; } 
-									else 
-										{ $pilih=""; }
-									?>
-							<option value="<?=$m['id_bulan']?>" <?=$pilih?>><?= $m['nama_bulan'] ?></option>
-							<?php endforeach ?>
-						</select>
+			<div class="row form-inline">
+				<div class="col px-0">
+					<!-- Ganti Bulan -->
+					<select name='bulan' class="form-control" id="bulan">
+						<?php
+							$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+							foreach ($masa as $m) : 
+								if ($m['id_bulan'] == $bulan) {
+									$pilih="selected";
+								} else {
+									$pilih="";
+								} ?>
+						<option value="<?=$m['id_bulan']?>" <?=$pilih?>><?= $m['nama_bulan'] ?></option>
+						<?php endforeach ?>
+					</select>
+					
+					<!-- Ganti Tahun -->
+					<select name='tahun' class="form-control" id="tahun">
+						<?php 
+							$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
+							for($i=date('Y'); $i>=2016; $i--) :
+								if ($i == $tahun) {
+									$pilih="selected";
+								} else {
+									$pilih="";
+								} ?>
+						<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+						<?php endfor ?>
+					</select>
 						
-						<!-- Ganti Tahun -->
-						<select name='tahun' class="form-control" id="tahun">
-							<?php 
-								$tahun = date('Y');
-								$sess_tahun = $this->session->userdata('tahun');
-								for($i=$tahun; $i>=2016; $i--) :
-									if ($i == $sess_tahun) 
-										{ $pilih="selected"; } 
-									else 
-										{ $pilih=""; }
-							?>
-							<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-							<?php endfor ?>
-						</select>
-							
-						<!-- Ganti Klien -->
-						<select name='klien' class="form-control" id="klien">
-							<option value=""> Semua Klien </option>
-						</select> 
-					</div>
+					<!-- Ganti Klien -->
+					<select name='klien' class="form-control" id="klien">
+						<option value=""> Semua Klien </option>
+					</select> 
 				</div>
-			</form>
+			</div>
 		</div>
 		
-		<!-- Tombol Tambah Permintaan -->
-		<div class="col-sm-3 col-md-3">
-			<a href="<?= base_url(); ?>akuntan/permintaan_data_lainnya/tambah" class="btn btn-success float-right">
-				<i class="bi-plus"></i>
+		<div class="col-sm-3">
+			<a href="<?= base_url(); ?>akuntan/permintaan_data_lainnya/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat Permintaan Baru">
+				<i class="bi-plus-circle"></i>
 				Buat
 			</a>
 		</div>
@@ -65,40 +59,48 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Nama Klien</th>
-					<th scope="col">Request ke</th>
+					<th scope="col">ID Permintaan</th>
+					<th scope="col">Permintaan</th>
 					<th scope="col">Tanggal Permintaan</th>
 					<th scope="col">Requestor</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>
-
+			
 			<tbody class="text-center">
 			</tbody>
 		</table>
 	</div>
 </div>
 
-
-<!-- Modal untuk Detail Permintaan -->
-<div class="modal fade" id="detailPermintaan" tabindex="-1" aria-labelledby="detailPermintaanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:500px">
-		<div class="modal-content" id="showDetailPermintaan">
-			<!-- Tampilkan Data Klien-->
-		</div>
-	</div>
-</div>
-
-
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	function format ( rowData ) {
+		var div = $('<div/>')
+					.addClass( 'loading' )
+					.text( 'Loading...' );
+		
+		$.ajax( {
+			url		: '<?= base_url(); ?>akuntan/permintaan_data_lainnya/pageChild',
+			data	: {
+				id: rowData[2]
+			},
+			success	: function ( e ) {
+				div
+					.html( e )
+					.removeClass( 'loading' );
+			},
+		} );
+		return div;
+	}
+	
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
-
+		
 		function klien() {
 			$.ajax({
 				type: 'POST',
@@ -133,6 +135,12 @@
 					e.tahun = $('#tahun').val();
 				},
 			},
+			'columnDefs'	: [
+				{
+					'targets'	: 2,
+					'visible'	: false,
+				},
+			],
 		});
 		
 		$("#klien").change(function() { 
@@ -153,16 +161,18 @@
 		
 		// Detail Permintaan
 		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
-			var permintaan = $(this).data('nilai');
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>akuntan/permintaan_data_lainnya/detail',
-				data: 'permintaan='+ permintaan,
-				success: function(data) {
-					$("#detailPermintaan").modal('show');
-					$("#showDetailPermintaan").html(data);
-				}
-			})
+			var tr	= $(this).closest('tr');
+			var row	= table.row( tr );
+			
+			if ( row.child.isShown() ) {
+				// This row is already open - close it
+				row.child.hide();
+				tr.removeClass('shown');
+			} else {
+				// Open this row
+				row.child( format(row.data()) ).show();
+				tr.addClass( 'shown' );
+			}
 		});
 	});
 </script>

@@ -29,6 +29,13 @@
 								<td>Status</td>
 								<td> : <?= $detail['badge'] ?></td>
 							</tr>
+							<tr>
+								<td>Action</td>
+								<td> : 
+									<?= $detail['button'] ?>
+									<a href="<?=base_url('akuntan/pengiriman_data_lainnya')?>" class="btn btn-secondary mr-1">Kembali</a>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -36,7 +43,7 @@
 			
 			<div class="row">
 				<div class="col">
-					<table class="table table-sm table-striped table-bordered table-responsive-sm">
+					<table class="table table-sm table-striped table-bordered">
 						<thead class="text-center">
 							<tr>
 								<th>Pengiriman ke</th>
@@ -64,41 +71,13 @@
 					</table>
 				</div>
 			</div>
-			
-			<div class="row mb-3">
-				<div class="col">
-					<a href="#" class="btn btn-danger btn-konfirm" data-id="<?=$detail['id_data']?>" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batalkan</a>
-					<a href="<?=base_url()?>akuntan/penerimaan_data_akuntansi" class="btn btn-secondary">Kembali</a>
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
 
 <div class="modal fade" id="modalKonfirm" tabindex="0" aria-labelledby="konfirmLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content mx-auto" style="width:400px">
-			<div class="modal-header pl-4">
-				<h5 class="modal-title" id="konfirmLabel">Batal Konfirmasi</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body py-4 px-4">
-				<div class="row mb-4">
-					<div class="col">
-						<font size="4">
-							Batalkan konfirmasi data?
-						</font>
-					</div>
-				</div>
-				<div class="idData" style="display:none"></div>
-				<div class="row float-right">
-					<div class="col">
-						<a href="#" class="btn btn-primary btn-fix">Batalkan</a>
-					</div>
-				</div>
-			</div>
+		<div class="modal-content mx-auto" id="konfirmShow" style="width:400px">
 		</div>
 	</div>
 </div>
@@ -115,18 +94,32 @@
 		});
 		
 		$('.btn-konfirm').click(function() {
-			$('#modalKonfirm').modal('show');
-			$('.idData').html( $(this).data('id') );
-		})
-		$('.btn-fix').click(function() {
-			var id = $('.idData').html();
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>akuntan/penerimaan_data_akuntansi/batal',
-				data	: 'id='+id,
+				url		: '<?= base_url(); ?>akuntan/permintaan_data_lainnya/konfirmasi',
+				data	: {
+					'id'		: $(this).data('id'),
+					'status'	: $(this).data('status'),
+				},
+				success	: function( e ) {
+					$('#modalKonfirm').modal('show');
+					$('#konfirmShow').html( e );
+				}
+			})
+		})
+		$('#konfirmShow').on('click', '.btn-fix', function() {
+			var id		= $(this).data('id');
+			var stat	= $(this).data('status');
+			$.ajax({
+				type	: 'post',
+				url		: '<?= base_url(); ?>akuntan/permintaan_data_lainnya/fix',
+				data	: {
+					'id'	: id,
+					'stat'	: stat
+				},
 				success	: function() {
 					$('#modalKonfirm').modal('hide');
-					window.location.assign("<?= base_url();?>akuntan/penerimaan_data_akuntansi");
+					window.location.assign("<?= base_url();?>akuntan/pengiriman_data_lainnya/detail/"+id);
 				}
 			})
 		})

@@ -71,6 +71,7 @@
 			$data['permintaan']	= $permintaan;
 			$data['isi']		= $isi;
 			$data['badge']		= $add;
+			$data['link']		= 'klien/permintaan_data_akuntansi/detail/';
 			
 			$this->load->view('klien/permintaan_lainnya/rincian', $data);
 		}
@@ -107,25 +108,6 @@
 				}
 				redirect('klien/permintaan_data_lainnya/detail/'.$id_data);
 			}
-		}
-		
-		public function detail_data() {
-			$id_data	= $_GET['id'];
-			$detail		= $this->M_Pengiriman_lainnya->getByIdData($id_data);
-			if($detail['status'] == 'yes') {
-				$detail['ket_status'] = '<span class="badge badge-success">Lengkap</span>';
-			} elseif($detail['status'] == 'no') {
-				$detail['ket_status'] = '<span class="badge badge-warning">Belum Lengkap</span>';
-			} else {
-				$detail['ket_status'] = '<span class="badge badge-danger">Belum Dikirim</span>';
-			}
-			
-			$data['judul']		= "Detail Pengiriman"; 
-			$data['detail']		= $detail;
-			$data['pengiriman']	= $this->M_Pengiriman_lainnya->getDetail($id_data);
-			$data['back']		= 'klien/permintaan_data_lainnya';
-			
-			$this->load->view('klien/permintaan_lainnya/detail_data', $data);
 		}
 	}
 ?>

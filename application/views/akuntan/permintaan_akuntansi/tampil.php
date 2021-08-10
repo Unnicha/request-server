@@ -2,9 +2,9 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
+	
 	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
-		
+	
 	<div class="row"> 
 		<div class="col-sm">
 			<div class="row form-inline">
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		
-		<div class="col-sm-2">
+		<div class="col-sm-3">
 			<a href="<?= base_url(); ?>akuntan/permintaan_data_akuntansi/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat Permintaan Baru">
 				<i class="bi-plus-circle"></i>
 				Buat
@@ -160,7 +160,7 @@
 		});
 		
 		// Detail Permintaan
-		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
+		$('#myTable tbody').on('click', 'a.btn-detail', function() {
 			var tr	= $(this).closest('tr');
 			var row	= table.row( tr );
 			

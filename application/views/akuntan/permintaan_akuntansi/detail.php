@@ -29,6 +29,13 @@
 								<td>Status</td>
 								<td> : <?= $detail['badge'] ?></td>
 							</tr>
+							<tr>
+								<td>Action</td>
+								<td> : 
+									<?= $detail['button'] ?>
+									<a href="<?=base_url('akuntan/permintaan_data_akuntansi')?>" class="btn btn-secondary mr-1">Kembali</a>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -62,13 +69,6 @@
 							<?php endif ?>
 						</tbody>
 					</table>
-				</div>
-			</div>
-			
-			<div class="row mb-3">
-				<div class="col">
-					<?= $detail['button'] ?>
-					<a href="<?=base_url()?>akuntan/permintaan_data_akuntansi" class="btn btn-secondary mr-1">Kembali</a>
 				</div>
 			</div>
 		</div>

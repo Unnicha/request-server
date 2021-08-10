@@ -98,6 +98,34 @@
 			$this->db->insert_batch('data_perpajakan', $row);
 		}
 		
+		public function ubahPermintaan() {
+			$id_permintaan	= $this->input->post('id_permintaan', true);
+			$id_data		= $this->input->post('id_data', true);
+			$detail			= $this->input->post('detail', true);
+			$format_data	= $this->input->post('format_data', true);
+			
+			$update = []; $do_update = false;
+			foreach($id_data as $id => $val) {
+				if(isset($format_data[$id])) {
+					$update[] = [
+						'id_data'		=> $val,
+						'detail'		=> $detail[$id],
+						'format_data'	=> $format_data[$id],
+					];
+					$do_update = true;
+				} else {
+					$this->db->delete('data_perpajakan', ['id_data' => $val]);
+				}
+			}
+			if($do_update == true)
+			$this->db->update_batch('data_perpajakan', $update, 'id_data');
+			
+			$data = [
+				'jum_data'	=> count($format_data),
+			];
+			$this->db->update('permintaan_perpajakan', $data, ['id_permintaan' => $id_permintaan]);
+		}
+		
 		public function hapusPermintaan($id_permintaan) { 
 			$this->db->where('id_permintaan', $id_permintaan);
 			$this->db->delete('permintaan_perpajakan');

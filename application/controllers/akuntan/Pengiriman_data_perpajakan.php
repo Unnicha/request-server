@@ -1,10 +1,11 @@
 <?php
 	
-	class Permintaan_data_perpajakan extends CI_Controller {
+	class Pengiriman_data_perpajakan extends CI_Controller {
 		
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
+			$this->load->library('exportpengiriman');
 			
 			$this->load->model('M_Permintaan_perpajakan');
 			$this->load->model('M_Pengiriman_perpajakan');
@@ -14,10 +15,10 @@
 		}
 		
 		public function index() {
-			$data['judul']	= "Permintaan Data Perpajakan";
+			$data['judul']	= "Pengiriman Data Perpajakan";
 			$data['masa']	= $this->Klien_model->getMasa();
 			
-			$this->libtemplate->main('akuntan/permintaan_perpajakan/tampil', $data);
+			$this->libtemplate->main('akuntan/pengiriman_perpajakan/tampil', $data);
 		}
 		
 		public function page() {
@@ -27,24 +28,25 @@
 			
 			if($klien == null) {
 				$id_akuntan	= $this->session->userdata('id_user');
+				$masa		= $this->Klien_model->getMasa($bulan);
 				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 				if( $akses ) {
-					if($bulan < $akses['masa']) {
-						$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+					if($masa['id_bulan'] < $akses['masa']) {
+						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
 					}
 					if( $akses ) {
-						$klien	= explode(',', $akses['perpajakan']);
+						$klien = explode(',', $akses['perpajakan']);
 					}
 				}
 			}
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
-			$countData	= $this->M_Permintaan_perpajakan->countPermintaan($bulan, $tahun, $klien); 
-			$permintaan	= $this->M_Permintaan_perpajakan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
-			
+			$countData	= $this->M_Pengiriman_perpajakan->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_perpajakan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+
 			$data = [];
-			foreach($permintaan as $k) {
+			foreach($pengiriman as $k) {
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
@@ -53,13 +55,12 @@
 				$row[]	= $k['tanggal_permintaan'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
+					<a class="btn btn-sm btn-primary btn-detail_pengiriman" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Pengiriman">
 						<i class="bi bi-info-circle"></i>
 					</a>';
-				
+					
 				$data[] = $row;
 			}
-			
 			$callback = [
 				'draw'				=> $_POST['draw'], // Ini dari datatablenya
 				'recordsTotal'		=> $countData,
@@ -88,72 +89,32 @@
 			$data['permintaan']	= $permintaan;
 			$data['isi']		= $isi;
 			$data['badge']		= $add;
-			$data['link']		= 'akuntan/permintaan_data_perpajakan/detail/';
+			$data['link']		= 'akuntan/pengiriman_data_perpajakan/detail/';
 			
 			$this->load->view('akuntan/permintaan_perpajakan/rincian', $data);
 		}
 		
 		public function klien() {
-			$bulan		= ($_POST['bulan']) ? $_POST['bulan'] : date('m');
-			$tahun		= ($_POST['tahun']) ? $_POST['tahun'] : date('Y');
+			$bulan		= $this->input->post('bulan', true);
+			$tahun		= $this->input->post('tahun', true);
 			$id_akuntan	= $this->session->userdata('id_user');
 			
 			$bulan		= $this->Klien_model->getMasa($bulan);
 			$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 			if($bulan['id_bulan'] < $akses['masa']) {
-				$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+				$akses = $this->Akses_model->getByAkuntan($tahun - 1, $id_akuntan);
 			}
-			
 			if($akses == null) {
-				$lists	= "<option value=''>--Tidak ada akses--</option>";
+				$lists = "<option value=''>--Tidak ada akses--</option>";
 			} else {
-				$lists		= "<option value=''>--".$_POST['jenis']." Klien--</option>";
+				$lists		= "<option value=''>Semua Klien</option>";
 				$id_klien	= explode(",", $akses['perpajakan']);
 				foreach($id_klien as $id) {
 					$klien	= $this->Klien_model->getById($id);
 					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 
-				} 
+				}
 			}
 			echo $lists;
-		}
-
-		public function tambah() {
-			$data['judul']	= "Kirim Permintaan - Data Perpajakan"; 
-			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Perpajakan');
-			$bulan			= $this->Klien_model->getMasa(date('m'));
-			$data['bulan']	= $bulan['nama_bulan'];
-			
-			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
-			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
-			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
-			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('akuntan/permintaan_perpajakan/tambah', $data);
-			} else {
-				$this->M_Permintaan_perpajakan->tambahPermintaan();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
-				redirect('akuntan/permintaan_data_perpajakan'); 
-			}
-		}
-		
-		public function edit($id_permintaan) {
-			$data['judul']		= "Edit Permintaan";
-			$data['jenis']		= $this->Jenis_data_model->getByKategori('Data Perpajakan');
-			$data['permintaan']	= $this->M_Permintaan_perpajakan->getById($id_permintaan);
-			$data['detail']		= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
-			
-			$this->form_validation->set_rules('id_permintaan', 'ID Permintaan', 'required');
-			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
-			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('akuntan/permintaan_perpajakan/edit', $data);
-			} else {
-				$this->M_Permintaan_perpajakan->ubahPermintaan();
-				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
-				redirect('akuntan/permintaan_data_perpajakan');
-			}
 		}
 		
 		public function detail($id_data) {
@@ -180,29 +141,70 @@
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
 			
-			$this->libtemplate->main('akuntan/permintaan_perpajakan/detail', $data);
+			$this->libtemplate->main('akuntan/pengiriman_perpajakan/detail', $data);
 		}
 		
-		public function konfirmasi() {
-			$id		= $_POST['id'];
-			$status	= $_POST['status'];
+		public function batal() {
+			$this->M_Pengiriman_perpajakan->konfirmasi($_POST['id'], 'no');
+			$this->session->set_flashdata('notification', 'Konfirmasi berhasil dibatalkan!');
+		}
+		
+		public function export() {
+			$masa		= $this->input->post('bulan', true);
+			$tahun		= $this->input->post('tahun', true);
+			$id			= $this->input->post('klien', true);
+			$akuntan	= $this->session->userdata('id_user');
 			
-			if($status == 'yes') {
-				$data['judul']	= 'Konfirmasi';
-				$data['text']	= 'Apakah data sudah lengkap?';
-				$data['button']	= '<a href="#" class="btn btn-success btn-fix" data-id="'.$id.'" data-status="'.$status.'">Lengkap</a>';
+			$bulan		= $this->Klien_model->getMasa($masa);
+			$filename	= strtoupper(substr($bulan['nama_bulan'], 0, 3)).' '.substr($tahun, 2);
+			$klien		= [];
+			
+			if($id == null) {
+				$akses		= $this->Akses_model->getByAkuntan($tahun, $akuntan);
+				if($akses) {
+					if($masa < $akses['masa'])
+					$akses	= $this->Akses_model->getByAkuntan(($tahun - 1), $akuntan);
+				}
+				if($akses) {
+					$filename	= $filename.' '.$akses['nama'];
+					$klien		= explode(',', $akses['perpajakan']);
+					//implode(',', $klien);
+				}
 			} else {
-				$data['judul']	= 'Batal Konfirmasi';
-				$data['text']	= 'Batalkan konfirmasi data?';
-				$data['button']	= '<a href="#" class="btn btn-primary btn-fix" data-id="'.$id.'" data-status="'.$status.'">Batalkan</a>';
+				$klien = [$id];
 			}
-			$this->load->view('akuntan/permintaan_perpajakan/konfirmasi', $data);
-		}
-		
-		public function fix() {
-			$this->M_Pengiriman_perpajakan->konfirmasi($_POST['id'], $_POST['stat']);
-			$msg = $_POST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
-			$this->session->set_flashdata('notification', $msg);
+			
+			$isi = 0;
+			foreach($klien as $id) {
+				$pengiriman[$id]	= $this->M_Pengiriman_perpajakan->getAllPengiriman($masa, $tahun, $id);
+				if($pengiriman[$id]) {
+					$isi = 1;
+					foreach($pengiriman[$id] as $p) {
+						$datas		= $this->M_Pengiriman_akutansi->getDetail($p['id_permintaan']);
+						$p['child']	= $datas;
+					}
+				}
+			}
+			if($isi == 1) {
+				$data['masa'] = [
+					'bulan'	=> $bulan['nama_bulan'],
+					'tahun'	=> $tahun,
+				];
+				$data['pengiriman']	= $pengiriman;
+				$data['now']		= date('d/m/Y H:i');
+				$data['filename']	= 'Pengiriman Data Perpajakan '.$filename;
+				$data['judul']		= 'Pengiriman Data Perpajakan';
+				
+				if($_POST['export'] == 'xls') {
+					return $this->exportpengiriman->exportExcel($data);
+				}
+				elseif($_POST['export'] == 'pdf') {
+					return $this->exportpengiriman->exportPdf($data);
+				}
+			} else {
+				$this->session->set_flashdata('warning', 'Tidak ada pengiriman data!');
+				redirect('akuntan/pengiriman_data_perpajakan');
+			}
 		}
 	}
 ?>

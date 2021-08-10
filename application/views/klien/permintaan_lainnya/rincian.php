@@ -19,7 +19,7 @@
 			<td><?= $val['format_data'] ?></td>
 			<td><?= $badge[$i] ?></td>
 			<td style="font-size:18px; line-height:80%">
-				<a href="<?=base_url('klien/permintaan_data_lainnya/kirim/'.$val['id_data'])?>" data-toggle="tooltip" data-placement="bottom" title="Lihat History Pengiriman">
+				<a href="<?=base_url('klien/permintaan_data_lainnya/detail/'.$val['id_data'])?>" data-toggle="tooltip" data-placement="bottom" title="Lihat History Pengiriman">
 					<i class="bi bi-search"></i>
 				</a>
 			</td>

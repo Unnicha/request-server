@@ -29,19 +29,25 @@
 				</h6>
 				<div class="">
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_akuntansi">
-						<i class="bi bi-file-earmark-text sidebar-icon mr-1"></i>
-						Data Akuntansi
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_1'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-arrow-down-fill sidebar-icon mr-1"></i>
+							Data Akuntansi
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_1'); ?></span>
+						</p>
 					</a>
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_perpajakan">
-						<i class="bi bi-file-earmark-text sidebar-icon mr-1"></i>
-						Data Perpajakan
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_2'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-arrow-down-fill sidebar-icon mr-1"></i>
+							Data Perpajakan
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_2'); ?></span>
+						</p>
 					</a>
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_lainnya">
-						<i class="bi bi-file-earmark-text sidebar-icon mr-1"></i>
-						Data Lainnya
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_3'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-arrow-down-fill sidebar-icon mr-1"></i>
+							Data Lainnya
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_3'); ?></span>
+						</p>
 					</a>
 				</div>
 			</ul>
@@ -54,19 +60,25 @@
 				</h6>
 				<div class="">
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_akuntansi">
-						<i class="bi bi-file-earmark-arrow-up sidebar-icon mr-1"></i>
-						Data Akuntansi
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_1'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-check-fill sidebar-icon mr-1"></i>
+							Data Akuntansi
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_1'); ?></span>
+						</p>
 					</a>
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_perpajakan">
-						<i class="bi bi-file-earmark-arrow-up sidebar-icon mr-1"></i>
-						Data Perpajakan
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_2'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-check-fill sidebar-icon mr-1"></i>
+							Data Perpajakan
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_2'); ?></span>
+						</p>
 					</a>
 					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_lainnya">
-						<i class="bi bi-file-earmark-arrow-up sidebar-icon mr-1"></i>
-						Data Lainnya
-						<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_3'); ?></span>
+						<p class="mb-0">
+							<i class="bi bi-file-earmark-check-fill sidebar-icon mr-1"></i>
+							Data Lainnya
+							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_3'); ?></span>
+						</p>
 					</a>
 				</div>
 			</ul>

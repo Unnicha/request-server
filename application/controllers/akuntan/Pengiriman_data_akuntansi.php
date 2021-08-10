@@ -1,6 +1,6 @@
 <?php
 	
-	class Penerimaan_data_akuntansi extends CI_Controller {
+	class Pengiriman_data_akuntansi extends CI_Controller {
 		
 		public function __construct() {
 			parent::__construct();
@@ -15,10 +15,10 @@
 		}
 		
 		public function index() {
-			$data['judul']	= "Penerimaan Data Akuntansi";
+			$data['judul']	= "Pengiriman Data Akuntansi";
 			$data['masa']	= $this->Klien_model->getMasa();
 			
-			$this->libtemplate->main('akuntan/penerimaan_akuntansi/tampil', $data);
+			$this->libtemplate->main('akuntan/pengiriman_akuntansi/tampil', $data);
 		}
 		
 		public function page() {
@@ -89,8 +89,9 @@
 			$data['permintaan']	= $permintaan;
 			$data['isi']		= $isi;
 			$data['badge']		= $add;
+			$data['link']		= 'akuntan/pengiriman_data_akuntansi/detail/';
 			
-			$this->load->view('akuntan/penerimaan_akuntansi/rincian', $data);
+			$this->load->view('akuntan/permintaan_akuntansi/rincian', $data);
 		}
 		
 		public function klien() {
@@ -126,12 +127,21 @@
 			} else {
 				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
 			}
+			$button = '';
+			if(count($pengiriman) > 0) {
+				if($detail['status'] != 'yes') {
+					$button = '<a href="#" class="btn btn-primary btn-konfirm" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
+				} else {
+					$button = '<a href="#" class="btn btn-danger btn-konfirm" data-id="'.$detail['id_data'].'" data-status="no" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batalkan</a>';
+				}
+			}
+			$detail['button']	= $button;
 			
 			$data['judul']		= "Detail Pengiriman"; 
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
 			
-			$this->libtemplate->main('akuntan/penerimaan_akuntansi/detail', $data);
+			$this->libtemplate->main('akuntan/pengiriman_akuntansi/detail', $data);
 		}
 		
 		public function batal() {
@@ -193,7 +203,7 @@
 				}
 			} else {
 				$this->session->set_flashdata('warning', 'Tidak ada pengiriman data!');
-				redirect('akuntan/penerimaan_data_akuntansi');
+				redirect('akuntan/pengiriman_data_akuntansi');
 			}
 		}
 	}

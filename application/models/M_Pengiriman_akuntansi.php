@@ -158,8 +158,8 @@
 			return $newName;
 		}
 		
-		public function hapusPengiriman($id_pengiriman) {
-			$this->db->where('id_pengiriman', $id_pengiriman);
+		public function hapusPengiriman($kode_data) {
+			$this->db->where('kode_data', $kode_data);
 			$this->db->delete('pengiriman_akuntansi');
 		}
 	}

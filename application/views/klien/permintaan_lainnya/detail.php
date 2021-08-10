@@ -35,7 +35,7 @@
 				
 				<div class="col-lg">
 					<?php if($detail['status'] != 'yes') : ?>
-					<div class="card my-3">
+					<div class="card mt-2 mb-3">
 						<div class="card-body p-3">
 							<div class="form-group row">
 								<div class="col">

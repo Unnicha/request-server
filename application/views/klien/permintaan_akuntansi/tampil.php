@@ -24,11 +24,11 @@
 				<?php 
 					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2016; $i--) :
-						if ($i == $tahun) 
-							{ $pilih = "selected"; } 
-						else 
-							{ $pilih = ""; }
-							?>
+						if ($i == $tahun) {
+							$pilih = "selected";
+						} else {
+							$pilih = "";
+						} ?>
 				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
@@ -73,7 +73,7 @@
 					.text( 'Loading...' );
 		
 		$.ajax( {
-			url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail',
+			url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/pageChild',
 			data	: {
 				id: rowData[1]
 			},
@@ -137,18 +137,6 @@
 				row.child( format(row.data()) ).show();
 				tr.addClass( 'shown' );
 			}
-		});
-		
-		$('#myTable tbody').on('click', 'a.btn-history', function() {
-			$.ajax({
-				type	: 'GET',
-				url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail_data',
-				data	: 'id='+ $(this).data('id'),
-				success	: function(data) {
-					$("#detailPermintaan").modal('show');
-					$("#showDetailPermintaan").html(data);
-				}
-			})
 		});
 	});
 </script>

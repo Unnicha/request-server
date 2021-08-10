@@ -36,17 +36,17 @@
 			<!-- Menu Pengiriman Data -->
 			<ul class="nav flex-column">
 				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Penerimaan Data</span>
+					<span>Pengiriman Data</span>
 				</h6>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/penerimaan_data_akuntansi">
+				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_akuntansi">
 					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
 					Data Akuntansi
 				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/penerimaan_data_perpajakan">
+				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_perpajakan">
 					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
 					Data Perpajakan
 				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/penerimaan_data_lainnya">
+				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_lainnya">
 					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
 					Data Lainnya
 				</a>

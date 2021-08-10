@@ -33,7 +33,7 @@
 								<td>Action</td>
 								<td> : 
 									<?= $detail['button'] ?>
-									<a href="<?=base_url('admin/permintaan/permintaan_data_akuntansi')?>" class="btn btn-secondary mr-1">Kembali</a>
+									<a href="<?=base_url('akuntan/pengiriman_data_perpajakan')?>" class="btn btn-secondary mr-1">Kembali</a>
 								</td>
 							</tr>
 						</tbody>
@@ -96,7 +96,7 @@
 		$('.btn-konfirm').click(function() {
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>admin/permintaan/permintaan_data_akuntansi/konfirmasi',
+				url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/konfirmasi',
 				data	: {
 					'id'		: $(this).data('id'),
 					'status'	: $(this).data('status'),
@@ -112,14 +112,14 @@
 			var stat	= $(this).data('status');
 			$.ajax({
 				type	: 'post',
-				url		: '<?= base_url(); ?>admin/permintaan/permintaan_data_akuntansi/fix',
+				url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/fix',
 				data	: {
 					'id'	: id,
 					'stat'	: stat
 				},
 				success	: function() {
 					$('#modalKonfirm').modal('hide');
-					window.location.assign("<?= base_url();?>admin/permintaan/permintaan_data_akuntansi/detail/"+id);
+					window.location.assign("<?= base_url();?>akuntan/pengiriman_data_perpajakan/detail/"+id);
 				}
 			})
 		})

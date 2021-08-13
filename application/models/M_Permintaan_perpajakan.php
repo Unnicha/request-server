@@ -6,7 +6,7 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
-			if($start) {
+			if($limit) {
 				$this->db->limit($limit, $start);
 			}
 			return $this->db->from('permintaan_perpajakan')
@@ -64,11 +64,11 @@
 			return $new;
 		}
 		
-		public function tambahPermintaan() { 
-			$id_klien		= $this->input->post('id_klien', true);
+		public function tambahPermintaan() {
 			$kode_jenis		= $this->input->post('kode_jenis', true);
 			$detail			= $this->input->post('detail', true);
 			$format_data	= $this->input->post('format_data', true);
+			$id_klien		= $this->input->post('id_klien', true);
 			$bulan			= date('m');
 			$tahun			= date('Y');
 			$id_permintaan	= $this->getNew($id_klien, $bulan, $tahun);
@@ -127,8 +127,8 @@
 		}
 		
 		public function hapusPermintaan($id_permintaan) { 
-			$this->db->where('id_permintaan', $id_permintaan);
-			$this->db->delete('permintaan_perpajakan');
+			$this->db->delete('permintaan_perpajakan', ['id_permintaan' => $id_permintaan]);
+			$this->db->delete('data_perpajakan', ['id_request' => $id_permintaan]);
 		}
 	}
 ?>

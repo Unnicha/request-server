@@ -7,7 +7,7 @@
 
 <div class="modal-body p-3">
 	<div class="container-fluid p-0">
-		<table class="table table-striped table-bordered table-detail mb-0" id="data">
+		<table class="table table-striped table-detail mb-0" id="data">
 			<tbody>
 				<tr>
 					<td scope="row" width="35%">Tanggal Input</td>

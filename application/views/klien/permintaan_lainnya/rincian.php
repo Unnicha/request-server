@@ -1,4 +1,4 @@
-<table class="table table-sm table-bordered mb-0">
+<table class="table mb-0">
 	<thead>
 		<tr style="background-color:white">
 			<th>No.</th>

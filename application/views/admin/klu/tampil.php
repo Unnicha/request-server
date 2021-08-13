@@ -17,7 +17,7 @@
 	</div>
 	
 	<div class="mt-3 mb-4">
-		<table id="myTable" class="table table-sm table-bordered table-striped table-responsive-sm my-3" width=100%>
+		<table id="myTable" class="table table-striped table-responsive-sm my-3" width=100%>
 			<!-- Header Table-->
 			<thead class="text-center">
 				<tr>

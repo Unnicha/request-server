@@ -6,7 +6,7 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
-			if($start) {
+			if($limit) {
 				$this->db->limit($limit, $start);
 			}
 			return $this->db->from('permintaan_akuntansi')
@@ -42,6 +42,7 @@
 			return $this->db->from('data_akuntansi')
 							->join('jenis_data', 'jenis_data.kode_jenis = data_akuntansi.id_jenis', 'left')
 							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = data_akuntansi.id_request', 'left')
+							->join('klien', 'permintaan_akuntansi.id_klien = klien.id_klien', 'left')
 							->where(['id_data' => $id_data])
 							->get()->row_array();
 		}

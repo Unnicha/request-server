@@ -28,8 +28,8 @@
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
 			
-			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+			$limit		= $_POST['length'];
 			$klien		= ($klien == null) ? 'all' : $klien;
 			$countData	= $this->M_Permintaan_akuntansi->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
@@ -44,12 +44,14 @@
 				$row[]	= $k['tanggal_permintaan'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn btn-sm btn-primary btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
-						<i class="bi bi-info-circle"></i>
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
+						<i class="bi bi-info-circle" style="font-size:20px; line-height:80%"></i>
 					</a>
-					
-					<a class="btn btn-sm btn-danger btn-hapus" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
-						<i class="bi bi-trash"></i>
+					<a href="permintaan_data_akuntansi/edit/'.$k['id_permintaan'].'" class="btn-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
+						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
+					</a>
+					<a class="btn-hapus" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+						<i class="bi bi-trash" style="font-size:20px; line-height:80%"></i>
 					</a>';
 				
 				$data[] = $row;
@@ -88,46 +90,6 @@
 			$this->load->view('admin/permintaan_akuntansi/rincian', $data);
 		}
 		
-		public function tambah() {
-			$data['judul']	= "Buat Permintaan Baru";
-			$data['klien']	= $this->Klien_model->getAllKlien();
-			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Akuntansi');
-			
-			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
-			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
-			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
-			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('admin/permintaan_akuntansi/tambah', $data);
-			} else {
-				$this->M_Permintaan_akuntansi->tambahPermintaan();
-				$this->session->set_flashdata('notification', 'Permintaan berhasil dibuat!'); 
-				redirect('admin/permintaan/permintaan_data_akuntansi'); 
-			}
-		}
-		
-		//delete soon
-		public function ubah($id_permintaan) {
-			$data['judul']		= "Ubah Permintaan"; 
-			$data['masa']		= $this->Klien_model->getMasa();
-			$data['klien']		= $this->Klien_model->getAllKlien();
-			$data['jenis']		= $this->Jenis_data_model->getAllJenisData();
-			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
-			
-			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
-			$this->form_validation->set_rules('kode_jenis', 'Jenis Data', 'required');
-			$this->form_validation->set_rules('keterangan', 'Keterangan', '');
-			
-			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('admin/permintaan_akuntansi/ubah', $data);
-			} else {
-				$this->M_Permintaan_akuntansi->ubahPermintaan();
-				$this->session->set_flashdata('notification', 'Permintaan berhasil diubah!'); 
-				redirect('admin/permintaan/permintaan_data_akuntansi'); 
-			}
-		}
-		
 		public function detail($id_data) {
 			$detail		= $this->M_Pengiriman_akuntansi->getByIdData($id_data);
 			$pengiriman	= $this->M_Pengiriman_akuntansi->getDetail($id_data);
@@ -150,11 +112,50 @@
 			}
 			$detail['button']	= $button;
 			
-			$data['judul']		= "Detail Pengiriman"; 
+			$data['judul']		= 'Detail Pengiriman';
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
+			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
 			
 			$this->libtemplate->main('admin/permintaan_akuntansi/detail', $data);
+		}
+		
+		public function tambah() {
+			$data['judul']	= "Buat Permintaan Baru";
+			$data['klien']	= $this->Klien_model->getAllKlien();
+			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Akuntansi');
+			
+			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
+			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
+			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
+			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
+			
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('admin/permintaan_akuntansi/tambah', $data);
+			} else {
+				$this->M_Permintaan_akuntansi->tambahPermintaan();
+				$this->session->set_flashdata('notification', 'Permintaan berhasil dibuat!'); 
+				redirect('admin/permintaan/permintaan_data_akuntansi'); 
+			}
+		}
+		
+		public function edit($id_permintaan) {
+			$data['judul']		= "Edit Permintaan";
+			$data['jenis']		= $this->Jenis_data_model->getByKategori('Data Akuntansi');
+			$data['permintaan']	= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$data['detail']		= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
+			
+			$this->form_validation->set_rules('id_permintaan', 'ID Permintaan', 'required');
+			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
+			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
+			
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('admin/permintaan_akuntansi/ubah', $data);
+			} else {
+				$this->M_Permintaan_akuntansi->ubahPermintaan();
+				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+				redirect('admin/permintaan/permintaan_data_akuntansi');
+			}
 		}
 		
 		public function hapus() {
@@ -171,10 +172,10 @@
 		
 		public function fix_hapus($id_permintaan) {
 			$detail = $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
-			$this->M_Permintaan_akuntansi->hapusPermintaan($id_permintaan);
 			foreach($detail as $d) {
 				$this->M_Pengiriman_akuntansi->hapusPengiriman($d['id_data']);
 			}
+			$this->M_Permintaan_akuntansi->hapusPermintaan($id_permintaan);
 			$this->session->set_flashdata('notification', 'Permintaan berhasil dihapus!'); 
 			redirect('admin/permintaan/permintaan_data_akuntansi'); 
 		}

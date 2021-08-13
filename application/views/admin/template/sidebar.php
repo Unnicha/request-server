@@ -79,22 +79,22 @@
 			</ul>
 				
 			<!-- Menu Pengiriman Data -->
-			<ul class="nav flex-column mt-0 penerimaan">
+			<ul class="nav flex-column mt-0 pengiriman">
 				<a class="btn btn-block text-left collapsed" data-toggle="collapse" data-target="#menu3" aria-expanded="false" aria-controls="menu3">
 					<h6 id="headingThree" class="sidebar-heading px-2 py-1 d-flex justify-content-between my-0">
-						<span>Penerimaan Data</span>
+						<span>Pengiriman Data</span>
 					</h6>
 				</a>
-				<div class="collapse accordion-submenu" id="menu3" aria-labelledby="headingThree" data-parent="#accordion" data-menu="penerimaan">
-					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/penerimaan/penerimaan_data_akuntansi">
+				<div class="collapse accordion-submenu" id="menu3" aria-labelledby="headingThree" data-parent="#accordion" data-menu="pengiriman">
+					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/pengiriman/pengiriman_data_akuntansi">
 						<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1 ml-2"></i>
 						Data Akuntansi
 					</a>
-					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/penerimaan/penerimaan_data_perpajakan">
+					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/pengiriman/pengiriman_data_perpajakan">
 						<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1 ml-2"></i>
 						Data Perpajakan
 					</a>
-					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/penerimaan/penerimaan_data_lainnya">
+					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/pengiriman/pengiriman_data_lainnya">
 						<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1 ml-2"></i>
 						Data Lainnya
 					</a>

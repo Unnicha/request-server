@@ -7,7 +7,7 @@
 
 <div class="modal-body">
 	<div class="container-fluid p-0">
-		<table class="table table-striped table-bordered table-detail mb-0">
+		<table class="table table-striped table-detail mb-0">
 			<tbody>
 				<tr>
 					<td scope="row" width="40%">Nama Akuntan</td>
@@ -27,7 +27,7 @@
 			</tbody>
 		</table>
 		
-		<table class="table table-bordered table-striped table-detail">
+		<table class="table table-striped table-detail">
 			
 			<tbody>
 				<tr class="text-center" style="font-weight:700">

@@ -7,7 +7,7 @@
 
 <div class="modal-body p-4">
 	<div class="container-fluid p-0">
-		<table class="table table-striped table-bordered table-detail mb-0">
+		<table class="table table-striped table-detail mb-0">
 			<tbody>
 				<tr>
 					<td colspan="2"><b>DETAIL AKUN</b></td>

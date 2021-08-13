@@ -19,7 +19,7 @@
 	
 	<div class="mt-3 mb-4">
 		<!-- Mulai Table-->
-		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm mt-3">
+		<table id="myTable" width=100% class="table table-striped table-responsive-sm mt-3">
 			
 			<!-- Header Table-->
 			<thead class="text-center">

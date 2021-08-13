@@ -34,7 +34,7 @@
 	</div>
 	
 	<div class="mb-4">
-		<table id="myTable" width=100% class="table table-akses table-sm table-bordered table-responsive-sm">
+		<table id="myTable" width=100% class="table table-akses table-responsive-sm">
 			<thead class="text-center">
 				<tr>
 					<th scope="col">No.</th>

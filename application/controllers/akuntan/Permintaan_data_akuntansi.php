@@ -181,6 +181,7 @@
 			$data['judul']		= "Detail Pengiriman"; 
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
+			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
 			
 			$this->libtemplate->main('akuntan/permintaan_akuntansi/detail', $data);
 		}

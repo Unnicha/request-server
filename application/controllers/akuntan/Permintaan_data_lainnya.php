@@ -55,6 +55,9 @@
 				$row[]	= '
 					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
 						<i class="bi bi-info-circle"></i>
+					</a>
+					<a href="permintaan_data_lainnya/edit/'.$k['id_permintaan'].'" class="btn-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
+						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
 					</a>';
 				
 				$data[] = $row;
@@ -179,6 +182,7 @@
 			$data['judul']		= "Detail Pengiriman"; 
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
+			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
 			
 			$this->libtemplate->main('akuntan/permintaan_lainnya/detail', $data);
 		}

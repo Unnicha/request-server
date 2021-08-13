@@ -101,8 +101,7 @@
 			} else {
 				$send = $this->M_Pengiriman_lainnya->kirim();
 				if($send == 'ERROR') {
-					$msg = 'Format file yang di izinkan : <b>.xls, .xlsx, .csv, .pdf, .rar, .zip</b>';
-					$this->session->set_flashdata('flash', $msg);
+					$this->session->set_flashdata('flash', 'Format file tidak sesuai!');
 				} elseif($send == 'OK') {
 					$this->session->set_flashdata('notification', 'Data berhasil dikirim!');
 				}

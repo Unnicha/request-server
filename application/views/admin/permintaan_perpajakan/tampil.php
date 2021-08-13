@@ -2,97 +2,90 @@
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
-
-	<!-- Judul Table-->
-	<h2 class="mb-3" align="center"> <?= $judul; ?> </h2>
-	
-	<div class="row"> 
-		<!-- Form Ganti Tampilan -->
-		<div class="col col-sm">
-			<form action="" method="post">
-				<div class="row form-inline">
-				<div class="col px-0">
-					<!-- Ganti Bulan -->
-					<select name='bulan' class="form-control" id="bulan">
-						<?php 
-							$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-							foreach ($masa as $m) : 
-								$pilih="";
-								if ($m['id_bulan'] == $bulan) 
-								{ $pilih="selected"; } 
-								?>
-						<option value="<?=$m['id_bulan']?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-						<?php endforeach ?>
-					</select>
-					
-					<!-- Ganti Tahun -->
-					<select name='tahun' class="form-control" id="tahun">
-						<?php 
-							$tahun = date('Y');
-							$sess_tahun = $this->session->userdata('tahun');
-							for($i=$tahun; $i>=2010; $i--) :
-								if ($i == $sess_tahun) 
-								{ $pilih="selected"; } 
-								else 
-								{ $pilih=""; }
-								?>
-							<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
-						<?php endfor ?>
-					</select>
-					
-					<!-- Ganti Klien -->
-					<select name='klien' class="form-control" id="klien">
-						<option value=""> Semua Klien </option>
-							<?php 
-							$sess_klien = $this->session->userdata('klien');
-							foreach ($klien as $k) :
-								if ($k['id_klien'] == $sess_klien) 
-								{ $pilih="selected"; } 
-								else 
-								{ $pilih=""; }
-							?>
-						<option value="<?= $k['id_klien']; ?>" <?= $pilih; ?>>
-							<?= $k['nama_klien'] ?>
-						</option>
-							<?php endforeach ?>
-					</select> 
-					</div>
-				</div>
-			</form>
-		</div>
-
-		<!-- Tombol Tambah Permintaan -->
-		<div class="col col-sm-3">
-			<a href="<?= base_url(); ?>admin/permintaan/permintaan_data_perpajakan/tambah" class="btn btn-success float-right">
-				<i class="bi-plus"></i>
-				Tambah
-			</a>
+		
+	<div class="row p-3">
+		<div class="col">
+			<h3><?= $judul ?></h3>
 		</div>
 	</div>
 	
-	<div class="mt-2 mb-4">
-		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
-			<thead class="text-center">
-				<tr>
-					<th scope="col">No.</th>
-					<th scope="col">Nama Klien</th>
-					<th scope="col">Permintaan ke</th>
-					<th scope="col">Tanggal Permintaan</th>
-					<th scope="col">Action</th>
-				</tr>
-			</thead>
-
-			<tbody class="text-center">
-			</tbody>
-		</table>
+	<div class="card card-shadow mx-3">
+		<div class="card-body">
+			<div class="row">
+				<div class="col col-sm">
+					<div class="row form-inline">
+						<div class="col px-0">
+							<!-- Ganti Bulan -->
+							<select name='bulan' class="form-control" id="bulan">
+								<?php 
+									$bulan = $this->session->userdata('bulan') ? $this->session->userdata('bulan') : date('m');
+									foreach ($masa as $m) :
+										$pilih = ($m['id_bulan'] == $bulan) ? 'selected' : '';
+									?>
+								<option value="<?=$m['id_bulan']?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+								<?php endforeach ?>
+							</select>
+							
+							<!-- Ganti Tahun -->
+							<select name='tahun' class="form-control" id="tahun">
+								<?php 
+									$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
+									for($i=date('Y'); $i>=2010; $i--) :
+										$pilih = ($i == $sess_tahun) ? 'selected' : '';
+									?>
+								<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+								<?php endfor ?>
+							</select>
+							
+							<!-- Ganti Klien -->
+							<select name='klien' class="form-control" id="klien">
+								<option value=""> Semua Klien </option>
+									<?php 
+									$sess_klien = $this->session->userdata('klien');
+									foreach ($klien as $k) :
+										$pilih = ($k['id_klien'] == $sess_klien) ? 'selected' : '';
+									?>
+								<option value="<?= $k['id_klien']; ?>" <?=$pilih?>> <?=$k['nama_klien']?> </option>
+									<?php endforeach ?>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Tombol Tambah Permintaan -->
+				<div class="col col-sm-3">
+					<a href="<?= base_url() ?>admin/permintaan/permintaan_data_perpajakan/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat permintaan baru">
+						<i class="bi-plus-circle"></i>
+						Buat
+					</a>
+				</div>
+			</div>
+			
+			<div class="mt-2">
+				<table id="myTable" width=100% class="table table-striped table-responsive-sm">
+					<thead class="text-center">
+						<tr>
+							<th scope="col">No.</th>
+							<th scope="col">Nama Klien</th>
+							<th scope="col">ID Permintaan</th>
+							<th scope="col">Permintaan</th>
+							<th scope="col">Tanggal Permintaan</th>
+							<th scope="col">Requestor</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					
+					<tbody class="text-center">
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 
-<!-- Modal untuk Detail Permintaan -->
-<div class="modal fade" id="detailPermintaan" tabindex="-1" aria-labelledby="detailPermintaanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:500px">
-		<div class="modal-content" id="showDetailPermintaan">
-			<!-- Tampilkan Data Klien-->
+<div class="modal fade modalConfirm" tabindex="-1" aria-labelledby="modalConfirmLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content mx-auto" style="width:400px" id="showConfirm">
 		</div>
 	</div>
 </div>
@@ -100,9 +93,25 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	function format ( rowData ) {
+		var div = $('<div/>')
+					.addClass( 'loading' )
+					.text( 'Loading...' );
+		
+		$.ajax( {
+			url		: '<?= base_url(); ?>admin/permintaan/permintaan_data_perpajakan/pageChild',
+			data	: { id: rowData[2] },
+			success	: function ( e ) {
+				div
+					.html( e )
+					.removeClass( 'loading' );
+			},
+		} );
+		return div;
+	}
+	
 	$(document).ready(function() { 
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 				setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
@@ -116,7 +125,7 @@
 			'language'		: {
 				emptyTable	: "Belum ada permintaan"
 			},
-			//'pageLength': 9,
+			'pageLength': 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>admin/permintaan/permintaan_data_perpajakan/page',
 				'type'	: 'post',
@@ -126,8 +135,15 @@
 					e.tahun = $('#tahun').val();
 				},
 			},
+			'columnDefs'	: [
+				{
+					'targets'	: 2,
+					'visible'	: false,
+				},
+			],
 		});
 		
+		// Selections
 		$("#klien").change(function() { 
 			table.draw();
 		})
@@ -137,23 +153,43 @@
 		$('#tahun').change(function() {
 			table.draw();
 		})
-	});
-	
-	$('#myTable tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
-		$(this).tooltip();
-	});
-	
-	// Detail Permintaan
-	$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
-		var permintaan = $(this).data('nilai');
-		$.ajax({
-			type: 'POST',
-			url: '<?= base_url(); ?>admin/permintaan/permintaan_data_perpajakan/detail',
-			data: 'permintaan='+ permintaan,
-			success: function(data) {
-				$("#detailPermintaan").modal('show');
-				$("#showDetailPermintaan").html(data);
+		
+		// Toolips
+		$('#myTable tbody').on('mouseover', '[data-toggle="tooltip"]', function() {
+			$(this).tooltip();
+		});
+		$('[data-toggle="tooltip"]').mouseover(function() {
+			$(this).tooltip();
+		});
+		
+		// Detail Permintaan
+		$('#myTable tbody').on('click', 'a.btn-detail', function() {
+			var tr	= $(this).closest('tr');
+			var row	= table.row( tr );
+			
+			if ( row.child.isShown() ) {
+				// This row is already open - close it
+				row.child.hide();
+				tr.removeClass('shown');
+			} else {
+				// Open this row
+				row.child( format(row.data()) ).show();
+				tr.addClass( 'shown' );
 			}
-		})
+		});
+		// Hapus
+		$('#myTable tbody').on('click', 'a.btn-hapus', function() {
+			var permintaan = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/permintaan/permintaan_data_perpajakan/hapus',
+				data	: 'permintaan='+ permintaan,
+				success	: function(data) {
+					$(".modalConfirm").modal('show');
+					$("#showConfirm").html(data);
+				}
+			})
+		});
 	});
+	
 </script>

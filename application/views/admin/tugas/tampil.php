@@ -16,7 +16,7 @@
 	</div>
 	
 	<div class="mt-3 mb-4">
-		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm my-3">
+		<table id="myTable" width=100% class="table table-striped table-responsive-sm my-3">
 			<thead class="text-center">
 				<tr>
 					<th scope="col">No.</th>

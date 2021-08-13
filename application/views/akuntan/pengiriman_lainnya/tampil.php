@@ -6,79 +6,81 @@
 		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<h2 class="mb-3" align="center"><?=$judul?></h2>
+	<div class="row p-3">
+		<div class="col">
+			<h3><?= $judul ?></h3>
+		</div>
+	</div>
 	
-	<form action="<?=base_url()?>akuntan/pengiriman_data_lainnya/export" method="post">
-		<div class="row">
-			<div class="col-sm px-0">
-				<div class="row form-inline">
-					<div class="col">
-						<!-- Ganti Bulan -->
-						<select name='bulan' class="form-control" id="bulan">
-							<?php 
-								$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-								foreach ($masa as $m) :
-									if ($m['id_bulan'] == $bulan) {
-										$pilih="selected";
-									} else {
-										$pilih="";
-									} ?>
-							<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
-							<?php endforeach ?>
-						</select>
-						
-						<!-- Ganti Tahun -->
-						<select name='tahun' class="form-control" id="tahun">
-							<?php 
-								$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
-								for($i=date('Y'); $i>=2010; $i--) :
-									if ($i == $sess_tahun) {
-										$pilih="selected";
-									} else {
-										$pilih="";
-									} ?>
-							<option value="<?=$i?>" <?=$pilih?>> <?=$i?> </option>
-							<?php endfor ?>
-						</select>
-						
-						<!-- Ganti Klien -->
-						<select name='klien' class="form-control" id="klien">
-							<option value=""> Semua Klien </option>
-						</select> 
+	<div class="card card-shadow mx-3">
+		<div class="card-body">
+			<form action="<?=base_url()?>akuntan/pengiriman_data_lainnya/export" method="post">
+				<div class="row">
+					<div class="col-sm px-0">
+						<div class="row form-inline">
+							<div class="col">
+								<!-- Ganti Bulan -->
+								<select name='bulan' class="form-control" id="bulan">
+									<?php 
+										$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
+										foreach ($masa as $m) :
+											$pilih = ($m['id_bulan'] == $bulan) ? "selected" : "";
+										?>
+									<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+									<?php endforeach ?>
+								</select>
+								
+								<!-- Ganti Tahun -->
+								<select name='tahun' class="form-control" id="tahun">
+									<?php 
+										$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
+										for($i=date('Y'); $i>=2010; $i--) :
+											$pilih = ($i == $tahun) ? "selected" : "";
+										?>
+									<option value="<?=$i?>" <?=$pilih?>> <?=$i?> </option>
+									<?php endfor ?>
+								</select>
+								
+								<!-- Ganti Klien -->
+								<select name='klien' class="form-control" id="klien">
+									<option value=""> Semua Klien </option>
+								</select> 
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-3">
+						<div class="btn-group float-right" role="group" aria-label="Export">
+							<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
+								<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
+							</button>
+							<button type="submit" name="export" value="pdf" class="btn btn-pdf" data-toggle="tooltip" data-placement="bottom" title="Export PDF">
+								<i class="bi bi-file-earmark-pdf" style="font-size:20px"></i>
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
+			</form>
 			
-			<div class="col-sm-3">
-				<div class="btn-group float-right" role="group" aria-label="Export">
-					<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
-						<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
-					</button>
-					<button type="submit" name="export" value="pdf" class="btn btn-pdf" data-toggle="tooltip" data-placement="bottom" title="Export PDF">
-						<i class="bi bi-file-earmark-pdf" style="font-size:20px"></i>
-					</button>
-				</div>
+			<div class="mt-2">
+				<table id="myTable" width=100% class="table table-striped table-responsive-sm">
+					<thead class="text-center">
+						<tr>
+							<th scope="col">No.</th>
+							<th scope="col">Nama Klien</th>
+							<th scope="col">ID Permintaan</th>
+							<th scope="col">Permintaan</th>
+							<th scope="col">Tanggal Permintaan</th>
+							<th scope="col">Requestor</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+		
+					<tbody class="text-center">
+					</tbody>
+				</table>
 			</div>
 		</div>
-	</form>
-	
-	<div class="mt-2 mb-4">
-		<table id="myTable" width=100% class="table table-sm table-bordered table-striped table-responsive-sm">
-			<thead class="text-center">
-				<tr>
-					<th scope="col">No.</th>
-					<th scope="col">Nama Klien</th>
-					<th scope="col">ID Permintaan</th>
-					<th scope="col">Permintaan</th>
-					<th scope="col">Tanggal Permintaan</th>
-					<th scope="col">Requestor</th>
-					<th scope="col">Action</th>
-				</tr>
-			</thead>
-
-			<tbody class="text-center">
-			</tbody>
-		</table>
 	</div>
 </div>
 

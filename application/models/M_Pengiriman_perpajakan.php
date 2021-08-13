@@ -6,7 +6,7 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
-			if($start) {
+			if($limit) {
 				$this->db->limit($limit, $start);
 			}
 			return $this->db->from('permintaan_perpajakan')
@@ -49,6 +49,7 @@
 		public function getDetail($id_data) {
 			return $this->db->from('pengiriman_perpajakan')
 							->join('data_perpajakan', 'pengiriman_perpajakan.kode_data = data_perpajakan.id_data', 'left')
+							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->where(['id_data' => $id_data])
 							->get()->result_array();
 		}
@@ -158,8 +159,8 @@
 			return $newName;
 		}
 		
-		public function hapusPengiriman($id_pengiriman) {
-			$this->db->where('id_pengiriman', $id_pengiriman);
+		public function hapusPengiriman($kode_data) {
+			$this->db->where('kode_data', $kode_data);
 			$this->db->delete('pengiriman_perpajakan');
 		}
 	}

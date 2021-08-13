@@ -6,7 +6,7 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
 			}
-			if($start) {
+			if($limit) {
 				$this->db->limit($limit, $start);
 			}
 			return $this->db->from('permintaan_akuntansi')
@@ -127,9 +127,8 @@
 		}
 		
 		public function hapusPermintaan($id_permintaan) { 
-			$this->db->where('id_permintaan', $id_permintaan)
-					->or_where('id_request', $id_permintaan)
-					->delete(['permintaan_akuntansi', 'data_akuntansi']);
+			$this->db->delete('permintaan_akuntansi', ['id_permintaan' => $id_permintaan]);
+			$this->db->delete('data_akuntansi', ['id_request' => $id_permintaan]);
 		}
 	}
 ?>

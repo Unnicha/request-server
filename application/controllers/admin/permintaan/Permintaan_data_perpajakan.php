@@ -7,6 +7,7 @@
 			$this->load->library('form_validation');
 			
 			$this->load->model('M_Permintaan_perpajakan');
+			$this->load->model('M_Pengiriman_perpajakan');
 			$this->load->model('Klien_model');
 			$this->load->model('Jenis_data_model');
 		} 
@@ -27,46 +28,102 @@
 			$this->session->set_userdata('bulan', $bulan); 
 			$this->session->set_userdata('tahun', $tahun);
 			
-			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
-			if($klien == null) 
-				{ $klien = 'all'; }
+			$limit		= $_POST['length'];
+			$klien		= ($klien == null) ? 'all' : $klien;
 			$countData	= $this->M_Permintaan_perpajakan->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan_perpajakan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
-			$data		= [];
-			foreach($permintaan as $k) { 
+			$data = [];
+			foreach($permintaan as $k) {
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
+				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
-						<i class="bi bi-info-circle"></i>
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
+						<i class="bi bi-info-circle" style="font-size:20px; line-height:80%"></i>
 					</a>
-
-					<a href="permintaan_data_perpajakan/hapus/'.$k['id_permintaan'].'" class="btn btn-sm btn-danger " onclick="return confirm("Yakin ingin menghapus permintaan ke '.$k['request'].' untuk '.$k['nama_klien'].'?");" data-toggle="tooltip" data-placement="bottom" title="Hapus">
-						<i class="bi bi-trash"></i>
+					<a href="permintaan_data_perpajakan/edit/'.$k['id_permintaan'].'" class="btn-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
+						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
+					</a>
+					<a class="btn-hapus" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+						<i class="bi bi-trash" style="font-size:20px; line-height:80%"></i>
 					</a>';
-
+				
 				$data[] = $row;
 			}
+			
 			$callback	= [
-				'draw'			=> $_POST['draw'], // Ini dari datatablenya
-				'recordsTotal'	=> $countData,
-				'recordsFiltered'=>$countData,
-				'data'			=> $data,
+				'draw'				=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'		=> $countData,
+				'recordsFiltered'	=>$countData,
+				'data'				=> $data,
 			];
 			echo json_encode($callback);
 		}
 		
+		public function pageChild() {
+			$id_permintaan	= $_GET['id'];
+			$permintaan		= $this->M_Permintaan_perpajakan->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
+			
+			foreach($isi as $i => $val) {
+				if($val['status'] == 'yes') {
+					$badge	= '<span class="badge badge-success">Lengkap</span>';
+				} elseif($val['status'] == 'no') {
+					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
+				} else {
+					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
+				}
+				$add[$i] = $badge;
+			}
+			$data['judul']		= 'Detail Permintaan';
+			$data['permintaan']	= $permintaan;
+			$data['isi']		= $isi;
+			$data['badge']		= $add;
+			$data['link']		= 'admin/permintaan/permintaan_data_perpajakan/detail/';
+			
+			$this->load->view('admin/permintaan_perpajakan/rincian', $data);
+		}
+		
+		public function detail($id_data) {
+			$detail		= $this->M_Pengiriman_perpajakan->getByIdData($id_data);
+			$pengiriman	= $this->M_Pengiriman_perpajakan->getDetail($id_data);
+			
+			if($detail['status'] == 'yes') {
+				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
+			} elseif($detail['status'] == 'no') {
+				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
+			} else {
+				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
+			}
+			
+			$button = '';
+			if(count($pengiriman) > 0) {
+				if($detail['status'] != 'yes') {
+					$button = '<a href="#" class="btn btn-primary btn-konfirm" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
+				} else {
+					$button = '<a href="#" class="btn btn-danger btn-konfirm" data-id="'.$detail['id_data'].'" data-status="no" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batalkan</a>';
+				}
+			}
+			$detail['button']	= $button;
+			
+			$data['judul']		= "Detail Pengiriman"; 
+			$data['detail']		= $detail;
+			$data['pengiriman']	= $pengiriman;
+			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
+			
+			$this->libtemplate->main('admin/permintaan_perpajakan/detail', $data);
+		}
+		
 		public function tambah() {
-			$data['judul']	= "Kirim Permintaan - Data Perpajakan";
+			$data['judul']	= "Buat Permintaan Baru";
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Perpajakan');
-			$bulan			= $this->Klien_model->getMasa(date('m'));
-			$data['bulan']	= $bulan['nama_bulan'];
 			
 			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
 			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
@@ -77,50 +134,50 @@
 				$this->libtemplate->main('admin/permintaan_perpajakan/tambah', $data);
 			} else {
 				$this->M_Permintaan_perpajakan->tambahPermintaan();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				$this->session->set_flashdata('notification', 'Permintaan berhasil dibuat!'); 
 				redirect('admin/permintaan/permintaan_data_perpajakan'); 
 			}
 		}
 		
-		//delete soon
-		public function ubah($id_permintaan) {
-			$data['judul']		= "Form Ubah Permintaan"; 
-			$data['masa']		= $this->Klien_model->getMasa();
-			$data['klien']		= $this->Klien_model->getAllKlien();
-			$data['jenis']		= $this->Jenis_data_model->getAllJenisData();
+		public function edit($id_permintaan) {
+			$data['judul']		= "Edit Permintaan";
+			$data['jenis']		= $this->Jenis_data_model->getByKategori('Data Perpajakan');
 			$data['permintaan']	= $this->M_Permintaan_perpajakan->getById($id_permintaan);
+			$data['detail']		= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
 			
-			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
-			$this->form_validation->set_rules('kode_jenis', 'Jenis Data', 'required');
-			$this->form_validation->set_rules('keterangan', 'Keterangan', '');
+			$this->form_validation->set_rules('id_permintaan', 'ID Permintaan', 'required');
+			$this->form_validation->set_rules('detail[]', 'Keterangan', 'required');
+			$this->form_validation->set_rules('format_data[]', 'Format Data', 'required');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/permintaan_perpajakan/ubah', $data);
 			} else {
 				$this->M_Permintaan_perpajakan->ubahPermintaan();
 				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
-				redirect('admin/permintaan/permintaan_data_perpajakan'); 
+				redirect('admin/permintaan/permintaan_data_perpajakan');
 			}
 		}
-
-		public function detail() {
-			$id_permintaan	= $this->input->post('permintaan', true);
-			$permintaan		= $this->M_Permintaan_perpajakan->getById($id_permintaan);
-			$isi			= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
-			$bulan			= $this->Klien_model->getMasa($permintaan['bulan']);
+		
+		public function hapus() {
+			$id				= $_POST['permintaan'];
+			$data['judul']	= 'Hapus Permintaan';
+			$data['text']	= 'Yakin ingin menghapus permintaan?';
+			$data['button']	= '
+				<a href="permintaan_data_perpajakan/fix_hapus/'.$id.'" class="btn btn-danger">Hapus</a>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" tabindex="1">Batal</button>
+			';
 			
-			$data['judul']			= 'Detail Permintaan';
-			$data['permintaan']		= $permintaan;
-			$data['bulan']			= $bulan['nama_bulan'];
-			$data['isi']			= $isi;
-			
-			$this->load->view('admin/permintaan_perpajakan/detail', $data);
+			$this->load->view('admin/template/confirm', $data);
 		}
 		
-		public function hapus($id_permintaan) {
+		public function fix_hapus($id_permintaan) {
+			$detail = $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
+			foreach($detail as $d) {
+				$this->M_Pengiriman_perpajakan->hapusPengiriman($d['id_data']);
+			}
 			$this->M_Permintaan_perpajakan->hapusPermintaan($id_permintaan);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
-			redirect('admin/permintaan/permintaan_data_perpajakan');
+			$this->session->set_flashdata('notification', 'Permintaan berhasil dihapus!'); 
+			redirect('admin/permintaan/permintaan_data_perpajakan'); 
 		}
 	}
 ?>

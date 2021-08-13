@@ -93,7 +93,7 @@
 			
 			<div class="row">
 				<div class="col">
-					<table class="table table-sm table-striped table-bordered">
+					<table class="table table-striped">
 						<thead class="text-center">
 							<tr>
 								<th>Pengiriman ke</th>

@@ -3,10 +3,6 @@ a:hover {
 	text-decoration: none;
 	cursor: pointer;
 }
-.action-klien {
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-
 .bi {
 	line-height: 80%;
 }
@@ -73,79 +69,13 @@ a:hover {
 	background-color: #ce2a1d;
 }
 
-.card {
+.card-round {
 	border-radius: 10px;
-}
-.card-akun {
-	width: 500px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card-akses {
-	width: 550px;
-	max-width: 90%;
-	max-height: 100%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card-kirim {
-	width: 550px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card-klu {
-	width: 500px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card-login {
-	max-width: 450px;
-	min-width: 350px;
-}
-.card-permintaan {
-	width: 500px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card.profil {
-	width: 800px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card.profil-klien {
-	width: 900px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card-profile {
-	width: 700px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
+	box-shadow: 0 4px 8px 0 #00000033;
 }
 .card-shadow {
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
-.card.ubah-akun {
-	width: 500px;
-	max-width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
+	/*border: none;*/
+	box-shadow: 0 4px 8px 0 #00000033;
 }
 .col-tambah {
 	max-width: 600px;
@@ -164,10 +94,6 @@ a:hover {
 	max-height: 250px;
 	border: 1px solid #ced4da;
 	border-radius: .25rem;
-}
-.container-login {
-	margin-top: 3rem;
-	max-width: 90%;
 }
 .container-proses {
 	border-left: 1px solid #dee2e6;
@@ -249,9 +175,6 @@ hr.hr-profil {
 	margin-left: 0;
 	margin-right: 0;
 }
-.row-detail {
-	box-shadow: 0 4px 8px 0 #00000033, 1px 0 5px 0 #00000030;
-}
 .sidebar-icon {
 	font-size: 18px;
 }
@@ -284,29 +207,35 @@ hr.hr-profil {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 }
-.table.table-sm td, .table.table-sm th {
+.table {
+	border-bottom: 1px solid #dee2e6;
+}
+.table td, .table th {
 	padding: .3rem;
 	vertical-align: middle
 }
-.table td, .table th {
+/*.table td, .table th {
 	padding-top: .5rem;
 	padding-bottom: .5rem;
 	padding-left: 1rem;
 	padding-right: 1rem;
 	vertical-align: middle
-}
+}*/
 .table.table-akses td, .table.table-akses th {
 	vertical-align: baseline;
 }
-.table-detail {
-	border: 1px solid #dee2e6;
+.table-detail td, .table-detail th {
+	padding: .3rem .75rem;
 }
-.table-striped tbody tr:nth-of-type(odd) {
+.table-striped thead {
 	background-color: #ebf5fc;
 } 
-.table-striped.table-detail {
-	border: 1px solid #dee2e6;
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #fff;
 } 
+.table-striped tbody tr:nth-of-type(even) {
+	background-color: #ebf5fc;
+}
 
 /* untuk membuat table scroll vertical
 .table-responsive {

@@ -9,11 +9,12 @@
 			if($limit) {
 				$this->db->limit($limit, $start);
 			}
+			$dataSend = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_perpajakan')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data = jum_ok')
+							->where($dataSend)
 							->order_by('id_permintaan', 'ASC')
 							->get()->result_array();
 		}
@@ -22,26 +23,22 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
+			$dataSend = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_perpajakan')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data = jum_ok')
+							->where($dataSend)
 							->count_all_results();
 		}
 		
-		public function getById($id_pengiriman) {
-			return $this->db->from('pengiriman_perpajakan')
-							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = pengiriman_perpajakan.id_request', 'left')
-							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
-							->where('id_pengiriman', $id_pengiriman)
-							->get()->row_array();
-		}
-		
-		public function getByIdData($id_data) {
+		public function getById($id_data) {
 			return $this->db->from('data_perpajakan')
 							->join('jenis_data', 'jenis_data.kode_jenis = data_perpajakan.id_jenis', 'left')
 							->join('permintaan_perpajakan', 'permintaan_perpajakan.id_permintaan = data_perpajakan.id_request', 'left')
+							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
+							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
+							->join('tugas', 'tugas.id_jenis = jenis_data.kode_jenis', 'left')
 							->where(['id_data' => $id_data])
 							->get()->row_array();
 		}
@@ -49,8 +46,18 @@
 		public function getDetail($id_data) {
 			return $this->db->from('pengiriman_perpajakan')
 							->join('data_perpajakan', 'pengiriman_perpajakan.kode_data = data_perpajakan.id_data', 'left')
-							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->where(['id_data' => $id_data])
+							->get()->result_array();
+		}
+		
+		public function countDetail() {
+			$all	= '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan)';
+			$yes	= '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan AND status_kirim = "yes")';
+			$no		= '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan AND status_kirim = "no")';
+			$yet	= '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan AND status_kirim IS NULL)';
+			return $this->db->select('('.$all.') AS jumAll, ('.$yes.') AS jumYes, ('.$no.') AS jumNo, ('.$yet.') AS jumNull')
+							->from('permintaan_perpajakan')
+							->group_by('id_permintaan')
 							->get()->result_array();
 		}
 		
@@ -117,20 +124,15 @@
 						'kode_data'				=> $id_data,
 					];
 					$this->db->insert_batch('pengiriman_perpajakan', $row);
-					
-					if(substr($id_pengiriman, -2) == '01') {
-						$this->db->update('data_perpajakan', ['status'=>'no'], ['id_data'=>$id_data]);
-					}
+					// jika ada pengiriman, status data=>'no'
+					$this->db->update('data_perpajakan', ['status_kirim'=>'no'], ['id_data'=>$id_data]);
 					return 'OK';
 				}
 			}
 		}
 		
-		public function konfirmasi($id_data, $status='yes') {
-			$detail		= $this->getByIdData($id_data);
-			$jum_ok		= ($status == 'yes') ? $detail['jum_ok']+1 : $detail['jum_ok']-1;
-			$this->db->update('data_perpajakan', ['status'=>$status], ['id_data'=>$id_data]);
-			$this->db->update('permintaan_perpajakan', ['jum_ok'=>$jum_ok], ['id_permintaan'=>$detail['id_permintaan']]);
+		public function konfirmasi($id_data, $status) {
+			$this->db->update('data_perpajakan', ['status_kirim'=>$status], ['id_data'=>$id_data]);
 		}
 		
 		public function proses_file($nama_klien) {

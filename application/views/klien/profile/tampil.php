@@ -1,183 +1,173 @@
-<div class="container-fluid mb-4">
+<div class="content container-fluid">
 	<!-- Trigger Modal -->
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
-	<?php endif; ?>
+	<?php endif ?>
 	<?php if($this->session->flashdata('pass')) : ?>
 		<div class="passVerif" data-val="yes" data-tipe="<?=$this->session->flashdata('tipe')?>"></div>
-	<?php endif; ?>
+	<?php endif ?>
 	
-	<h2 align="center"><?=$judul?></h2>
-	<p class="subheader mb-2 text-center">
-		Detail Info Akun, Usaha, Pimpinan dan Counterpart
-	</p>
+	<div class="content-header">
+		<h3><?=$judul?></h3>
+		<!-- <p class="subheader mb-2">
+			Detail Info Akun, Usaha, Pimpinan dan Counterpart
+		</p> -->
+	</div>
 	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-4 mb-2">
+	<div class="row mb-4">
 		<div class="col">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col">
+			<div class="card card-shadow">
+				<div class="card-body">
 					<h5 class="card-title">Info Akun</h5>
-				</div>
-			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">ID Klien</div>
-				<div class="col"><?= $klien['id_klien'] ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nama Klien</div>
-				<div class="col"><?= $klien['nama'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="nama" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email</div>
-				<div class="col"><?= $klien['email_user'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="email" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Username</div>
-				<div class="col"><?= $klien['username'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="username" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Password</div>
-				<div class="col"><?= $klien['passcode'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="password" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
+					<table class="table table-detail mb-0">
+						<div class="table-body">
+							<tr>
+								<td>ID Klien</td>
+								<td><?= $klien['id_klien'] ?></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Nama Klien</td>
+								<td><?= $klien['nama'] ?></td>
+								<td>
+									<a href="#" type="button" class="verif float-right" data-tipe="nama" data-input="user">
+										<i class="bi bi-pencil-square"></i>
+										ganti
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td><?= $klien['email_user'] ?></td>
+								<td>
+									<a href="#" type="button" class="verif float-right" data-tipe="email" data-input="user">
+										<i class="bi bi-pencil-square"></i>
+										ganti
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>Username</td>
+								<td><?= $klien['username'] ?></td>
+								<td>
+									<a href="#" type="button" class="verif float-right" data-tipe="username" data-input="user">
+										<i class="bi bi-pencil-square"></i>
+										ganti
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>Password</td>
+								<td><?= $klien['passcode'] ?></td>
+								<td>
+									<a href="#" type="button" class="verif float-right" data-tipe="password" data-input="user">
+										<i class="bi bi-pencil-square"></i>
+										ganti
+									</a>
+								</td>
+							</tr>
+						</div>
+					</table>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-4 mb-2">
+	<div class="row mb-4">
 		<div class="col">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col-4"><h5 class="card-title">Info Usaha</h5></div>
-			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Usaha</div>
-				<div class="col"><?= $klien['nama_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Kode KLU</div>
-				<div class="col"><?= $klien['kode_klu']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Bentuk Usaha</div>
-				<div class="col"><?= $klien['bentuk_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Jenis Usaha</div>
-				<div class="col"><?= $klien['jenis_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Alamat</div>
-				<div class="col"><?= $klien['alamat']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor Telepon</div>
-				<div class="col"><?= $klien['telp']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP</div>
-				<div class="col"><?= $klien['no_hp']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor Akte Terakhir</div>
-				<div class="col"><?= $klien['no_akte']; ?></div>
+			<div class="card card-shadow">
+				<div class="card-body">
+					<h5 class="card-title">Info Usaha</h5>
+					<table class="table table-detail mb-0">
+						<div class="table-body">
+							<tr>
+								<td>Nama Usaha</td>
+								<td><?= $klien['nama_usaha'] ?></td>
+							</tr>
+							<tr>
+								<td>Kode KLU</td>
+								<td><?= $klien['kode_klu'] ?></td>
+							</tr>
+							<tr>
+								<td>Bentuk Usaha</td>
+								<td><?= $klien['bentuk_usaha'] ?></td>
+							</tr>
+							<tr>
+								<td>Jenis Usaha</td>
+								<td><?= $klien['jenis_usaha'] ?></td>
+							</tr>
+							<tr>
+								<td>Alamat</td>
+								<td><?= $klien['alamat'] ?></td>
+							</tr>
+							<tr>
+								<td>Nomor Telepon</td>
+								<td><?= $klien['telp'] ?></td>
+							</tr>
+							<tr>
+								<td>Nomor HP</td>
+								<td><?= $klien['no_hp'] ?></td>
+							</tr>
+							<tr>
+								<td>Nomor Akte Terakhir</td>
+								<td><?= $klien['no_akte'] ?></td>
+							</tr>
+						</div>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
 	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-4 mb-2">
+	<div class="row">
 		<div class="col">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col-4"><h5 class="card-title">Pimpinan</h5></div>
-			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Pimpinan</div>
-				<div class="col"><?= $klien['nama_pimpinan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Jabatan</div>
-				<div class="col"><?= $klien['jabatan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email Pimpinan</div>
-				<div class="col"><?= $klien['email_pimpinan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP Pimpinan</div>
-				<div class="col"><?= $klien['no_hp_pimpinan']; ?></div>
-			</div>
-		</div>
-	</div>
-	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-4 mb-2">
-		<div class="col">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col-4"><h5 class="card-title">Counterpart</h5></div>
-			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Counterpart</div>
-				<div class="col"><?= $klien['nama_counterpart']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email Counterpart</div>
-				<div class="col"><?= $klien['email_counterpart']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP Counterpart</div>
-				<div class="col"><?= $klien['no_hp_counterpart']; ?></div>
+			<div class="card-deck">
+				<div class="card card-shadow">
+					<div class="card-body">
+						<h5 class="card-title">Pimpinan</h5>
+						<table class="table table-detail mb-0">
+							<div class="table-body">
+								<tr>
+									<td>Nama Pimpinan</td>
+									<td><?= $klien['nama_pimpinan'] ?></td>
+								</tr>
+								<tr>
+									<td>Jabatan</td>
+									<td><?= $klien['jabatan'] ?></td>
+								</tr>
+								<tr>
+									<td>Email</td>
+									<td><?= $klien['email_pimpinan'] ?></td>
+								</tr>
+								<tr>
+									<td>Nomor HP</td>
+									<td><?= $klien['no_hp_pimpinan'] ?></td>
+								</tr>
+							</div>
+						</table>
+					</div>
+				</div>
+				<div class="card card-shadow">
+					<div class="card-body">
+						<h5 class="card-title">Counterpart</h5>
+						<table class="table table-detail mb-0">
+							<div class="table-body">
+								<tr>
+									<td>Nama Counterpart</td>
+									<td><?= $klien['nama_counterpart'] ?></td>
+								</tr>
+								<tr>
+									<td>Email</td>
+									<td><?= $klien['email_counterpart'] ?></td>
+								</tr>
+								<tr>
+									<td>Nomor HP</td>
+									<td><?= $klien['no_hp_counterpart'] ?></td>
+								</tr>
+							</div>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -206,7 +196,7 @@
 					type	: tipe,
 					input	: input,
 					},
-				url		: '<?= base_url(); ?>klien/profile/verification',
+				url		: '<?= base_url() ?>klien/profile/verification',
 				success	: function(data) {
 					$(".modalVerif").modal('show');
 					$(".showVerif").html(data);

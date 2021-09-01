@@ -1,16 +1,16 @@
-<div class="container-fluid">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif ?>
 	
-	<div class="row p-3">
+	<div class="row mb-2">
 		<div class="col">
 			<h3> <?= $judul ?> </h3>
 		</div>
 	</div>
 	
-	<div class="card card-shadow mx-3">
-		<div class="card-body">
+	<div class="card card-shadow">
+		<div class="card-header">
 			<div class="row form-inline">
 				<div class="col">
 					<select name='bulan' class="form-control" id="bulan">
@@ -34,60 +34,41 @@
 					</select>
 				</div>
 			</div>
-			
-			<div class="mt-2">
-				<table id="myTable" width=100% class="table table-striped table-responsive-sm">
-					<thead class="text-center ">
-						<tr>
-							<th scope="col">No.</th>
-							<th scope="col">ID Permintaan</th>
-							<th scope="col">Permintaan</th>
-							<th scope="col">Tanggal Permintaan</th>
-							<th scope="col">Requestor</th>
-							<th scope="col">Detail</th>
-						</tr>
-					</thead>
-					
-					<tbody class="text-center">
-					</tbody>
-				</table>
-			</div>
+		</div>
+		
+		<div class="card-body p-0">
+			<table id="myTable" class="table table-striped table-responsive-sm" width=100% style="margin-top:0!important">
+				<thead class="text-center ">
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">ID Permintaan</th>
+						<th scope="col">Permintaan</th>
+						<th scope="col">Tanggal Permintaan</th>
+						<th scope="col">Jumlah Data</th>
+						<th scope="col">Requestor</th>
+						<th scope="col">Detail</th>
+					</tr>
+				</thead>
+				
+				<tbody class="text-center">
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
 
-<!-- Modal untuk Detail Akun -->
-<div class="modal fade" id="detailPermintaan" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
+<!-- Detail -->
+<div class="modal fade modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-lg">
-		<div class="modal-content" id="showDetailPermintaan">
-			<!-- Tampilkan Data Klien-->
+		<div class="modal-content showDetail">
+			<!-- Tampilkan Data -->
 		</div>
 	</div>
 </div>
-
 
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	function format ( rowData ) {
-		var div = $('<div/>')
-					.addClass( 'loading' )
-					.text( 'Loading...' );
-		
-		$.ajax( {
-			url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/pageChild',
-			data	: {
-				id: rowData[1]
-			},
-			success	: function ( e ) {
-				div
-					.html( e )
-					.removeClass( 'loading' );
-			},
-		} );
-		return div;
-	}
-	
 	$(document).ready(function() {
 		if( $('.notification').data('val') == 'yes' ) {
 			$('#modalNotif').modal('show');
@@ -103,7 +84,7 @@
 			'language'		: {
 				emptyTable	: "Belum ada permintaan"
 			},
-			'pageLength': 9,
+			'pageLength'	: 9,
 			'ajax'			: {
 				'url'	: '<?=base_url()?>klien/permintaan_data_akuntansi/page',
 				'type'	: 'post',
@@ -113,12 +94,12 @@
 					e.tahun = $('#tahun').val(); 
 				},
 			},
-			/*'columnDefs'	: [
+			'columnDefs'	: [
 				{
 					'targets'	: 1,
 					'visible'	: false,
 				},
-			],*/
+			],
 		});
 		
 		$('#bulan').change(function() {
@@ -133,19 +114,17 @@
 		});
 		
 		// Detail Permintaan
-		$('#myTable tbody').on('click', 'a.btn-detail_permintaan', function() {
-			var tr	= $(this).closest('tr');
-			var row	= table.row( tr );
-			
-			if ( row.child.isShown() ) {
-				// This row is already open - close it
-				row.child.hide();
-				tr.removeClass('shown');
-			} else {
-				// Open this row
-				row.child( format(row.data()) ).show();
-				tr.addClass( 'shown' );
-			}
+		$('#myTable tbody').on('click', 'a.btn-detail', function() {
+			var id = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>klien/permintaan_data_akuntansi/detail',
+				data	: 'id='+ id,
+				success	: function(data) {
+					$(".modalDetail").modal('show');
+					$(".showDetail").html(data);
+				}
+			})
 		});
 	});
 </script>

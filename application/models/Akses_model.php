@@ -2,7 +2,13 @@
 	
 	class Akses_model extends CI_model {
 	
-		public function getByMasa($tahun, $start='', $limit='') {
+		public function getByMasa($tahun, $start='', $limit='', $kata_cari='') {
+			if($kata_cari) {
+				$this->db->like('nama_klien', $kata_cari)
+						->or_like('status_pekerjaan', $kata_cari)
+						->or_like('jenis_usaha', $kata_cari)
+						->or_like('nama_pimpinan', $kata_cari);
+			}
 			return $this->db->from('akses')
 							->join('user', 'user.id_user = akses.id_akuntan', 'left')
 							->where(['tahun'=>$tahun])

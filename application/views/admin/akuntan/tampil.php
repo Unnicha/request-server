@@ -1,70 +1,57 @@
-<div class="container-fluid">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
+	<?php endif;
+		if($this->session->flashdata('pass')) : ?>
+		<div class="passVerif" data-val="yes" data-id="<?=$this->session->flashdata('pass')?>"></div>
 	<?php endif; ?>
-
 	
-	<!-- Judul Table-->
-	<h2 align="center">Daftar Akuntan</h2>
-	
-	<div class="row float-left mt-1">
-		<!-- Tombol Tambah Data -->
+	<div class="row mb-2">
 		<div class="col">
-			<a href="<?= base_url(); ?>admin/master/akuntan/tambah" class="btn btn-success">
-				<i class="bi-plus"></i>
-				Tambah 
+			<h2>Daftar Akuntan</h2>
+		</div>
+		<div class="col-auto">
+			<a href="<?= base_url(); ?>admin/master/akuntan/tambah" class="btn btn-primary">
+				<i class="bi-plus-circle"></i>
+				Tambah
 			</a>
 		</div>
 	</div>
 	
-	<div class="mt-3 mb-4">
-		<!-- Mulai Table-->
-		<table id="myTable" width=100% class="table table-striped table-responsive-sm mt-3">
-			
-			<!-- Header Table-->
-			<thead class="text-center">
-				<tr>
-					<th scope="col">No.</th>
-					<th scope="col">Nama Akuntan</th>
-					<th scope="col">Username</th>
-					<th scope="col">Email</th>
-					<th scope="col">Action</th>
-				</tr>
-			</thead>
-
-			<!-- Body Table-->
-			<tbody class="isi text-center">
-			</tbody>
-		</table>
+	<div class="card card-round">
+		<div class="card-body p-0">
+			<table id="myTable" width=100% class="table table-striped table-responsive-sm mt-3">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">ID Akuntan</th>
+						<th scope="col">Nama Akuntan</th>
+						<th scope="col">Username</th>
+						<th scope="col">Email</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				
+				<tbody class="isi text-center">
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 
-<!-- Detail Proses -->
-<div class="modal fade modalHapus" tabindex="-1" aria-labelledby="modalHapusLabel" aria-hidden="true">
+<!-- Modal Hapus -->
+<div class="modal fade modalConfirm" tabindex="-1" aria-labelledby="modalConfirmLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content mx-auto" style="width:400px">
-			<div class="modal-header pl-4">
-				<h5 class="modal-title">Hapus Akuntan</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body p-3">
-				<div class="row mb-4">
-					<div class="col">
-						<font size="4">
-							Anda yakin ingin menghapus Akuntan <b class="namaAkuntan"></b> ?
-						</font>
-					</div>
-				</div>
-				<div class="idAkuntan" style="display:none"></div>
-				<div class="row text-center">
-					<div class="col">
-						<a class="btn btn-outline-secondary" data-dismiss="modal" aria-label="Close">Batal</a>
-						<a class="btn btn-danger fix-hapus">Hapus</a>
-					</div>
-				</div>
-			</div>
+		<div class="modal-content mx-auto showConfirm" style="width:400px">
+		</div>
+	</div>
+</div>
+
+<!-- Modal Verifikasi -->
+<div class="modal fade modalVerif" tabindex="-1" aria-labelledby="modalVerifLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content mx-auto showVerif">
+			<!-- Tampilkan Data -->
 		</div>
 	</div>
 </div>
@@ -84,6 +71,7 @@
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
+			'pageLength'	: 8,
 			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/master/akuntan/page',
 				'type'	: 'post',
@@ -94,22 +82,44 @@
 			$(this).tooltip();
 		})
 		
-		$('#myTable').on('click', '.btn-hapus', function() {
-			$(".modalHapus").modal('show');
-			$(".idAkuntan").html( $(this).data('id') );
-			$(".namaAkuntan").html( $(this).data('nama') );
-		})
-		$('.fix-hapus').click(function() {
-			var id = $('.idAkuntan').html();
+		function verif(id) {
 			$.ajax({
-				type	: 'post',
-				url		: '<?= base_url(); ?>admin/master/akuntan/hapus',
-				data	: 'id=' +id,
-				success	: function() {
-					$('.modalHapus').modal('hide');
-					window.location.assign("<?= base_url();?>admin/master/akuntan");
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/master/akuntan/verif',
+				data	: {
+					'id'	: id,
+				},
+				success	: function(data) {
+					$(".modalVerif").modal('show');
+					$(".showVerif").html(data);
 				}
 			})
-		})
+		}
+		
+		// Ubah Password
+		$('#myTable tbody').on('click', 'a.btn-ubah', function() {
+			verif( $(this).data('id') );
+		});
+		
+		if($('.passVerif').data('val') == 'yes') {
+			verif($('.passVerif').data('id'));
+			$('.salah').html('Password salah!');
+		}
+		
+		// Hapus
+		$('#myTable tbody').on('click', 'a.btn-hapus', function() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/master/akuntan/hapus',
+				data	: {
+					'id'	: $(this).data('id'),
+					'nama'	: $(this).data('nama'),
+				},
+				success	: function(data) {
+					$(".modalConfirm").modal('show');
+					$(".showConfirm").html(data);
+				}
+			})
+		});
 	})
 </script>

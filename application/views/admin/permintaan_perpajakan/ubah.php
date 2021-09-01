@@ -1,14 +1,14 @@
-<div class="container-fluid">
-	<div class="row py-3">
+<div class="content container-fluid">
+	<div class="row mb-2">
 		<div class="col">
-			<h3><?= $judul ?></h3>
+			<h4><?= $judul ?></h4>
 		</div>
 	</div>
 	
 	<div class="row">
 		<div class="col">
-			<div class="card card-shadow">
-				<div class="card-body">
+			<div class="card card-round">
+				<div class="card-body px-4">
 					<form action="" method="post">
 						<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">
 						<input type="hidden" name="id_permintaan" value="<?=$permintaan['id_permintaan']?>">
@@ -16,7 +16,7 @@
 						<!-- Klien -->
 						<div class="form-group row">
 							<label class="col-lg-2">Nama Klien</label> 
-							<div class="col-lg-6">
+							<div class="col-lg-4">
 								<input type="text" class="form-control" name='klien' value="<?=$permintaan['nama_klien']?>" readonly>
 							</div>
 						</div>
@@ -37,13 +37,13 @@
 											
 											<!-- Keterangan -->
 											<div class="col-sm">
-												<input type="text" class="form-control" name="detail[<?=$d?>]" placeholder="Detail" value="<?=$val['detail']?>"<?=($val['status'] == 'yes') ? 'readonly' : 'required';?>>
+												<input type="text" class="form-control" name="detail[<?=$d?>]" placeholder="Detail" value="<?=$val['detail']?>"<?=($val['status_kirim'] == 'yes') ? 'readonly' : 'required';?>>
 											</div>
 											
 											<!-- Format Data -->
 											<div class="col-sm">
 												<select class="form-control" name="format_data[<?=$d?>]">
-													<?php if($val['status'] == 'yes') : ?>
+													<?php if($val['status_kirim'] == 'yes') : ?>
 													<option value="<?=$val['format_data']?>" readonly><?=$val['format_data']?></option>
 													<?php else : ?>
 													<option value="Softcopy" <?=($val['format_data'] == 'Softcopy') ? 'selected' : '';?>>Softcopy</option>
@@ -54,7 +54,7 @@
 										</div>
 									</div>
 									<div class="span p-1">
-										<?php if($val['status'] == 'yes') : ?>
+										<?php if($val['status_kirim'] == 'yes') : ?>
 										<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="bottom" title="Data sudah dikonfirmasi">
 											<i class="bi bi-check-lg"></i>
 										</a>
@@ -70,7 +70,7 @@
 						</div>
 						
 						<!-- Tombol Simpan -->
-						<div class="row text-right mt-3">
+						<div class="row mt-3">
 							<div class="col">
 								<button type="submit" name="tambah" class="btn btn-primary">Ubah</button>
 								<a href="javascript:location.reload()" class="btn btn-outline-secondary">Reset</a>

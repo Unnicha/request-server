@@ -8,11 +8,11 @@
 			
 			$this->load->model('Klien_model');
 			$this->load->model('Klu_model');
-			$this->load->model('Otoritas_model');
+			$this->load->model('Admin_model');
 		} 
 		 
 		public function index() {
-			$data['judul'] = "Data Klien"; 
+			$data['judul'] = "Daftar Klien"; 
 			$data['klien_modal'] = $this->Klien_model->getAllKlien(); 
 			
 			$this->libtemplate->main('admin/klien/tampil', $data);
@@ -35,14 +35,14 @@
 				$row[]	= $k['jenis_usaha'];
 				$row[]	= $k['nama_pimpinan'];
 				$row[]	= '
-						<a class="btn btn-sm btn-primary btn-detail" data-nilai="'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail">
-							<i class="bi bi-info-circle"></i>
+						<a class="btn-detail" data-nilai="'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail">
+							<i class="bi bi-info-circle-fill icon-medium"></i>
 						</a>
-						<a href="klien/view/'.$k['id_klien'].'" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="bottom" title="Ubah">
-							<i class="bi bi-pencil-square"></i>
+						<a href="klien/view/'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
+							<i class="bi bi-pencil-square icon-medium"></i>
 						</a>
-						<a class="btn btn-sm btn-danger btn-hapus" data-id="'.$k['id_klien'].'" data-nama="'.$k['nama_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus Klien">
-							<i class="bi bi-trash"></i>
+						<a class="btn-hapus" data-id="'.$k['id_klien'].'" data-nama="'.$k['nama_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus Klien">
+							<i class="bi bi-trash icon-medium"></i>
 						</a>';
 
 				$data[] = $row;
@@ -62,27 +62,6 @@
 			$data['status_pekerjaan']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['level']				= "klien";
 			
-			$this->form_validation->set_rules('nama_klien', 'Nama Klien', 'required');
-			$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[8]|max_length[15]');
-			$this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
-			$this->form_validation->set_rules('passconf', 'Password', 'required|matches[password]');
-
-			$this->form_validation->set_rules('status_pekerjaan', 'Status Pekerjaan', 'required');
-			$this->form_validation->set_rules('kode_klu', 'Kode KLU', 'required');
-			$this->form_validation->set_rules('alamat', 'Alamat', 'required');
-			$this->form_validation->set_rules('telp', 'Nomor Telepon', 'required|numeric');
-			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-			$this->form_validation->set_rules('no_hp', 'No. HP', 'numeric');
-			$this->form_validation->set_rules('no_akte', 'No. Akte', 'numeric');
-
-			$this->form_validation->set_rules('nama_pimpinan', 'Nama Pimpinan', 'required');
-			$this->form_validation->set_rules('jabatan', 'Jabatan', 'required');
-			$this->form_validation->set_rules('no_hp_pimpinan', 'No. HP', 'required|numeric');
-			$this->form_validation->set_rules('email_pimpinan', 'Email', 'valid_email');
-
-			$this->form_validation->set_rules('no_hp_counterpart', 'No. HP', 'numeric');
-			$this->form_validation->set_rules('email_counterpart', 'Email', 'valid_email');
-
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klien/tambah', $data);
 			} else {
@@ -101,6 +80,11 @@
 				'jenis_usaha' => $klien['jenis_usaha'],
 			);
 			echo json_encode($data);
+		}
+		
+		public function cekUnique() {
+			$result = $this->Klien_model->cekUnique($_REQUEST['table'], $_REQUEST['field'], $_REQUEST['value']);
+			echo json_encode($result);
 		}
 		
 		public function profil() {
@@ -136,7 +120,7 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->load->view('admin/klien/verif', $data);
 			} else {
-				$cek	= $this->Otoritas_model->getById($this->session->userdata('id_user'));
+				$cek	= $this->Admin_model->getById($this->session->userdata('id_user'));
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($verify == true) {

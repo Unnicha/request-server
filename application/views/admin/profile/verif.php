@@ -12,11 +12,13 @@
 			<input type="hidden" id="id_user" name="id_user" value="<?=$id_user?>">
 			
 			<div class="form-group row">
-				<input type="password" class="form-control" name="password" id="password" placeholder="Masukkan Password" required>
-				<small class="form-text text-danger salah"></small>
-				<?php if($this->session->flashdata('pass')) : ?>
-					<small class="form-text text-danger"><?= $this->session->flashdata('pass'); ?></small>
-				<?php endif; ?>
+				<div class="col">
+					<input type="password" class="form-control" name="password" id="password" placeholder="Masukkan Password" required>
+					<small class="form-text text-danger salah"></small>
+					<?php if($this->session->flashdata('pass')) : ?>
+						<small class="form-text text-danger"><?= $this->session->flashdata('pass'); ?></small>
+					<?php endif; ?>
+				</div>
 			</div>
 			
 			<div class="row float-right">

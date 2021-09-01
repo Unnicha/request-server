@@ -1,11 +1,11 @@
-<div class="container-fluid">
-	<div class="row p-3">
+<div class="content container-fluid">
+	<div class="row mb-2">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
 	</div>
 	
-	<div class="card card-shadow mx-3">
+	<div class="card card-round">
 		<div class="card-body">
 			<form action="" method="post">
 				<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">
@@ -14,7 +14,7 @@
 				<!-- Klien -->
 				<div class="form-group row">
 					<label class="col-lg-2">Nama Klien</label> 
-					<div class="col-lg-6">
+					<div class="col-lg">
 						<input type="text" class="form-control" name='klien' value="<?=$permintaan['nama_klien']?>" readonly>
 					</div>
 				</div>
@@ -35,12 +35,12 @@
 									
 									<!-- Keterangan -->
 									<div class="col-sm">
-										<input type="text" class="form-control" name="detail[<?=$d?>]" placeholder="Detail" value="<?=$val['detail']?>"<?=($val['status'] == 'yes') ? 'readonly' : 'required';?>>
+										<input type="text" class="form-control" name="detail[<?=$d?>]" placeholder="Detail" value="<?=$val['detail']?>"<?=($val['status_kirim'] == 'yes') ? 'readonly' : 'required';?>>
 									</div>
 									
 									<!-- Format Data -->
 									<div class="col-sm">
-										<?php if($val['status'] == 'yes') : ?>
+										<?php if($val['status_kirim'] == 'yes') : ?>
 										<input type="text" class="form-control" nama="format_data[<?=$d?>]" value="<?=$val['format_data']?>" readonly>
 										<?php else : ?>
 										<select class="form-control" name="format_data[<?=$d?>]">
@@ -52,7 +52,7 @@
 								</div>
 							</div>
 							<div class="span p-1">
-								<?php if($val['status'] == 'yes') : ?>
+								<?php if($val['status_kirim'] == 'yes') : ?>
 								<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="bottom" title="Data sudah dikonfirmasi">
 									<i class="bi bi-check-lg"></i>
 								</a>
@@ -68,7 +68,7 @@
 				</div>
 				
 				<!-- Tombol Simpan -->
-				<div class="row text-right">
+				<div class="row">
 					<div class="col">
 						<button type="submit" name="tambah" class="btn btn-primary">Ubah</button>
 						<a href="javascript:location.reload()" class="btn btn-outline-secondary">Reset</a>

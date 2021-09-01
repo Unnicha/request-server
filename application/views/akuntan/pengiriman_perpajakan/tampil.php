@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
@@ -6,17 +6,17 @@
 		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row p-3">
+	<div class="row mb-2">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
 	</div>
 	
-	<div class="card card-shadow mx-3">
-		<div class="card-body">
+	<div class="card card-shadow">
+		<div class="card-header">
 			<form action="<?=base_url()?>akuntan/pengiriman_data_perpajakan/export" method="post">
 				<div class="row">
-					<div class="col-sm px-0">
+					<div class="col-sm">
 						<div class="row form-inline">
 							<div class="col">
 								<!-- Ganti Bulan -->
@@ -49,7 +49,7 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-3">
+					<div class="col-auto">
 						<div class="btn-group float-right" role="group" aria-label="Export">
 							<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
 								<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
@@ -61,25 +61,35 @@
 					</div>
 				</div>
 			</form>
-			
-			<div class="mt-2">
-				<table id="myTable" width=100% class="table table-striped table-responsive-sm">
-					<thead class="text-center">
-						<tr>
-							<th scope="col">No.</th>
-							<th scope="col">Nama Klien</th>
-							<th scope="col">ID Permintaan</th>
-							<th scope="col">Permintaan</th>
-							<th scope="col">Tanggal Permintaan</th>
-							<th scope="col">Requestor</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
+		</div>
 		
-					<tbody class="text-center">
-					</tbody>
-				</table>
-			</div>
+		<div class="card-body p-0">
+			<table id="myTable" class="table table-striped table-responsive-sm" width=100% style="margin-top:0!important">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">Klien</th>
+						<th scope="col">ID Permintaan</th>
+						<th scope="col">Permintaan</th>
+						<th scope="col">Tanggal Permintaan</th>
+						<th scope="col">Jumlah Data</th>
+						<th scope="col">Status</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+	
+				<tbody class="text-center">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Detail Proses -->
+<div class="modal fade modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-content showDetail">
+			<!-- Tampilkan Data -->
 		</div>
 	</div>
 </div>
@@ -87,25 +97,6 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	function format ( rowData ) {
-		var div = $('<div/>')
-					.addClass( 'loading' )
-					.text( 'Loading...' );
-		
-		$.ajax( {
-			url		: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/pageChild',
-			data	: {
-				id: rowData[2]
-			},
-			success	: function ( e ) {
-				div
-					.html( e )
-					.removeClass( 'loading' );
-			},
-		} );
-		return div;
-	}
-	
 	$(document).ready(function() {
 		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
@@ -117,16 +108,14 @@
 		}
 		
 		function klien() {
-			var bulan = $('#bulan').val();
-			var tahun = $('#tahun').val();
 			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/klien',
-				data: {
-					'bulan':bulan,
-					'tahun': tahun
+				type	: 'POST',
+				url		: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/klien',
+				data	: {
+					'bulan': $('#bulan').val(),
+					'tahun': $('#tahun').val(),
 				},
-				success: function(data) {
+				success	: function(data) {
 					$("#klien").html(data);
 				}
 			})
@@ -140,7 +129,7 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'language'		: {
-				emptyTable	: "Belum ada pengiriman selesai"
+				emptyTable	: "Belum ada pengiriman"
 			},
 			//'pageLength': 9,
 			'ajax'		: {
@@ -180,19 +169,17 @@
 		});
 		
 		// Detail Permintaan
-		$('#myTable tbody').on('click', 'a.btn-detail_pengiriman', function() {
-			var tr	= $(this).closest('tr');
-			var row	= table.row( tr );
-			
-			if ( row.child.isShown() ) {
-				// This row is already open - close it
-				row.child.hide();
-				tr.removeClass('shown');
-			} else {
-				// Open this row
-				row.child( format(row.data()) ).show();
-				tr.addClass( 'shown' );
-			}
+		$('#myTable tbody').on('click', 'a.btn-detail', function() {
+			var id = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>akuntan/pengiriman_data_perpajakan/detail',
+				data	: 'id='+ id,
+				success	: function(data) {
+					$(".modalDetail").modal('show');
+					$(".showDetail").html(data);
+				}
+			})
 		});
 	});
 </script>

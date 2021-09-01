@@ -1,44 +1,46 @@
-<div class="container-fluid">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<h2 class="mb-3" align=center><?=$judul?></h2>
+	<div class="row mb-2">
+		<div class="col">
+			<h3><?= $judul ?></h3>
+		</div>
+	</div>
+	
 	<?php $status = @$_GET['p']; ?>
-	
-	<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link <?= ($status=='belum') ? 'active' : '' ?> px-0" href="<?=$link?>?p=belum" id="belum" style="color:black">
-				Belum Diproses
-			</a>
-		</li>
-		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link <?= ($status=='onproses' || $status=='') ? 'active' : '' ?> px-0" href="<?=$link?>?p=onproses" id="onproses" style="color:black">
-				Sedang Diproses
-			</a>
-		</li>
-		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link <?= ($status=='selesai') ? 'active' : '' ?> px-0" href="<?=$link?>?p=selesai" id="selesai" style="color:black">
-				Selesai Diproses
-			</a>
-		</li>
-		<li class="nav-item tab-proses" role="presentation">
-			<a class="nav-link <?= ($status=='export') ? 'active' : '' ?> px-0" href="<?=$link?>?p=export" id="export" style="color:black">
-				Export
-			</a>
-		</li>
-	</ul>
-	
-	<div class="tab-content container-proses py-3 mb-3" id="myTabContent">
-		<div class="tab-pane fade show active"></div>
+	<div class="card card-shadow">
+		<div class="card-header">
+			<nav class="nav border-bottom" id="myTabs">
+				<a class="nav-link active" data-tab="all" style="color:black">
+					Semua
+				</a>
+				<a class="nav-link" data-tab="todo" style="color:black">
+					To Do
+				</a>
+				<a class="nav-link" data-tab="onproses" style="color:black">
+					On Proses
+				</a>
+				<a class="nav-link" data-tab="done" style="color:black">
+					Done
+				</a>
+			</nav>
+		</div>
+		
+		<div class="card-body pt-2 pb-0">
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active"></div>
+			</div>
+		</div>
 	</div>
 </div>
 
 
 <!-- Detail Proses -->
 <div class="modal fade detailProses" tabindex="-1" aria-labelledby="detailProsesLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg">
-		<div class="modal-content profile-klien showProses">
+	<div class="modal-dialog modal-dialog-scrollable modal-xl">
+		<div class="modal-content showProses">
 			<!-- Tampilkan Data -->
 		</div>
 	</div>
@@ -53,16 +55,22 @@
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
 		
-		function view() {
+		function view(tab) {
 			$.ajax({
 				type	: 'POST',
-				data	: 'tab='+$('.nav-link.active').attr('id'),
+				data	: 'tab='+tab,
 				url		: '<?= base_url(); ?>akuntan/proses_data_perpajakan/prosesOn',
 				success	: function(data) {
 					$('.tab-pane').html(data);
 				}
 			})
 		}
-		view();
+		view('all');
+		
+		$('#myTabs a').on('click', function() {
+			$('a').removeClass('active');
+			view( $(this).data('tab') );
+			$(this).addClass('active');
+		})
 	});
 </script>

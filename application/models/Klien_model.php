@@ -13,7 +13,7 @@
 			return $this->db->from('klien')
 							->join('klu', 'klien.kode_klu = klu.kode_klu', 'left')
 							->join('user', 'klien.id_klien = user.id_user', 'left')
-							->order_by('id_klien', 'ASC')
+							->order_by('nama_klien', 'ASC')
 							->get()->result_array();
 		}
 
@@ -73,7 +73,16 @@
 			
 			return $kode_baru = '3'.$baru;
 		}
-
+		
+		public function cekUnique($table, $field, $value) {
+			$cek = $this->db->get_where($table, [$field => $value])->row_array();
+			if($cek) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
 		public function tambahKlien() {
 			$id_klien = $this->getMax($this->input->post('level', true));
 			$data1 = [

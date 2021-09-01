@@ -23,7 +23,7 @@
 				</div>
 				
 				<div class="col-lg-5">
-					<div class="card card-shadow mx-auto">
+					<div class="card card-round mx-auto">
 						<div class="card-body p-5">
 							<h2 class="text-center">Login</h2>
 							<p class="text-center text-muted mb-4">Silahkan Login disini</p>

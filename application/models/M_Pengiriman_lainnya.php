@@ -9,11 +9,12 @@
 			if($limit) {
 				$this->db->limit($limit, $start);
 			}
+			$dataSend = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_lainnya')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_lainnya.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data = jum_ok')
+							->where($dataSend)
 							->order_by('id_permintaan', 'ASC')
 							->get()->result_array();
 		}
@@ -22,27 +23,22 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
+			$dataSend = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_lainnya')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_lainnya.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data = jum_ok')
+							->where($dataSend)
 							->count_all_results();
 		}
 		
-		public function getById($id_pengiriman) {
-			return $this->db->from('pengiriman_lainnya')
-							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = pengiriman_lainnya.id_request', 'left')
-							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
-							->where('id_pengiriman', $id_pengiriman)
-							->get()->row_array();
-		}
-		
-		public function getByIdData($id_data) {
+		public function getById($id_data) {
 			return $this->db->from('data_lainnya')
 							->join('jenis_data', 'jenis_data.kode_jenis = data_lainnya.id_jenis', 'left')
 							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = data_lainnya.id_request', 'left')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
+							->join('user', 'permintaan_lainnya.id_pengirim = user.id_user', 'left')
+							->join('tugas', 'tugas.id_jenis = jenis_data.kode_jenis', 'left')
 							->where(['id_data' => $id_data])
 							->get()->row_array();
 		}
@@ -51,6 +47,17 @@
 			return $this->db->from('pengiriman_lainnya')
 							->join('data_lainnya', 'pengiriman_lainnya.kode_data = data_lainnya.id_data', 'left')
 							->where(['id_data' => $id_data])
+							->get()->result_array();
+		}
+		
+		public function countDetail() {
+			$all	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan)';
+			$yes	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim = "yes")';
+			$no		= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim = "no")';
+			$yet	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim IS NULL)';
+			return $this->db->select('('.$all.') AS jumAll, ('.$yes.') AS jumYes, ('.$no.') AS jumNo, ('.$yet.') AS jumNull')
+							->from('permintaan_lainnya')
+							->group_by('id_permintaan')
 							->get()->result_array();
 		}
 		
@@ -117,20 +124,15 @@
 						'kode_data'				=> $id_data,
 					];
 					$this->db->insert_batch('pengiriman_lainnya', $row);
-					
-					if(substr($id_pengiriman, -2) == '01') {
-						$this->db->update('data_lainnya', ['status'=>'no'], ['id_data'=>$id_data]);
-					}
+					// jika ada pengiriman, status data=>'no'
+					$this->db->update('data_lainnya', ['status_kirim'=>'no'], ['id_data'=>$id_data]);
 					return 'OK';
 				}
 			}
 		}
 		
-		public function konfirmasi($id_data, $status='yes') {
-			$detail		= $this->getByIdData($id_data);
-			$jum_ok		= ($status == 'yes') ? $detail['jum_ok']+1 : $detail['jum_ok']-1;
-			$this->db->update('data_lainnya', ['status'=>$status], ['id_data'=>$id_data]);
-			$this->db->update('permintaan_lainnya', ['jum_ok'=>$jum_ok], ['id_permintaan'=>$detail['id_permintaan']]);
+		public function konfirmasi($id_data, $status) {
+			$this->db->update('data_lainnya', ['status_kirim'=>$status], ['id_data'=>$id_data]);
 		}
 		
 		public function proses_file($nama_klien) {

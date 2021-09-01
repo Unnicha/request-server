@@ -1,4 +1,4 @@
-<div class="container-fluid mb-4">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
@@ -7,64 +7,56 @@
 		<div class="passVerif" data-val="yes" data-tipe="<?=$this->session->flashdata('tipe')?>"></div>
 	<?php endif; ?>
 	
-	<div class="row row-child">
+	<div class="row mb-2">
 		<div class="col">
-			<h2 class="text-center mb-2">Profil Akuntan</h2> 
+			<h3>Profil Akuntan</h3>
 		</div>
 	</div>
 	
-	<hr class="my-0">
-	
-	<div class="row row-child py-3 px-4">
-		<div class="col mb-2">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col">
-					<h5 class="card-title mb-3">Info Akun</h5>
-				</div>
-			</div>
-			
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">ID Akuntan</div>
-				<div class="col"><?= $akuntan['id_user'] ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nama Akuntan</div>
-				<div class="col"><?= $akuntan['nama'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="nama">ganti</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email</div>
-				<div class="col"><?= $akuntan['email_user'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="email">ganti</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Username</div>
-				<div class="col"><?= $akuntan['username'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="username">ganti</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Password</div>
-				<div class="col"><?= $akuntan['passcode'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="password">ganti</a>
+	<div class="row">
+		<div class="col">
+			<div class="card card-shadow">
+				<div class="card-body">
+					<!-- <h5 class="card-title mb-3">Info Akun</h5> -->
+					<table class="table table-detail">
+						<tr>
+							<td>ID Akuntan</td>
+							<td><?= $akuntan['id_user'] ?></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Nama Akuntan</td>
+							<td><?= $akuntan['nama'] ?></td>
+							<td>
+								<a href="#" type="button" class="verif float-right" data-tipe="nama">ganti</a>
+							</td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td><?= $akuntan['email_user'] ?></td>
+							<td>
+								<a href="#" type="button" class="verif float-right" data-tipe="email">ganti</a>
+							</td>
+						</tr>
+						<tr>
+							<td>Username</td>
+							<td><?= $akuntan['username'] ?></td>
+							<td>
+								<a href="#" type="button" class="verif float-right" data-tipe="username">ganti</a>
+							</td>
+						</tr>
+						<tr>
+							<td>Password</td>
+							<td><?= $akuntan['passcode'] ?></td>
+							<td>
+								<a href="#" type="button" class="verif float-right" data-tipe="password">ganti</a>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	<hr class="my-0">
 </div>
 
 <!-- Modal Verifikasi -->

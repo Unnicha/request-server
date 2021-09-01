@@ -1,30 +1,27 @@
-<div class="container-fluid">
+<div class="content container-fluid">
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row p-3">
+	<div class="row mb-2">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
 	</div>
 	
-	<div class="card card-shadow mx-3">
-		<div class="card-body">
+	<div class="card card-shadow">
+		<div class="card-header">
 			<div class="row">
 				<div class="col-sm">
 					<div class="row form-inline">
-						<div class="col px-0">
+						<div class="col">
 							<!-- Ganti Bulan -->
 							<select name='bulan' class="form-control" id="bulan">
 								<?php
 									$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-									foreach ($masa as $m) : 
-										if ($m['id_bulan'] == $bulan) {
-											$pilih="selected";
-										} else {
-											$pilih="";
-										} ?>
+									foreach ($masa as $m) :
+										$pilih = ($m['id_bulan'] == $bulan) ? "selected" : "";
+									?>
 								<option value="<?=$m['id_bulan']?>" <?=$pilih?>><?= $m['nama_bulan'] ?></option>
 								<?php endforeach ?>
 							</select>
@@ -34,11 +31,8 @@
 								<?php 
 									$tahun = $this->session->userdata('tahun') ? $this->session->userdata('tahun') : date('Y');
 									for($i=date('Y'); $i>=2016; $i--) :
-										if ($i == $tahun) {
-											$pilih="selected";
-										} else {
-											$pilih="";
-										} ?>
+										$pilih = ($i == $tahun) ? "selected" : "";
+									?>
 								<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
 								<?php endfor ?>
 							</select>
@@ -51,32 +45,42 @@
 					</div>
 				</div>
 				
-				<div class="col-sm-3">
+				<div class="col-auto">
 					<a href="<?= base_url(); ?>akuntan/permintaan_data_perpajakan/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat Permintaan Baru">
 						<i class="bi-plus-circle"></i>
-						Buat
+						Tambah
 					</a>
 				</div>
 			</div>
-			
-			<div class="mt-2">
-				<table id="myTable" width=100% class="table table-striped table-responsive-sm">
-					<thead class="text-center">
-						<tr>
-							<th scope="col">No.</th>
-							<th scope="col">Nama Klien</th>
-							<th scope="col">ID Permintaan</th>
-							<th scope="col">Permintaan</th>
-							<th scope="col">Tanggal Permintaan</th>
-							<th scope="col">Requestor</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
-					
-					<tbody class="text-center">
-					</tbody>
-				</table>
-			</div>
+		</div>
+		
+		<div class="card-body p-0">
+			<table id="myTable" class="table table-striped table-responsive-sm" width=100% style="margin-top:0!important">
+				<thead class="text-center">
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">Klien</th>
+						<th scope="col">ID Permintaan</th>
+						<th scope="col">Permintaan</th>
+						<th scope="col">Tanggal Permintaan</th>
+						<th scope="col">Jumlah Data</th>
+						<th scope="col">Requestor</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				
+				<tbody class="text-center">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Detail Proses -->
+<div class="modal fade modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-content showDetail">
+			<!-- Tampilkan Data -->
 		</div>
 	</div>
 </div>
@@ -84,25 +88,6 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	function format ( rowData ) {
-		var div = $('<div/>')
-					.addClass( 'loading' )
-					.text( 'Loading...' );
-		
-		$.ajax( {
-			url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/pageChild',
-			data	: {
-				id: rowData[2]
-			},
-			success	: function ( e ) {
-				div
-					.html( e )
-					.removeClass( 'loading' );
-			},
-		} );
-		return div;
-	}
-	
 	$(document).ready(function() {
 		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
@@ -170,18 +155,16 @@
 		
 		// Detail Permintaan
 		$('#myTable tbody').on('click', 'a.btn-detail', function() {
-			var tr	= $(this).closest('tr');
-			var row	= table.row( tr );
-			
-			if ( row.child.isShown() ) {
-				// This row is already open - close it
-				row.child.hide();
-				tr.removeClass('shown');
-			} else {
-				// Open this row
-				row.child( format(row.data()) ).show();
-				tr.addClass( 'shown' );
-			}
+			var id = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/detail',
+				data	: 'id='+ id,
+				success	: function(data) {
+					$(".modalDetail").modal('show');
+					$(".showDetail").html(data);
+				}
+			})
 		});
 	});
 </script>

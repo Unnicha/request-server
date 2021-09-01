@@ -9,11 +9,14 @@
 			if($limit) {
 				$this->db->limit($limit, $start);
 			}
-			return $this->db->from('permintaan_perpajakan')
+			$allData = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan)';
+			$dataYes = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE status_kirim = "yes" AND id_request = id_permintaan)';
+			return $this->db->select('*, '.$allData.' AS jumData')
+							->from('permintaan_perpajakan')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data != jum_ok')
+							->where($dataYes.' < '.$allData)
 							->order_by('id_permintaan', 'ASC')
 							->get()->result_array();
 		}
@@ -22,34 +25,35 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_perpajakan.id_klien', $klien);
 			}
+			$allData = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan)';
+			$dataYes = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE status_kirim = "yes" AND id_request = id_permintaan)';
 			return $this->db->from('permintaan_perpajakan')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where('jum_data != jum_ok')
+							->where($dataYes.' < '.$allData)
+							->order_by('id_permintaan', 'ASC')
 							->count_all_results();
 		}
 		
 		public function getById($id_permintaan) {
-			return $this->db->from('permintaan_perpajakan')
+			$allData = '(SELECT COUNT(id_data) FROM data_perpajakan WHERE id_request = id_permintaan)';
+			return $this->db->select('*, '.$allData.' AS jumData')
+							->from('permintaan_perpajakan')
 							->join('klien', 'permintaan_perpajakan.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_perpajakan.id_pengirim = user.id_user', 'left')
 							->where(['id_permintaan' => $id_permintaan])
 							->get()->row_array();
 		}
 		
-		public function getDetail($id_permintaan, $count=false) {
-			$this->db->from('data_perpajakan')
-					->join('jenis_data', 'jenis_data.kode_jenis = data_perpajakan.id_jenis', 'left')
-					->where(['id_request' => $id_permintaan]);
-			if($count == false) {
-				return $this->db->get()->result_array();
-			} else {
-				return $this->db->count_all_results();
-			}
+		public function getDetail($id_permintaan) {
+			return $this->db->from('data_perpajakan')
+							->join('jenis_data', 'jenis_data.kode_jenis = data_perpajakan.id_jenis', 'left')
+							->where(['id_request' => $id_permintaan])
+							->get()->result_array();
 		}
 		
-		public function getNew($id_klien, $bulan, $tahun) { 
+		public function getNew($id_klien, $bulan, $tahun) {
 			$pre	= substr($tahun, -2) . $bulan . $id_klien;
 			$max	= $this->db->select_max('id_permintaan')
 								->where(['id_klien' => $id_klien, 'bulan'=>$bulan, 'tahun'=>$tahun])
@@ -57,9 +61,9 @@
 			
 			if($max['id_permintaan']) {
 				$tambah	= substr($max['id_permintaan'], -2);
-				$new	= $pre .'2'. sprintf('%02s', ++$tambah); //kategori data
+				$new	= $pre .'1'. sprintf('%02s', ++$tambah); //kategori data
 			} else {
-				$new	= $pre .'2'.'01'; //kategori data
+				$new	= $pre .'1'.'01'; //kategori data
 			}
 			return $new;
 		}
@@ -73,6 +77,7 @@
 			$tahun			= date('Y');
 			$id_permintaan	= $this->getNew($id_klien, $bulan, $tahun);
 			
+			// insert permintaan
 			$data = [
 				'id_permintaan'		=> $id_permintaan,
 				'tanggal_permintaan'=> date('d-m-Y H:i'),
@@ -80,12 +85,12 @@
 				'bulan'				=> $bulan,
 				'tahun'				=> $tahun,
 				'request'			=> substr($id_permintaan, -2),
-				'jum_data'			=> count($kode_jenis),
-				'jum_ok'			=> 0,
+				// 'jum_data'			=> count($kode_jenis),
 				'id_pengirim'		=> $this->input->post('id_user', true),
 			];
 			$this->db->insert('permintaan_perpajakan', $data);
 			
+			// insert data
 			for($i=0; $i<count($kode_jenis); $i++) {
 				$row[] = [
 					'id_data'		=> $id_permintaan . sprintf('%02s', $i+1),
@@ -104,22 +109,20 @@
 			$detail			= $this->input->post('detail', true);
 			$format_data	= $this->input->post('format_data', true);
 			
-			$update = []; $do_update = false;
 			foreach($id_data as $id => $val) {
+				// jika format_data ada lakukan update, jika tidak hapus data
 				if(isset($format_data[$id])) {
-					$update[] = [
-						'id_data'		=> $val,
+					$row[] = [
 						'detail'		=> $detail[$id],
 						'format_data'	=> $format_data[$id],
 					];
-					$do_update = true;
+					$this->db->update('data_perpajakan', $row, ['id_data' => $val]);
 				} else {
 					$this->db->delete('data_perpajakan', ['id_data' => $val]);
 				}
 			}
-			if($do_update == true)
-			$this->db->update_batch('data_perpajakan', $update, 'id_data');
 			
+			// update jum_data di permitaan
 			$data = [
 				'jum_data'	=> count($format_data),
 			];

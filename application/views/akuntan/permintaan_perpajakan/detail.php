@@ -1,145 +1,80 @@
-<div class="container-fluid">
-	<?php if($this->session->flashdata('notification')) : ?>
-		<div class="notification" data-val="yes"></div>
-	<?php endif ?>
-	
-	<div class="row p-3">
-		<div class="col">
-			<h3><?= $judul ?></h3>
-		</div>
-	</div>
-	
-	<div class="card card-shadow mx-3 mb-4">
-		<div class="card-body">
-			<div class="row mb-2">
-				<div class="col">
-					<h5>Detail Permintaan</h5>
-				</div>
-			</div>
-			
-			<table class="table table-detail mb-0">
-				<tbody>
-					<tr>
-						<td>Jenis Data</td>
-						<td><?=$detail['jenis_data']?></td>
-					</tr>
-					<tr>
-						<td>Detail</td>
-						<td><?=$detail['detail']?></td>
-					</tr>
-					<tr>
-						<td>Format Data</td>
-						<td><?=$detail['format_data']?></td>
-					</tr>
-					<tr>
-						<td>Status</td>
-						<td><?= $detail['badge'] ?></td>
-					</tr>
-					<tr>
-						<td>Action</td>
-						<td><?= $detail['button'] ?></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	
-	<div class="card card-shadow mx-3 mb-4">
-		<div class="card-body">
-			<div class="row mb-2">
-				<div class="col">
-					<h5>Detail Pengiriman</h5>
-				</div>
-			</div>
-			
-			<table class="table table-striped">
-				<thead class="text-center">
-					<tr>
-						<th>Pengiriman ke</th>
-						<th>Tanggal pengiriman</th>
-						<th><?= ($detail['format_data'] == 'Softcopy') ? 'File' : 'Tanggal Ambil' ?></th>
-						<th>Keterangan</th>
-					</tr>
-				</thead>
-				<tbody class="text-center">
-					<?php
-						if($pengiriman) :
-							foreach($pengiriman as $p) : ?>
-					<tr>
-						<td><?=$p['pengiriman']?></td>
-						<td><?=$p['tanggal_pengiriman']?></td>
-						<td>
-							<?php if($detail['format_data'] == 'Softcopy') : ?>
-								<a href="<?=$link.$p['file']?>"><?=$p['file']?></a>
-							<?php else : $p['file'] ?>
-							<?php endif ?>
-						</td>
-						<td class="text-left"><?=$p['ket_pengiriman']?></td>
-					</tr>
-						<?php endforeach; else : ?>
-					<tr>
-						<td colspan="5">Belum ada pengiriman</td>
-					</tr>
-					<?php endif ?>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	
-	<div class="row mb-4">
-		<div class="col">
-			<a href="<?=base_url('akuntan/permintaan_data_perpajakan')?>" class="btn btn-secondary mr-1">Kembali</a>
-		</div>
-	</div>
+<div class="modal-header px-4">
+	<h4 class="modal-title"><?= $judul ?></h4>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
 </div>
 
-<div class="modal fade" id="modalKonfirm" tabindex="0" aria-labelledby="konfirmLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content mx-auto" id="konfirmShow" style="width:400px">
+<div class="modal-body p-3">
+	<div class="container-fluid p-0">
+		<div class="row">
+			<div class="col">
+				<table class="table table-detail mb-4">
+					<tbody>
+						<tr>
+							<td scope="row">Nama Klien</td>
+							<td><?=$permintaan['nama_klien']?></td>
+						</tr>
+						<tr>
+							<td scope="row" width="40%">Permintaan ke</td>
+							<td><?=$permintaan['request']?></td>
+						</tr>
+						<tr>
+							<td scope="row">Tanggal permintaan</td>
+							<td><?=$permintaan['tanggal_permintaan']?></td>
+						</tr>
+						<tr>
+							<td scope="row">Jumlah data</td>
+							<td><?= $permintaan['jumData'] ?></td>
+						</tr>
+						<tr>
+							<td scope="row">Requestor</td>
+							<td><?= $permintaan['nama'] ?></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
+		
+		<div class="row mb-2">
+			<div class="col">
+				<p class="lead mb-0">
+					<b class="px-2">Detail Data</b>
+					<a href="<?=base_url('akuntan/permintaan_data_perpajakan/edit/'.$permintaan['id_permintaan'])?>" class="btn-edit" data-toggle="tooltip" data-placement="right" title="Edit Permintaan">
+						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
+					</a>
+				</p>
+			</div>
+		</div>
+		
+		<table class="table table-striped">
+			<thead class="text-center">
+				<tr>
+					<th>No.</th>
+					<th>Nama Data</th>
+					<th>Detail</th>
+					<th>Format Data</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody class="text-center">
+				<?php
+					foreach($detail as $d => $val) : ?>
+				<tr>
+					<td><?=$d+1?>.</td>
+					<td><?=$val['jenis_data']?></td>
+					<td><?=$val['detail']?></td>
+					<td><?=$val['format_data']?></td>
+					<td><?=$badge[$d]?></td>
+				</tr>
+					<?php endforeach ?>
+			</tbody>
+		</table>
 	</div>
 </div>
 
 <script>
-	$(document).ready(function () {
-		if( $('.notification').data('val') == 'yes' ) {
-			$('#modalNotif').modal('show');
-			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
-		}
-		
-		$('[data-toggle="tooltip"]').mouseenter(function() {
-			$(this).tooltip();
-		});
-		
-		$('.btn-konfirm').click(function() {
-			$.ajax({
-				type	: 'post',
-				url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/konfirmasi',
-				data	: {
-					'id'		: $(this).data('id'),
-					'status'	: $(this).data('status'),
-				},
-				success	: function( e ) {
-					$('#modalKonfirm').modal('show');
-					$('#konfirmShow').html( e );
-				}
-			})
-		})
-		$('#konfirmShow').on('click', '.btn-fix', function() {
-			var id		= $(this).data('id');
-			var stat	= $(this).data('status');
-			$.ajax({
-				type	: 'post',
-				url		: '<?= base_url(); ?>akuntan/permintaan_data_perpajakan/fix',
-				data	: {
-					'id'	: id,
-					'stat'	: stat
-				},
-				success	: function() {
-					$('#modalKonfirm').modal('hide');
-					window.location.assign("<?= base_url();?>akuntan/permintaan_data_perpajakan/detail/"+id);
-				}
-			})
-		})
-	})
+	$('[data-toggle="tooltip"]').mouseover(function() {
+		$(this).tooltip();
+	});
 </script>

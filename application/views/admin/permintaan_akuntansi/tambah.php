@@ -1,21 +1,21 @@
-<div class="container-fluid">
-	<div class="row p-3">
+<div class="content container-fluid">
+	<div class="row mb-2">
 		<div class="col">
-			<h3><?= $judul ?></h3>
+			<h4><?= $judul ?></h4>
 		</div>
 	</div>
 	
 	<div class="row">
 		<div class="col">
-			<div class="card card-shadow">
-				<div class="card-body">
+			<div class="card card-round">
+				<div class="card-body px-4">
 					<form action="" method="post">
 						<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">
 						
 						<!-- Klien -->
 						<div class="form-group row">
 							<label class="col-lg-2">Nama Klien</label>
-							<div class="col-lg-6">
+							<div class="col-lg-4">
 								<select name='id_klien' class="form-control" id="id_klien" required>
 										<option value="">--Pilih Klien--</option>
 									<?php foreach ($klien as $k) : ?>
@@ -67,7 +67,7 @@
 						
 						
 						<!-- Tombol Simpan -->
-						<div class="row text-right">
+						<div class="row mt-3">
 							<div class="col">
 								<button type="submit" name="tambah" class="btn btn-primary">Kirim</button>
 								<a href="<?= base_url() ?>admin/permintaan/permintaan_data_akuntansi" class="btn btn-secondary">Batal</a>

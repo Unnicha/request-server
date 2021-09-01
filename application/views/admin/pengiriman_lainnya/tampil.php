@@ -1,14 +1,14 @@
-<div class="container-fluid">
-	<div class="row p-3">
+<div class="content container-fluid">
+	<div class="row mb-2">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
 	</div>
 	
-	<div class="card card-shadow mx-3">
-		<div class="card-body">
+	<div class="card card-round">
+		<div class="card-body p-0">
 			<form action="<?=base_url()?>admin/pengiriman/pengiriman_data_lainnya/cetak" method="post" target="_blank">
-				<div class="row form-inline">
+				<div class="row form-inline px-4 pt-3">
 					<div class="col-sm">
 						<!-- Ganti Bulan -->
 						<select name='bulan' class="form-control" id="bulan">
@@ -45,16 +45,18 @@
 						</select> 
 					</div>
 						
-					<div class="col-sm-3">
-						<div class="row float-sm-right">
-							<button type="submit" name="xls" class="btn btn-success mr-1">
-								<i class="bi bi-download"></i>
-								Excel
-							</button>
-							<button type="submit" name="pdf" class="btn btn-danger">
-								<i class="bi bi-download"></i>
-								PDF
-							</button>
+					<div class="col-auto">
+						<div class="row float-right">
+							<div class="col">
+								<button type="submit" name="xls" class="btn btn-success mr-1">
+									<i class="bi bi-download"></i>
+									Excel
+								</button>
+								<button type="submit" name="pdf" class="btn btn-danger">
+									<i class="bi bi-download"></i>
+									PDF
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -82,11 +84,11 @@
 	</div>
 </div>
 
-<!-- Modal untuk Detail Pengiriman -->
-<div class="modal fade" id="detailPengiriman" tabindex="-1" aria-labelledby="detailPengirimanLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-lg" style="width:600px">
-		<div class="modal-content" id="showDetailPengiriman">
-			<!-- Tampilkan Data Klien-->
+<!-- Detail Proses -->
+<div class="modal fade modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-content showDetail">
+			<!-- Tampilkan Data -->
 		</div>
 	</div>
 </div>
@@ -94,23 +96,6 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	function format ( rowData ) {
-		var div = $('<div/>')
-					.addClass( 'loading' )
-					.text( 'Loading...' );
-		
-		$.ajax( {
-			url		: '<?= base_url(); ?>admin/pengiriman/pengiriman_data_lainnya/pageChild',
-			data	: { id: rowData[2] },
-			success	: function ( e ) {
-				div
-					.html( e )
-					.removeClass( 'loading' );
-			},
-		} );
-		return div;
-	}
-	
 	$(document).ready(function() { 
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
@@ -119,7 +104,7 @@
 			'lengthChange'	: false,
 			'searching'		: false,
 			'language'		: {
-				emptyTable	: "Belum ada permintaan selesai"
+				emptyTable	: "Belum ada pengiriman"
 			},
 			'pageLength': 9,
 			'ajax'		: {
@@ -159,18 +144,16 @@
 		
 		// Detail Pengiriman
 		$('#myTable tbody').on('click', 'a.btn-detail', function() {
-			var tr	= $(this).closest('tr');
-			var row	= table.row( tr );
-			
-			if ( row.child.isShown() ) {
-				// This row is already open - close it
-				row.child.hide();
-				tr.removeClass('shown');
-			} else {
-				// Open this row
-				row.child( format(row.data()) ).show();
-				tr.addClass( 'shown' );
-			}
+			var id = $(this).data('nilai');
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>admin/pengiriman/pengiriman_data_lainnya/detail',
+				data	: 'id='+ id,
+				success	: function(data) {
+					$(".modalDetail").modal('show');
+					$(".showDetail").html(data);
+				}
+			})
 		});
 	});
 </script>

@@ -24,7 +24,7 @@
 					</h6>
 				</a>
 				<div class="collapse accordion-submenu" id="menu1" aria-labelledby="headingOne" data-parent="#accordion" data-menu="master">
-					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/master/otoritas">
+					<a class="nav-item sidebar-subheading nav-link" href="<?= base_url(); ?>admin/master/admin">
 						<i class="bi bi-sidebar bi-person sidebar-icon mr-1 ml-2"></i>
 						Data Admin
 					</a>

@@ -21,15 +21,12 @@
 		}
 		
 		public function page() {
-			$klien = $_POST['klien'];
-			$bulan	= $_POST['bulan'];
-			$tahun	= $_POST['tahun'];
-			$this->session->set_userdata('bulan', $bulan); 
-			$this->session->set_userdata('tahun', $tahun);
-			$this->session->set_flashdata('klien', $klien);
+			$klien	= $_REQUEST['klien'];		$this->session->set_flashdata('klien', $klien);
+			$bulan	= $_REQUEST['bulan'];		$this->session->set_userdata('bulan', $bulan);
+			$tahun	= $_REQUEST['tahun'];		$this->session->set_userdata('tahun', $tahun);
 			
-			$limit		= $_POST['length'];
-			$offset		= $_POST['start'];
+			$limit		= $_REQUEST['length'];
+			$offset		= $_REQUEST['start'];
 			$klien		= ($klien == null) ? 'all' : $klien;
 			$countData	= $this->M_Pengiriman_akuntansi->countPengiriman($bulan, $tahun, $klien); 
 			$pengiriman	= $this->M_Pengiriman_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
@@ -44,53 +41,53 @@
 				$row[]	= $k['tanggal_permintaan'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
-						<i class="bi bi-info-circle" style="font-size:20px; line-height:80%"></i>
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Pengiriman">
+						<i class="bi bi-info-circle-fill icon-medium"></i>
 					</a>';
 					
 				$data[] = $row;
 			}
 			
 			$callback	= [
-				'draw'				=> $_POST['draw'], // Ini dari datatablenya
+				'draw'				=> $_REQUEST['draw'], // Ini dari datatablenya
 				'recordsTotal'		=> $countData,
-				'recordsFiltered'	=>$countData,
+				'recordsFiltered'	=> $countData,
 				'data'				=> $data,
 			];
 			echo json_encode($callback);
 		}
 		
-		public function pageChild() {
-			$id_permintaan	= $_GET['id'];
+		public function detail() {
+			$id_permintaan	= $_REQUEST['id'];
 			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
 			$isi			= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
 			
 			foreach($isi as $i => $val) {
-				if($val['status'] == 'yes') {
+				if($val['status_kirim'] == 'yes') {
 					$badge	= '<span class="badge badge-success">Lengkap</span>';
-				} elseif($val['status'] == 'no') {
+				} elseif($val['status_kirim'] == 'no') {
 					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
 				} else {
 					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
 				}
 				$add[$i] = $badge;
 			}
-			$data['judul']		= 'Detail Permintaan';
+			$data['judul']		= 'Detail Pengiriman';
 			$data['permintaan']	= $permintaan;
-			$data['isi']		= $isi;
+			$data['detail']		= $isi;
 			$data['badge']		= $add;
 			$data['link']		= 'admin/pengiriman/pengiriman_data_akuntansi/detail/';
 			
-			$this->load->view('admin/permintaan_akuntansi/rincian', $data);
+			$this->load->view('admin/pengiriman_akuntansi/detail', $data);
 		}
 		
-		public function detail($id_data) {
-			$detail		= $this->M_Pengiriman_akuntansi->getByIdData($id_data);
-			$pengiriman	= $this->M_Pengiriman_akuntansi->getDetail($id_data);
+		public function rincian($id_data) {
+			$detail			= $this->M_Pengiriman_akuntansi->getById($id_data);
+			$pengiriman		= $this->M_Pengiriman_akuntansi->getDetail($id_data);
 			
-			if($detail['status'] == 'yes') {
+			if($detail['status_kirim'] == 'yes') {
 				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
-			} elseif($detail['status'] == 'no') {
+			} elseif($detail['status_kirim'] == 'no') {
 				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
 			} else {
 				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
@@ -98,10 +95,10 @@
 			
 			$button = '';
 			if(count($pengiriman) > 0) {
-				if($detail['status'] != 'yes') {
-					$button = '<a href="#" class="btn btn-primary btn-konfirm" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
+				if($detail['status_kirim'] != 'yes') {
+					$button = '<a href="#" class="btn btn-sm btn-primary btn-konfirm" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
 				} else {
-					$button = '<a href="#" class="btn btn-danger btn-konfirm" data-id="'.$detail['id_data'].'" data-status="no" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batalkan</a>';
+					$button = '<a href="#" class="btn btn-sm btn-danger btn-konfirm" data-id="'.$detail['id_data'].'" data-status="no" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batal Konfirmasi</a>';
 				}
 			}
 			$detail['button']	= $button;
@@ -111,8 +108,30 @@
 			$data['pengiriman']	= $pengiriman;
 			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
 			
-			$this->libtemplate->main('admin/pengiriman_akuntansi/detail', $data);
+			$this->libtemplate->main('admin/pengiriman_akuntansi/rincian', $data);
 		}
+		
+		// public function konfirmasi() {
+		// 	$id		= $_REQUEST['id'];
+		// 	$status	= $_REQUEST['status'];
+			
+		// 	if($status == 'yes') {
+		// 		$data['judul']	= 'Konfirmasi';
+		// 		$data['text']	= 'Apakah data sudah lengkap?';
+		// 		$data['button']	= '<a href="#" class="btn btn-success btn-fix" data-id="'.$id.'" data-status="'.$status.'">Lengkap</a>';
+		// 	} else {
+		// 		$data['judul']	= 'Batal Konfirmasi';
+		// 		$data['text']	= 'Batalkan konfirmasi data?';
+		// 		$data['button']	= '<a href="#" class="btn btn-primary btn-fix" data-id="'.$id.'" data-status="'.$status.'">Batalkan</a>';
+		// 	}
+		// 	$this->load->view('admin/template/confirm', $data);
+		// }
+		
+		// public function fix() {
+		// 	$this->M_Pengiriman_akuntansi->konfirmasi($_REQUEST['id'], $_REQUEST['stat']);
+		// 	$msg = $_REQUEST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
+		// 	$this->session->set_flashdata('notification', $msg);
+		// }
 		
 		public function cetak() {
 			$data['bulan']	= $this->input->post('bulan', true);

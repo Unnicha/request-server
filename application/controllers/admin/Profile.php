@@ -5,11 +5,11 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
-			$this->load->model('Otoritas_model');
+			$this->load->model('Admin_model');
 		}
 		
 		public function index() {
-			$admin		= $this->Otoritas_model->getById($this->session->userdata('id_user'));
+			$admin		= $this->Admin_model->getById($this->session->userdata('id_user'));
 			$passcode	= '';
 			for($i=0; $i<$admin['passlength']; $i++) {
 				$passcode .= '&bull;';
@@ -34,7 +34,7 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->load->view('admin/profile/verif', $data);
 			} else {
-				$cek	= $this->Otoritas_model->getById($this->session->userdata('id_user'));
+				$cek	= $this->Admin_model->getById($this->session->userdata('id_user'));
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($verify == true) {
@@ -48,7 +48,7 @@
 		
 		public function ubah($id_user) {
 			$type			= $this->session->userdata('tipe');
-			$data['admin']	= $this->Otoritas_model->getById($id_user);
+			$data['admin']	= $this->Admin_model->getById($id_user);
 			$data['judul']	= 'Ubah '.ucwords($type);
 			
 			if($type == 'nama') {
@@ -66,7 +66,7 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->libtemplate->main('admin/profile/ganti_'.$tipe, $data);
 			} else {
-				$this->Otoritas_model->ubahOtoritas();
+				$this->Admin_model->ubahAdmin();
 				$tipe = $this->session->userdata('tipe');
 				if($tipe == 'nama') {
 					$this->session->set_userdata('nama', $this->input->post('nama', true));

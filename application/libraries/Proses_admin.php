@@ -19,76 +19,102 @@
 			$durasi_hari	= $durasi->days; //string
 
 			// HITUNG HARI
-			$hariMulai		= date_format($tanggal_mulai, "w"); //string
-			$hariSelesai	= date_format($tanggal_selesai, "w"); //string
+			$hariMulai		= date_format($tanggal_mulai, "N"); //string
+			$hariSelesai	= date_format($tanggal_selesai, "N"); //string
 			$hariSelesai	= ($waktu_selesai < $waktu_mulai) ? $hariSelesai - 1 : $hariSelesai;
-			$mingguAwal		= ($durasi_hari > $hariSelesai) ? $durasi_hari - $hariSelesai : $durasi_hari;
+			$minggu			= ($durasi_hari > $hariSelesai) ? $durasi_hari - $hariSelesai : $durasi_hari;
 			
-			if($mingguAwal == $durasi_hari) {
-				if($hariMulai > 0 && $hariMulai < 6) {
+			if($minggu == $durasi_hari) {
+				if($hariMulai < 6) {
 					$dikurang = 0;
 				} else {
-					if($hariSelesai < 6) {
-						$dikurang = 1;
-					} else {
-						$dikurang = 2;
-					}
+					$dikurang = $hariSelesai - 5;
 				}
 			} else {
-				$jumMinggu = ceil($mingguAwal / 7);
-				$cut = 0;
-				if($hariMulai == 0) {
-					$cut = $cut + 1;
+				$jumWeek	= ceil($minggu / 7);
+				$cut		= 0;
+				if($hariMulai > 5) {
+					$cut = $hariMulai - 5;
 				}
-				if($hariSelesai == 6) {
-					$cut = $cut + 1;
+				if($hariSelesai > 5) {
+					$cut = $cut + ($hariSelesai - 5);
 				}
-				$dikurang = ($jumMinggu * 2) + $cut;
+				$dikurang = ($jumWeek * 2) + $cut;
 			}
 			$hari = $durasi_hari - $dikurang;
-
+			
 			// HITUNG JAM
 			$jam_start	= date_create("08:30");
 			$jam_end	= date_create("17:30");
-			$breakTime	= date_create('01:00');
+			$breakTime	= date_create('00:00');
 			$breakStart	= date_create('12:00');
 			$breakEnd	= date_create('13:00');
 			
-			if($waktu_mulai < $jam_start) {
-				$waktu_mulai = $jam_start;
-			} elseif($waktu_mulai>$breakStart && $waktu_mulai<$breakEnd) {
-				$waktu_mulai = $breakEnd;
-			}
-			if($waktu_selesai > $jam_end) {
-				$waktu_selesai = $jam_end;
-			} elseif($waktu_selesai>$breakStart && $waktu_selesai<$breakEnd) {
-				$waktu_selesai = $breakStart;
-			}
-			$waktu	= date_diff($waktu_mulai, $waktu_selesai);
+			$mulai		= ($waktu_mulai < $jam_start) ? $jam_start : $waktu_mulai;
+			$mulai		= ($mulai > $jam_end) ? $jam_end : $waktu_mulai;
+			$selesai	= ($waktu_selesai < $jam_start) ? $jam_start : $waktu_selesai;
+			$selesai	= ($selesai > $jam_end) ? $jam_end : $waktu_selesai;
 			
-			if($waktu_mulai < $breakEnd && $waktu_selesai > $breakEnd) {
-				$waktu	= date_diff(date_create($waktu->format('%H:%I')), $breakTime);
+			if($mulai == $selesai) {
+				return "$hari,0,0";
+			} else {
+				if($mulai < $selesai) {
+					$waktu = date_diff($mulai, $selesai);
+					if($mulai < $breakStart) {
+						if($selesai > $breakEnd) {
+							$breakTime	= date_create('01:00');
+						} elseif($selesai > $breakStart) {
+							$breakTime	= date_diff($selesai, $breakStart);
+							$breakTime	= date_create($breakTime->format('%H:%I'));
+						}
+					} elseif($mulai>$breakStart && $mulai<$breakEnd) {
+						if($selesai > $breakEnd) {
+							$breakTime	= date_diff($mulai, $breakEnd);
+							$breakTime	= date_create($breakTime->format('%H:%I'));
+						} elseif($selesai > $breakStart) {
+							$waktu		= date_diff($mulai, $mulai);
+						}
+					}
+					$waktu	= date_diff(date_create($waktu->format('%H:%I')), $breakTime);
+				} else {
+					$dur1	= date_diff($waktu_mulai, $jam_end);
+					$dur2	= date_diff($waktu_selesai, $jam_start);
+					$waktu	= date_add(date_create($dur1->format("%h:%i")), date_interval_create_from_date_string($dur2->format("%H hours %i minutes")));
+					$waktu	= date_diff($waktu, $breakTime);
+					
+					if($mulai < $breakStart) {
+						$breakTime	= date_create('01:00');
+					} elseif($mulai > $breakEnd) {
+						if($selesai > $breakEnd) {
+							$breakTime	= date_create('01:00');
+						} elseif($selesai > $breakStart) {
+							$breakTime	= date_diff($selesai, $breakStart);
+						}
+					} else {
+						$breakTime	= date_diff($mulai, $breakEnd);
+						if($selesai > $breakStart) {
+							$breakTime	= date_diff($mulai, $breakEnd);
+						}
+						$breakTime	= date_create($breakTime->format('%H:%I'));
+					}
+					$waktu	= date_diff(date_create($waktu->format('%H:%I')), $breakTime);
+				}
+				return "$hari,$waktu->h,$waktu->i";
 			}
-			
-			return "$hari $waktu->h $waktu->i";
-		} 
+		}
 		// end durasi
 		
-		function addDurasi($dur='', $add) {
-			$add = explode(' ', $add);
-			if($dur) {
-				$dur = explode(' ', $dur);
-				
-				$min		= ($dur[2] + $add[2]) % 60;
-				$jamAdd		= floor(($dur[2] + $add[2]) % 60);
-				$jam		= ($dur[1] + $jamAdd) % 8;
-				$hariAdd	= floor(($dur[1] + $jamAdd) % 8);
-				$hari		= $dur[0] + $hariAdd;
-				
-				return "$hari $jam $min";
-			} else {
-				return "$add[0] $add[1] $add[2]";
-			}
+		function addDurasi($dur, $add) {
+			$add	= explode(',', $add);
+			$dur	= explode(',', $dur);
+			
+			$min		= ($dur[2] + $add[2]) % 60;
+			$jamAdd		= floor(($dur[2] + $add[2]) % 60);
+			$jam		= ($dur[1] + $jamAdd) % 8;
+			$hariAdd	= floor(($dur[1] + $jamAdd) % 8);
+			$hari		= $dur[0] + $hariAdd;
+			
+			return "$hari,$jam,$min";
 		}
 	}
 ?>

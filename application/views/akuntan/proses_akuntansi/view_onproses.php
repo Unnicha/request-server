@@ -4,13 +4,10 @@
 			<select name="bulan" class="form-control mr-1" id="bulan_proses">
 				<?php 
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
-					foreach ($masa as $m) : 
-						if ($m['id_bulan'] == $bulan) {
-							$pilih="selected";
-						} else {
-							$pilih="";
-						} ?>
-				<option value="<?= $m['id_bulan']; ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
+					foreach ($masa as $m) :
+						$pilih = ($m['id_bulan'] == $bulan) ? "selected" : "";
+					?>
+				<option value="<?= $m['id_bulan'] ?>" <?=$pilih?>> <?= $m['nama_bulan'] ?> </option>
 				<?php endforeach ?>
 			</select>
 			
@@ -18,12 +15,9 @@
 				<?php 
 					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2010; $i--) :
-						if ($i == $tahun) {
-							$pilih="selected";
-						} else {
-							$pilih="";
-						} ?>
-				<option value="<?= $i ?>" <?= $pilih; ?>> <?= $i ?> </option>
+						$pilih = ($i == $tahun) ? "selected" : "";
+					?>
+				<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
 				<?php endfor ?>
 			</select>
 			
@@ -43,9 +37,8 @@
 				<tr>
 					<th scope="col">No.</th>
 					<th scope="col">Klien</th>
-					<th scope="col">Akuntan</th>
 					<th scope="col">Tugas</th>
-					<th scope="col">Mulai</th>
+					<th scope="col">Akuntan</th>
 					<th scope="col">Durasi</th>
 					<th scope="col">Standard</th>
 					<th scope="col">Action</th>

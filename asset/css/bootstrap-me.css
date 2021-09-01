@@ -3,6 +3,21 @@ a:hover {
 	text-decoration: none;
 	cursor: pointer;
 }
+.add-klien {
+	display: none;
+}
+.add-klien.active {
+	display: block;
+}
+.has-error {
+	border-color: red;
+	background-color: #ffeeec;
+}
+.has-error:focus {
+	border-color: red;
+	background-color: #ffeeec;
+	box-shadow: 0 0 0 0.2rem #eb9a91;
+}
 .bi {
 	line-height: 80%;
 }
@@ -77,6 +92,13 @@ a:hover {
 	/*border: none;*/
 	box-shadow: 0 4px 8px 0 #00000033;
 }
+.card-header {
+	background-color: #fff;
+	border-bottom: 0;
+}
+.card-header-title {
+	margin-bottom: 0;
+}
 .col-tambah {
 	max-width: 600px;
 }
@@ -100,9 +122,32 @@ a:hover {
 	border-right: 1px solid #dee2e6;
 	border-bottom: 1px solid #dee2e6;
 	border-top: 1px solid #dee2e6;
-	border-top-right-radius: 5px;
+	/*border-top-right-radius: 5px;*/
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+}
+.content {
+	padding: 1.5rem 2rem;
+}
+.content-header {
+	padding-bottom: .25rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid #dee2e6;
+}
+.content .row {
+	margin-right: -15px!important;
+	margin-left: -15px!important;
+}
+div.dataTables_wrapper div.dataTables_filter {
+	padding-top: .85rem;
+	padding-left: .85rem;
+	padding-right: .85rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+	padding: .85rem;
+}
+div.dataTables_wrapper div.dataTables_paginate {
+	padding: .25rem .85rem .75rem;
 }
 .footer {
 	background-color: #e2e1e1;
@@ -120,6 +165,10 @@ a:hover {
 hr.hr-profil {
 	border-top: 1px solid #969696;
 }
+.icon-medium {
+	font-size:20px!important;
+	line-height:80%!important;
+}
 .icon-status {
 	font-size: 22px;
 	padding-top: 0%!important;
@@ -135,9 +184,11 @@ hr.hr-profil {
 	margin-right: auto;
 }
 .nav-link.active {
-	color: #fff!important;
+	font-weight: 600;
+	border-bottom: 2px solid rgb(58, 58, 230);
+	/* color: #fff!important;
 	background-color:#1e97ec!important; 
-	border-color:#1e97ec!important; 
+	border-color:#1e97ec!important;  */
 }
 .nav-profile {
 	color:white; 
@@ -191,7 +242,27 @@ hr.hr-profil {
 } 
 .sidebar-subheading:hover {
 	background-color: #dee2e6;
-} 
+}
+.step {
+	height: 15px;
+	width: 15px;
+	margin: 0 2px;
+	background-color: #cccccc;
+	border: none;
+	border-radius: 50%;
+	display: inline-block;
+	/* opacity: 0.5; */
+}
+
+/* Mark the active step: */
+.step.active {
+	background-color: gray;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+	background-color: #04AA6D;
+}
 .subheader {
 	color: #969696!important;
 	font-weight: 500;
@@ -202,39 +273,50 @@ hr.hr-profil {
 	*/
 }
 .tab-proses {
-	background-color: #95d4ff; 
-	border: .5px solid #e6f4ff;
+	background-color: #cbe7fb; 
+	border: .5px solid #fff;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 }
+table.dataTable {
+	margin-top: 0!important;
+}
 .table {
 	border-bottom: 1px solid #dee2e6;
+	/* border-left: 1px solid #dee2e6;
+	border-right: 1px solid #dee2e6; */
+}
+.table-detail {
+	border-width: 0px!important;
+}
+.table-proses {
+	border-width: 0px!important;
 }
 .table td, .table th {
-	padding: .3rem;
+	padding: .5rem;
 	vertical-align: middle
 }
 /*.table td, .table th {
-	padding-top: .5rem;
-	padding-bottom: .5rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
+	padding: .5rem 1rem;
 	vertical-align: middle
 }*/
 .table.table-akses td, .table.table-akses th {
 	vertical-align: baseline;
 }
 .table-detail td, .table-detail th {
-	padding: .3rem .75rem;
+	padding: .5rem .75rem;
+	border-top: 0;
+	border-bottom: 1px solid #c9ced2;
 }
-.table-striped thead {
+.table-proses td, .table-proses th {
+	padding: .5rem .75rem;
+	border-top: 0;
+}
+.table-striped thead, .table-striped tbody tr:nth-of-type(even) {
 	background-color: #ebf5fc;
 } 
 .table-striped tbody tr:nth-of-type(odd) {
 	background-color: #fff;
-} 
-.table-striped tbody tr:nth-of-type(even) {
-	background-color: #ebf5fc;
 }
 
 /* untuk membuat table scroll vertical

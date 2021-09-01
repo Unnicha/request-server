@@ -22,8 +22,8 @@
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
 			$cari		= $_POST['search']['value'];
-			$countData	= $this->Akses_model->countAkses($_POST['tahun']); 
-			$akses		= $this->Akses_model->getByMasa($_POST['tahun'], $offset, $limit);
+			$countData	= $this->Akses_model->countAkses($_POST['tahun'], $cari); 
+			$akses		= $this->Akses_model->getByMasa($_POST['tahun'], $offset, $limit, $cari);
 			$this->session->set_userdata('tahun', $_POST['tahun']);
 			
 			$data = [];
@@ -36,16 +36,16 @@
 				$row[]	= $bulan['nama_bulan'];
 				$row[]	= '<a href="#" class="btn-detail" data-nilai="'.$k['id_akses'].'">Details</a>';
 				$row[]	= '
-					<a class="btn btn-sm btn-info" href="akses/ubah/'.$k['id_akses'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
-						<i class="bi bi-pencil-square"></i>
+					<a href="akses/ubah/'.$k['id_akses'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
+						<i class="bi bi-pencil-square icon-medium"></i>
 					</a>
-
-					<a class="btn btn-sm btn-danger btn-hapus" data-id="'.$k['id_akses'].'" data-nama="'.$k['nama'].' tahun '.$k['tahun'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
-						<i class="bi bi-trash"></i>
+					<a class="btn-hapus" data-id="'.$k['id_akses'].'" data-nama="'.$k['nama'].' tahun '.$k['tahun'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+						<i class="bi bi-trash icon-medium"></i>
 					</a>';
-
+				
 				$data[] = $row;
 			}
+			
 			$callback	= [
 				'draw'			=> $_POST['draw'], // Ini dari datatablenya
 				'recordsTotal'	=> $countData,
@@ -73,7 +73,7 @@
 		}
 
 		public function tambah() {
-			$data['judul']		= 'Form Tambah Akses'; 
+			$data['judul']		= 'Tambah Akses'; 
 			$data['masa']		= $this->Klien_model->getMasa();
 			$data['klien']		= $this->Klien_model->getAllKlien();
 			
@@ -128,9 +128,20 @@
 			$this->load->view('admin/akses/detail', $data);
 		}
 		
-		public function hapus($id_akses) {
-			$this->Akses_model->hapusAkses($id_akses);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+		public function hapus() {
+			$id				= $_REQUEST['id'];
+			$data['text']	= 'Yakin ingin menghapus akses <b>'.$_REQUEST['nama'].' ?</b>';
+			$data['button']	= '
+				<a href="akses/fix_hapus/'.$id.'" class="btn btn-danger">Hapus</a>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" tabindex="1">Batal</button>
+			';
+			
+			$this->load->view('admin/template/confirm', $data);
+		}
+		
+		public function fix_hapus($id) {
+			$this->Admin_model->hapusAkses($id);
+			$this->session->set_flashdata('notification', 'Akses berhasil dihapus!');
 			redirect('admin/master/akses');
 		}
 	}

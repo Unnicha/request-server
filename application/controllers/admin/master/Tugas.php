@@ -32,11 +32,11 @@
 				$row[]	= $k['review'].' jam';
 				$row[]	= $k['semi_review'].' jam';
 				$row[]	= '
-					<a class="btn btn-sm btn-info" href="tugas/ubah/'.$k['kode_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
-						<i class="bi bi-pencil-square"></i>
+					<a href="tugas/ubah/'.$k['kode_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
+						<i class="bi bi-pencil-square icon-medium"></i>
 					</a>
-					<a class="btn btn-sm btn-danger btn-hapus" data-id="'.$k['kode_tugas'].'" data-nama="'.$k['nama_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
-						<i class="bi bi-trash"></i>
+					<a class="btn-hapus" data-id="'.$k['kode_tugas'].'" data-nama="'.$k['nama_tugas'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+						<i class="bi bi-trash icon-medium"></i>
 					</a>';
 				
 				$data[] = $row;
@@ -51,7 +51,7 @@
 		}
 
 		public function tambah() {
-			$data['judul']		= 'Tambah Data Tugas'; 
+			$data['judul']		= 'Tambah Tugas'; 
 			$data['jenis_data']	= $this->Jenis_data_model->getAllJenisData();
 			
 			$this->form_validation->set_rules('nama_tugas', 'Nama Tugas', 'required');
@@ -99,8 +99,20 @@
 		}
 		
 		public function hapus() {
-			$this->Tugas_model->hapusTugas($_POST['id']);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			$id				= $_REQUEST['id'];
+			$data['text']	= 'Yakin ingin menghapus tugas <b>'.$_REQUEST['nama'].' ?</b>';
+			$data['button']	= '
+				<a href="tugas/fix_hapus/'.$id.'" class="btn btn-danger">Hapus</a>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" tabindex="1">Batal</button>
+				';
+				
+			$this->load->view('admin/template/confirm', $data);
+		}
+		
+		public function fix_hapus($id) {
+			$this->Admin_model->hapusTugas($id);
+			$this->session->set_flashdata('notification', 'Tugas berhasil dihapus!');
+			redirect('admin/master/tugas');
 		}
 	}
 ?>

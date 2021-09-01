@@ -35,9 +35,10 @@
 				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $k['jumData'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn-detail_permintaan" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Detail">
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Detail">
 						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
 					</a>';
 				
@@ -52,35 +53,35 @@
 			echo json_encode($callback);
 		}
 		
-		public function pageChild() {
-			$id_permintaan	= $_GET['id'];
+		public function detail() {
+			$id_permintaan	= $_REQUEST['id'];
 			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
 			$isi			= $this->M_Permintaan_lainnya->getDetail($id_permintaan);
 			
 			foreach($isi as $i => $val) {
-				if($val['status'] == 'yes') {
+				if($val['status_kirim'] == 'yes') {
 					$badge	= '<span class="badge badge-success">Lengkap</span>';
-				} elseif($val['status'] == 'no') {
+				} elseif($val['status_kirim'] == 'no') {
 					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
 				} else {
 					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
 				}
 				$add[$i] = $badge;
 			}
-			$data['judul']		= 'Detail Permintaan';
+			$data['judul']		= 'Detail Pengiriman';
 			$data['permintaan']	= $permintaan;
-			$data['isi']		= $isi;
+			$data['detail']		= $isi;
 			$data['badge']		= $add;
-			$data['link']		= 'klien/permintaan_data_akuntansi/detail/';
+			$data['link']		= 'klien/permintaan_data_lainnya/kirim/';
 			
-			$this->load->view('klien/permintaan_lainnya/rincian', $data);
+			$this->load->view('klien/permintaan_lainnya/detail', $data);
 		}
 		
-		public function detail($id_data) {
-			$detail = $this->M_Pengiriman_lainnya->getByIdData($id_data);
-			if($detail['status'] == 'yes') {
+		public function kirim($id_data) {
+			$detail = $this->M_Pengiriman_lainnya->getById($id_data);
+			if($detail['status_kirim'] == 'yes') {
 				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
-			} elseif($detail['status'] == 'no') {
+			} elseif($detail['status_kirim'] == 'no') {
 				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
 			} else {
 				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
@@ -97,7 +98,7 @@
 			}
 			
 			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('klien/permintaan_lainnya/detail', $data);
+				$this->libtemplate->main('klien/permintaan_lainnya/kirim', $data);
 			} else {
 				$send = $this->M_Pengiriman_lainnya->kirim();
 				if($send == 'ERROR') {
@@ -105,7 +106,7 @@
 				} elseif($send == 'OK') {
 					$this->session->set_flashdata('notification', 'Data berhasil dikirim!');
 				}
-				redirect('klien/permintaan_data_lainnya/detail/'.$id_data);
+				redirect('klien/permintaan_data_lainnya/kirim/'.$id_data);
 			}
 		}
 	}

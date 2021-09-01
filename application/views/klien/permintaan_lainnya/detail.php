@@ -1,179 +1,83 @@
-<div class="container-fluid">
-	<?php if($this->session->flashdata('notification')) : ?>
-		<div class="notification" data-val="yes"></div>
-	<?php endif; ?>
-	
-	<div class="row p-3">
-		<div class="col">
-			<h3><?= $judul ?></h3>
-		</div>
-	</div>
-	
-	<div class="row mb-4">
-		<div class="col-lg">
-			<div class="card card-shadow">
-				<div class="card-body p-4">
-					<div class="row mb-2">
-						<div class="col">
-							<h5>Detail Permintaan</h5>
-						</div>
-					</div>
-					
-					<table class="table table-detail mb-0">
-						<tbody>
-							<tr>
-								<td>Jenis Data</td>
-								<td><?=$detail['jenis_data']?></td>
-							</tr>
-							<tr>
-								<td>Detail</td>
-								<td><?=$detail['detail']?></td>
-							</tr>
-							<tr>
-								<td>Format Data</td>
-								<td><?=$detail['format_data']?></td>
-							</tr>
-							<tr>
-								<td>Status</td>
-								<td><?= $detail['badge'] ?></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+<div class="modal-header px-4">
+	<h4 class="modal-title"><?= $judul ?></h4>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="modal-body">
+	<div class="container-fluid p-0">
+		<div class="row">
+			<div class="col">
+				<table class="table table-detail mb-4">
+					<tbody>
+						<tr>
+							<td scope="row">Nama Klien</td>
+							<td><?=$permintaan['nama_klien']?></td>
+						</tr>
+						<tr>
+							<td scope="row" width="40%">Permintaan ke</td>
+							<td><?=$permintaan['request']?></td>
+						</tr>
+						<tr>
+							<td scope="row">Tanggal permintaan</td>
+							<td><?=$permintaan['tanggal_permintaan']?></td>
+						</tr>
+						<tr>
+							<td scope="row">Jumlah data</td>
+							<td><?= $permintaan['jum_data'] ?></td>
+						</tr>
+						<tr>
+							<td scope="row">Requestor</td>
+							<td><?= $permintaan['nama'] ?></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		
-		<div class="col-lg">
-			<?php if($detail['status'] != 'yes') : ?>
-			<div class="card card-shadow">
-				<div class="card-body p-3">
-					<div class="row mb-2">
-						<div class="col">
-							<h5>Kirim Baru</h5>
-						</div>
-					</div>
-					
-					<form action="" method="post" enctype="multipart/form-data">
-						<input type="hidden" name="format_data" value="<?=$detail['format_data']?>">
-						<input type="hidden" name="id_data" value="<?=$detail['id_data']?>">
-						
-						<div class="form-group row">
-						<?php if($detail['format_data'] == 'Softcopy') : ?>
-							<div class="col">
-								<small class="form-text pb-2 mt-0">Format file : <b>.xls, .xlsx, .csv, .pdf, .rar, .zip</b></small>
-								<div class="custom-file">
-									<input type="file" name="files" class="custom-file-input" required>
-									<label class="custom-file-label" data-browse="Cari">Pilih file</label>
-								</div>
-								<small class="form-text text-danger"><?= $this->session->flashdata('flash'); ?></small>
-							</div>
-						<?php else : ?>
-							<div class="col">
-								<div class="input-group kalender">
-									<input type="text" name="tanggal_ambil" class="form-control docs-date" data-toggle="datepicker" autocomplete="off" placeholder="Tanggal Ambil Data" required readonly>
-									<div class="input-group-append">
-										<a class="btn btn-outline-secondary reset-date px-2" data-toggle="tooltip" data-placement="bottom" title="Reset Tanggal">
-											<i class="bi bi-x-circle" style="font-size:20px"></i>
-										</a>
-									</div>
-								</div>
-								<small class="form-text text-danger"><?= form_error('tanggal_ambil', '<p class="mb-0">', '</p>') ?></small>
-							</div>
-						<?php endif ?>
-						</div>
-						
-						<div class="form-group row">
-							<div class="col">
-								<textarea type="text" name="keterangan" class="form-control" style="height:calc(1.5em + .75rem + 2px)" placeholder="Keterangan"></textarea>
-							</div>
-						</div>
-						
-						<!-- Tombol Simpan -->
-						<div class="row">
-							<div class="col">
-								<button type="submit" class="btn btn-primary float-right">Kirim</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<?php endif ?>
-		</div>
-	</div>
-	
-	<div class="row mb-4">
-		<div class="col">
-			<div class="card card-shadow">
-				<div class="card-body p-3">
-					<div class="row mb-2">
-						<div class="col">
-							<h5>History Pengiriman</h5>
-						</div>
-					</div>
-					
-					<table class="table table-striped">
-						<thead class="text-center">
-							<tr>
-								<th>Pengiriman ke</th>
-								<th>Tanggal pengiriman</th>
-								<th><?= $detail['format_data'] == 'Softcopy' ? 'File' : 'Tanggal Ambil' ?></th>
-								<th>Keterangan</th>
-							</tr>
-						</thead>
-						<tbody class="text-center">
-							<?php 
-								if($pengiriman) :
-									foreach($pengiriman as $p) : ?>
-							<tr>
-								<td><?=$p['pengiriman']?></td>
-								<td><?=$p['tanggal_pengiriman']?></td>
-								<td><?=$p['file']?></td>
-								<td class="text-left"><?=$p['ket_pengiriman']?></td>
-							</tr>
-								<?php endforeach; else : ?>
-							<tr>
-								<td colspan="5">Belum ada pengiriman</td>
-							</tr>
-							<?php endif ?>
-						</tbody>
-					</table>
-				</div>
+		<div class="row mb-2">
+			<div class="col">
+				<p class="lead mb-0">
+					<b class="px-2">Detail Data</b>
+				</p>
 			</div>
 		</div>
-	</div>
-	
-	<div class="row mb-4">
-		<div class="col">
-			<a href="<?=base_url().$back?>" class="btn btn-secondary mr-1">Kembali</a>
-		</div>
+		
+		<table class="table table-striped">
+			<thead class="text-center">
+				<tr>
+					<th>No.</th>
+					<th>Nama Data</th>
+					<th>Detail</th>
+					<th>Format Data</th>
+					<th>Status</th>
+					<th>Kirim</th>
+				</tr>
+			</thead>
+			<tbody class="text-center">
+				<?php
+					foreach($detail as $d => $val) : ?>
+				<tr>
+					<td><?=$d+1?>.</td>
+					<td><?=$val['jenis_data']?></td>
+					<td><?=$val['detail']?></td>
+					<td><?=$val['format_data']?></td>
+					<td><?=$badge[$d]?></td>
+					<td style="font-size:18px; line-height:80%">
+						<a href="<?=base_url($link.$val['id_data'])?>" data-toggle="tooltip" data-placement="bottom" title="Lihat History Pengiriman">
+							<i class="bi bi-cursor-fill"></i>
+						</a>
+					</td>
+				</tr>
+					<?php endforeach ?>
+			</tbody>
+		</table>
 	</div>
 </div>
 
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/bs-custom-file-input.min.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/datepicker.en-us.js"></script>
 <script>
-	$(document).ready(function () {
-		if( $('.notification').data('val') == 'yes' ) {
-			$('#modalNotif').modal('show');
-				setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
-		}
-		
-		bsCustomFileInput.init();
-		
-		//memanggil date picker
-		const myDatePicker = $('[data-toggle="datepicker"]').datepicker({
-			autoHide	: true,
-			format		: 'dd-mm-yyyy',
-			startDate	: '<?= date('d-m-Y') ?>',
-		});
-		
-		$(".reset-date").click(function() {
-			$(this).closest('.kalender').find("input[type=text]").datepicker('reset');
-		});
-		
-		$('[data-toggle="tooltip"]').mouseenter(function() {
-			$(this).tooltip();
-		});
-	})
+	$('[data-toggle="tooltip"]').mouseover(function() {
+		$(this).tooltip();
+	});
 </script>

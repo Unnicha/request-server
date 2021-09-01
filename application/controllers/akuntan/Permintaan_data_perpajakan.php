@@ -7,7 +7,6 @@
 			$this->load->library('form_validation');
 			
 			$this->load->model('M_Permintaan_perpajakan');
-			$this->load->model('M_Pengiriman_perpajakan');
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
 			$this->load->model('Jenis_data_model');
@@ -51,13 +50,11 @@
 				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $k['jumData'];
 				$row[]	= $k['nama'];
 				$row[]	= '
-					<a class="btn btn-sm btn-primary btn-detail_permintaan" data-toggle="tooltip" data-nilai="'.$k['id_permintaan'].'" data-placement="bottom" title="Detail Permintaan">
-						<i class="bi bi-info-circle"></i>
-					</a>
-					<a href="permintaan_data_perpajakan/edit/'.$k['id_permintaan'].'" class="btn-edit" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
-						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
+					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
+						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
 					</a>';
 				
 				$data[] = $row;
@@ -72,33 +69,9 @@
 			echo json_encode($callback);
 		}
 		
-		public function pageChild() {
-			$id_permintaan	= $_GET['id'];
-			$permintaan		= $this->M_Permintaan_perpajakan->getById($id_permintaan);
-			$isi			= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
-			
-			foreach($isi as $i => $val) {
-				if($val['status'] == 'yes') {
-					$badge	= '<span class="badge badge-success">Lengkap</span>';
-				} elseif($val['status'] == 'no') {
-					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
-				} else {
-					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
-				}
-				$add[$i] = $badge;
-			}
-			$data['judul']		= 'Detail Permintaan';
-			$data['permintaan']	= $permintaan;
-			$data['isi']		= $isi;
-			$data['badge']		= $add;
-			$data['link']		= 'akuntan/permintaan_data_perpajakan/detail/';
-			
-			$this->load->view('akuntan/permintaan_perpajakan/rincian', $data);
-		}
-		
 		public function klien() {
-			$bulan		= ($_POST['bulan']) ? $_POST['bulan'] : date('m');
-			$tahun		= ($_POST['tahun']) ? $_POST['tahun'] : date('Y');
+			$bulan		= isset($_POST['bulan']) ? $_POST['bulan'] : date('m');
+			$tahun		= isset($_POST['tahun']) ? $_POST['tahun'] : date('Y');
 			$id_akuntan	= $this->session->userdata('id_user');
 			
 			$bulan		= $this->Klien_model->getMasa($bulan);
@@ -119,12 +92,10 @@
 			}
 			echo $lists;
 		}
-
+		
 		public function tambah() {
-			$data['judul']	= "Kirim Permintaan - Data Perpajakan"; 
+			$data['judul']	= "Tambah Permintaan"; 
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Perpajakan');
-			$bulan			= $this->Klien_model->getMasa(date('m'));
-			$data['bulan']	= $bulan['nama_bulan'];
 			
 			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
 			$this->form_validation->set_rules('kode_jenis[]', 'Jenis Data', 'required');
@@ -159,54 +130,27 @@
 			}
 		}
 		
-		public function detail($id_data) {
-			$detail		= $this->M_Pengiriman_perpajakan->getByIdData($id_data);
-			$pengiriman	= $this->M_Pengiriman_perpajakan->getDetail($id_data);
-			if($detail['status'] == 'yes') {
-				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
-			} elseif($detail['status'] == 'no') {
-				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
-			} else {
-				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
-			}
-			$button = '';
-			if(count($pengiriman) > 0) {
-				if($detail['status'] != 'yes') {
-					$button = '<a href="#" class="btn btn-primary btn-konfirm" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
+		public function detail() {
+			$id_permintaan	= $_REQUEST['id'];
+			$permintaan		= $this->M_Permintaan_perpajakan->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_perpajakan->getDetail($id_permintaan);
+			
+			foreach($isi as $i => $val) {
+				if($val['status_kirim'] == 'yes') {
+					$badge	= '<span class="badge badge-success">Lengkap</span>';
+				} elseif($val['status_kirim'] == 'no') {
+					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
 				} else {
-					$button = '<a href="#" class="btn btn-danger btn-konfirm" data-id="'.$detail['id_data'].'" data-status="no" data-toggle="tooltip" data-placement="bottom" title="Batalkan konfirmasi">Batalkan</a>';
+					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
 				}
+				$add[$i] = $badge;
 			}
-			$detail['button']	= $button;
+			$data['judul']		= 'Detail Permintaan';
+			$data['permintaan']	= $permintaan;
+			$data['detail']		= $isi;
+			$data['badge']		= $add;
 			
-			$data['judul']		= "Detail Pengiriman"; 
-			$data['detail']		= $detail;
-			$data['pengiriman']	= $pengiriman;
-			$data['link']		= "asset/uploads/".$detail['nama_klien']."/".$detail['tahun']."/";
-			
-			$this->libtemplate->main('akuntan/permintaan_perpajakan/detail', $data);
-		}
-		
-		public function konfirmasi() {
-			$id		= $_POST['id'];
-			$status	= $_POST['status'];
-			
-			if($status == 'yes') {
-				$data['judul']	= 'Konfirmasi';
-				$data['text']	= 'Apakah data sudah lengkap?';
-				$data['button']	= '<a href="#" class="btn btn-success btn-fix" data-id="'.$id.'" data-status="'.$status.'">Lengkap</a>';
-			} else {
-				$data['judul']	= 'Batal Konfirmasi';
-				$data['text']	= 'Batalkan konfirmasi data?';
-				$data['button']	= '<a href="#" class="btn btn-primary btn-fix" data-id="'.$id.'" data-status="'.$status.'">Batalkan</a>';
-			}
-			$this->load->view('akuntan/permintaan_perpajakan/konfirmasi', $data);
-		}
-		
-		public function fix() {
-			$this->M_Pengiriman_perpajakan->konfirmasi($_POST['id'], $_POST['stat']);
-			$msg = $_POST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
-			$this->session->set_flashdata('notification', $msg);
+			$this->load->view('akuntan/permintaan_perpajakan/detail', $data);
 		}
 	}
 ?>

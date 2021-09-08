@@ -66,10 +66,10 @@
 			$.ajax({
 				type	: 'POST',
 				data	: {
-					'akuntan'	: $('#akuntan_proses').val(), 
-					'bulan'		: $('#bulan_proses').val(), 
-					'tahun'		: $('#tahun_proses').val(), 
-					},
+					akuntan	: $('#akuntan_proses').val(), 
+					bulan	: $('#bulan_proses').val(), 
+					tahun	: $('#tahun_proses').val(), 
+				},
 				url		: '<?= base_url(); ?>admin/proses/proses_data_akuntansi/gantiKlien',
 				success	: function(data) {
 					$("#klien_proses").html(data);
@@ -84,7 +84,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},

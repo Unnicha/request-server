@@ -35,16 +35,13 @@
 				$row[]	= $k['jenis_usaha'];
 				$row[]	= $k['nama_pimpinan'];
 				$row[]	= '
-						<a class="btn-detail" data-nilai="'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail">
+						<a href="klien/view/'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Detail">
 							<i class="bi bi-info-circle-fill icon-medium"></i>
 						</a>
-						<a href="klien/view/'.$k['id_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
-							<i class="bi bi-pencil-square icon-medium"></i>
-						</a>
-						<a class="btn-hapus" data-id="'.$k['id_klien'].'" data-nama="'.$k['nama_klien'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus Klien">
+						<a class="btn-hapus" data-id="'.$k['id_klien'].'" data-nama="'.$k['nama'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus Klien">
 							<i class="bi bi-trash icon-medium"></i>
 						</a>';
-
+				
 				$data[] = $row;
 			}
 			$callback	= [
@@ -61,6 +58,10 @@
 			$data['klu']				= $this->Klu_model->getAllKlu(); 
 			$data['status_pekerjaan']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['level']				= "klien";
+			
+			$this->form_validation->set_rules('nama_counterpart', 'Nama', 'required');
+			$this->form_validation->set_rules('no_hp_counterpart', 'No. HP', 'required|numeric');
+			$this->form_validation->set_rules('email_counterpart', 'Email', 'required|valid_email');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klien/tambah', $data);
@@ -87,13 +88,6 @@
 			echo json_encode($result);
 		}
 		
-		public function profil() {
-			$data['judul'] = 'Detail Klien';
-			$data['klien'] = $this->Klien_model->getById($this->input->post('action', true));
-			
-			$this->load->view('admin/klien/detail', $data);
-		}
-		
 		public function view($id_user) {
 			$user		= $this->Klien_model->getById($id_user);
 			$passcode	= '';
@@ -112,8 +106,10 @@
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
 			$data['tipe']		= $this->input->post('type', true);
+			$data['input']		= $this->input->post('input', true);
 			$data['id_user']	= $this->input->post('id', true);
 			$this->session->set_userdata('tipe', $data['tipe']);
+			$this->session->set_userdata('input', $data['input']);
 			
 			$this->form_validation->set_rules('password', 'Password', 'required');
 			
@@ -134,10 +130,12 @@
 		
 		public function ubah($id_user) {
 			$type			= $this->session->userdata('tipe');
+			$data['judul']	= 'Ubah '.ucwords($type);
 			$data['klien']	= $this->Klien_model->getById($id_user);
 			$data['klu']	= $this->Klu_model->getAllKlu(); 
 			$data['status']	= ['Accounting Service', 'Review', 'Semi Review'];
-			$data['judul']	= $data['klien']['nama'].' - Ubah '.ucwords($type);
+			$data['table']	= $this->session->userdata('input');
+			$data['tipe']	= $type;
 			
 			if($type == 'nama') {
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -167,19 +165,32 @@
 			}
 			
 			if($this->form_validation->run() == FALSE) {
-				$tipe = $this->session->userdata('tipe');
-				$this->libtemplate->main('klien/profile/ganti_'.$tipe, $data);
+				$this->libtemplate->main('klien/profile/ganti_'.$type, $data);
 			} else {
-				$tipe = $this->session->userdata('tipe');
-				$this->Klien_model->ubahKlien();
-				$this->session->set_flashdata('notification', ucwords($tipe).' berhasil diubah!');
-				redirect('admin/master/klien/view/'.$_POST['id_user']);
+				if($this->input->post('table') == 'user') {
+					$this->Klien_model->ubahAkun();
+				} elseif($this->input->post('table') == 'profil') {
+					$this->Klien_model->ubahProfile();
+				}
+				$this->session->set_flashdata('notification', ucwords($type).' berhasil diubah!');
+				redirect('admin/master/klien/view/'.$this->input->post('id_klien'));
 			}
 		}
 		
 		public function hapus() {
-			$this->Klien_model->hapusDataKlien($_POST['id']);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			$id				= $_REQUEST['id'];
+			$data['text']	= 'Yakin ingin menghapus klien <b>'.$_REQUEST['nama'].' ?</b>';
+			$data['button']	= '
+				<a href="klien/fix_hapus/'.$id.'" class="btn btn-danger">Hapus</a>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" tabindex="1">Batal</button>
+			';
+			
+			$this->load->view('admin/template/confirm', $data);
+		}
+		
+		public function fix_hapus($id) {
+			$this->Klien_model->hapusDataKlien($id);
+			$this->session->set_flashdata('notification', 'Klien berhasil dihapus!');
 			redirect('admin/master/klien');
 		}
 	}

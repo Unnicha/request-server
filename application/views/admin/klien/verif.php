@@ -8,8 +8,9 @@
 		</div>
 		
 		<form action="<?=base_url()?>admin/master/klien/verification" method="post">
-			<input type="hidden" id="type" name="type" value="<?=$tipe?>">
-			<input type="hidden" id="id_user" name="id_user" value="<?=$id_user?>">
+			<input type="hidden" name="type" value="<?=$tipe?>">
+			<input type="hidden" name="input" value="<?=$input?>">
+			<input type="hidden" name="id_user" value="<?=$id_user?>">
 			
 			<div class="form-group row">
 				<input type="password" class="form-control" name="password" id="password" placeholder="Masukkan Password" required>

@@ -1,23 +1,17 @@
-<div class="container-fluid">
-	<div class="row">
-		<div class="col">
-			<h3 class="px-3"><?=$judul?></h3>
-		</div>
-	</div>
+<div class="content container-fluid">
+	<h3 class="mb-3"><?=$judul?></h3>
 	
-	<hr class="my-0">
-	
-	<div class="row mt-3">
-		<div class="col col-profile">
-		<form action="" method="post"> 
-				<input type="hidden" name="id_user" id="id_user" value="<?= $klien['id_user'] ?>">
-				<input type="hidden" name="tipe" id="tipe" value="email">
-				<input type="hidden" name="input" id="input" value="user">
+	<div class="card card-round card-shadow">
+		<div class="card-body p-4">
+			<form action="" method="post">
+				<input type="hidden" name="tipe" value="<?=$tipe?>">
+				<input type="hidden" name="table" value="<?=$table?>">
+				<input type="hidden" name="id_klien" value="<?=$klien['id_klien']?>">
 				
 				<div class="form-group row">
 					<div class="col">
-						<label for="email" class="form-label">Masukkan Email Baru</label>
-						<input type="text" name="email" class="form-control" id="email" placeholder="Email" required>
+						<label for="email" class="form-label">Masukkan Email</label>
+						<input type="text" name="email" class="form-control" value="<?=$klien['email_user']?>" placeholder="Email" required>
 						<small class="form-text text-danger"><?= form_error('email', '<p class="mb-0">', '</p>') ?></small>
 						<?php if($this->session->flashdata('email')) : ?>
 							<small class="form-text text-danger">

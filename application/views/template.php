@@ -26,28 +26,21 @@
 		<title><?= $judul; ?></title>
 	</head>
 
-	<body>
+	<body style="background-color: #f5f4f8;">
 		<?php date_default_timezone_set('Asia/Jakarta'); ?>
 		
 		<!-- Core JavaScript-->
 		<script type="text/javascript" src="<?= base_url(); ?>asset/js/jquery.js"></script>
 		<!-- Additional JavaScript-->
 		<script type="text/javascript" src="<?= base_url(); ?>asset/js/bootstrap.bundle.min.js"></script>
-		<!--
-		<script type="text/javascript" src="<?= base_url(); ?>asset/js/dashboard.js"></script>
-		-->
+		<!-- <script type="text/javascript" src="<?= base_url(); ?>asset/js/dashboard.js"></script> -->
 		
-		<?= $head; ?>
-		
-		<div class=""> <!-- container-fluid -->
-			<div class="row">
-				<?= $sidebar; ?>
-				<div class="col-md-9 col-lg-10 ml-sm-auto px-0">
-					<?=$content?>
-					<!--
-					<div class="container-fluid"></div>
-					-->
-				</div>
+		<div class="row">
+			<?= $sidebar; ?>
+			<div class="col-md-9 col-lg-10 ml-sm-auto px-0">
+				<?= $head; ?>
+				<?= $content; ?>
+				<!-- <div class="container-fluid"></div> -->
 			</div>
 		</div>
 

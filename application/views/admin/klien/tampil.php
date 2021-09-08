@@ -77,20 +77,6 @@
 			},
 		});
 		
-		// Profil
-		$('#myTable tbody').on('click', 'a.btn-detail', function() {
-			var profil = $(this).data('nilai');
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>admin/master/klien/profil',
-				data: 'action='+ profil,
-				success: function(data) {
-					$(".detailProfil").modal('show');
-					$(".showProfil").html(data);
-				}
-			})
-		});
-		
 		//show tooltip
 		$('#myTable').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
@@ -99,7 +85,7 @@
 		$('#myTable').on('click', '.btn-hapus', function() {
 			$.ajax({
 				type	: 'POST',
-				url		: '<?= base_url(); ?>admin/master/jenis_data/hapus',
+				url		: '<?= base_url(); ?>admin/master/klien/hapus',
 				data	: {
 					'id'	: $(this).data('id'),
 					'nama'	: $(this).data('nama'),

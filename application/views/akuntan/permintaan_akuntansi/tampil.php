@@ -59,7 +59,7 @@
 				<thead class="text-center">
 					<tr>
 						<th scope="col">No.</th>
-						<th scope="col">Klien</th>
+						<th scope="col">Nama Klien</th>
 						<th scope="col">ID Permintaan</th>
 						<th scope="col">Permintaan</th>
 						<th scope="col">Tanggal Permintaan</th>

@@ -6,41 +6,55 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-lg-6">
-			<div class="card card-round mb-4">
+		<div class="col-lg-4">
+			<div class="card border-0">
 				<div class="card-body px-4">
-					<h5 class="px-2 mb-3">Detail Tugas</h5>
+					<h5 class="px-2 mb-3">Overview</h5>
 					
 					<table class="table table-detail">
 						<tbody>
 							<tr>
-								<td>Nama Klien</td>
+								<td class="detail-title">Nama Klien</td>
 								<td><?=$proses['nama_klien']?></td>
 							</tr>
 							<tr>
-								<td>Jenis Data</td>
+								<td class="detail-title">Jenis Data</td>
 								<td><?=$proses['jenis_data']?></td>
 							</tr>
 							<tr>
-								<td>Detail</td>
+								<td class="detail-title">Detail</td>
 								<td><?=$proses['detail']?></td>
 							</tr>
 							<tr>
-								<td>Output</td>
+								<td class="detail-title">Output</td>
 								<td><?=$proses['nama_tugas']?></td>
 							</tr>
 							<tr>
-								<td>Lama Pengerjaan</td>
+								<td class="detail-title">Durasi</td>
+								<td><?=$proses['durasi']?></td>
+							</tr>
+							<tr>
+								<td class="detail-title">Estimasi</td>
 								<td><?=$proses['standar']?></td>
+							</tr>
+							<tr>
+								<td class="detail-title">Pengiriman Terakhir</td>
+								<td><?=$proses['last']?></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
+			
+			<div class="row mt-3">
+				<div class="col">
+					<a href="<?=base_url()?>akuntan/proses_data_perpajakan" class="btn btn-secondary">Kembali</a>
+				</div>
+			</div>
 		</div>
 		
-		<div class="col-lg-6">
-			<div class="card card-round mb-4">
+		<div class="col-lg">
+			<div class="card card-round card-shadow mt-3 mt-lg-0">
 				<div class="card-body px-4">
 					<h5>Detail Proses</h5>
 					
@@ -95,7 +109,7 @@
 								<div class="row text-right">
 									<div class="col">
 										<button type="submit" class="btn btn-primary">Simpan</button>
-										<a href="<?=base_url()?>akuntan/proses_data_perpajakan" class="btn btn-secondary">Batal</a>
+										<a href="<?=base_url()?>akuntan/proses_data_perpajakan" class="btn btn-light">Batal</a>
 									</div>
 								</div>
 							</form>
@@ -103,12 +117,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col">
-			<a href="<?=base_url()?>akuntan/proses_data_perpajakan" class="btn btn-secondary">Kembali</a>
 		</div>
 	</div>
 </div>

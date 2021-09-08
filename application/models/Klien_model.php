@@ -71,7 +71,7 @@
 			$tambah	= (int) substr($max['maxId'], 1, 3);
 			$baru	= sprintf('%03s', ++$tambah); 
 			
-			return $kode_baru = '3'.$baru;
+			return '3'.$baru;
 		}
 		
 		public function cekUnique($table, $field, $value) {
@@ -87,6 +87,9 @@
 			$id_klien = $this->getMax($this->input->post('level', true));
 			$data1 = [
 				'id_klien'			=> $id_klien,
+				'nama_klien'		=> $this->input->post('nama_klien', true),
+				'email_klien'		=> $this->input->post('email', true),
+				
 				'nama_usaha'		=> $this->input->post('nama_usaha', true),
 				'kode_klu'			=> $this->input->post('kode_klu', true),
 				'no_akte'			=> $this->input->post('no_akte', true),
@@ -110,29 +113,44 @@
 				'id_user'		=> $id_klien,
 				'username'		=> $this->input->post('username', true),
 				'password'		=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
+				'passlength'	=> strlen($this->input->post('password', true)),
 				'level'			=> $this->input->post('level', true),
 				'nama'			=> $this->input->post('nama_klien', true),
 				'email_user'	=> $this->input->post('email', true),
 			];
 			$this->db->insert('user', $data2);
 		}
-
-		public function ubahKlien() {
+		
+		public function ubahAkun() {
 			$tipe	= $this->input->post('tipe', true);
-			$input	= $this->input->post('input', true);
 			
 			if($tipe == 'nama') {
-				$data = [ 'nama' => $this->input->post('nama', true) ];
+				$data	= [ 'nama' => $this->input->post('nama', true) ];
+				$data2	= [ 'nama_klien' => $this->input->post('nama', true) ];
 			} elseif($tipe == 'email') {
-				$data = [ 'email_user' => $this->input->post('email', true) ];
+				$data	= [ 'email_user' => $this->input->post('email', true) ];
+				$data2	= [ 'email_klien' => $this->input->post('email', true) ];
 			} elseif($tipe == 'username') {
-				$data = [ 'username' => $this->input->post('username', true) ];
+				$data	= [ 'username' => $this->input->post('username', true) ];
 			} elseif($tipe == 'password') {
-				$data = [
+				$data	= [
 					'password'		=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
 					'passlength'	=> strlen($this->input->post('password', true)),
 				];
-			} elseif($tipe == 'usaha') {
+			}
+			
+			if($tipe=='nama' || $tipe=='email') {
+				$this->db->where('id_klien', $this->input->post('id_klien', true));
+				$this->db->update('klien', $data2);
+			}
+			$this->db->where('id_user', $this->input->post('id_klien', true));
+			$this->db->update('user', $data);
+		}
+		
+		public function ubahProfile() {
+			$tipe	= $this->input->post('tipe', true);
+			
+			if($tipe == 'usaha') {
 				$data = [
 					'nama_usaha'		=> $this->input->post('nama_usaha', true),
 					'kode_klu'			=> $this->input->post('kode_klu', true),
@@ -156,8 +174,8 @@
 					'email_counterpart'	=> $this->input->post('email_counterpart', true),
 				];
 			}
-			$this->db->where('id_'.$input, $this->input->post('id_'.$input, true));
-			$this->db->update($input, $data);
+			$this->db->where('id_klien', $this->input->post('id_klien', true));
+			$this->db->update('klien', $data);
 		}
 		
 		public function hapusDataKlien($id_klien) {

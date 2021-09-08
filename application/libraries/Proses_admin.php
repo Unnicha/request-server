@@ -108,13 +108,13 @@
 			$add	= explode(',', $add);
 			$dur	= explode(',', $dur);
 			
-			$min		= ($dur[2] + $add[2]) % 60;
-			$jamAdd		= floor(($dur[2] + $add[2]) % 60);
-			$jam		= ($dur[1] + $jamAdd) % 8;
-			$hariAdd	= floor(($dur[1] + $jamAdd) % 8);
-			$hari		= $dur[0] + $hariAdd;
+			$menit		= ($dur[2] + $add[2]) % 60;
+			$jamAdd		= floor(($dur[2] + $add[2]) / 60);
+			$jam		= ($dur[1] + $add[1] + $jamAdd) % 8;
+			$hariAdd	= floor(($dur[1] + $add[1] + $jamAdd) / 8);
+			$hari		= $dur[0] + $add[0] + $hariAdd;
 			
-			return "$hari,$jam,$min";
+			return "$hari,$jam,$menit";
 		}
 	}
 ?>

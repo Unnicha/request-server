@@ -66,10 +66,10 @@
 				type	: 'POST',
 				url		: '<?= base_url(); ?>admin/proses/proses_data_perpajakan/gantiKlien',
 				data	: {
-					'akuntan'	: $('#akuntan_belum').val(), 
-					'bulan'		: $('#bulan_belum').val(), 
-					'tahun'		: $('#tahun_belum').val(), 
-					},
+					akuntan	: $('#akuntan_belum').val(), 
+					bulan	: $('#bulan_belum').val(), 
+					tahun	: $('#tahun_belum').val(), 
+				},
 				success: function(data) {
 					$("#klien_belum").html(data);
 				}
@@ -83,7 +83,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},

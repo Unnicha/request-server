@@ -106,8 +106,8 @@
 			'language'		: {
 				emptyTable	: "Belum ada pengiriman"
 			},
-			'pageLength': 9,
-			'ajax'		: {
+			'pageLength'	: 8,
+			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/pengiriman/pengiriman_data_akuntansi/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
@@ -144,11 +144,12 @@
 		
 		// Detail Pengiriman
 		$('#myTable tbody').on('click', 'a.btn-detail', function() {
-			var id = $(this).data('nilai');
 			$.ajax({
 				type	: 'POST',
 				url		: '<?= base_url(); ?>admin/pengiriman/pengiriman_data_akuntansi/detail',
-				data	: 'id='+ id,
+				data	: {
+					'id'	: $(this).data('nilai')
+				},
 				success	: function(data) {
 					$(".modalDetail").modal('show');
 					$(".showDetail").html(data);

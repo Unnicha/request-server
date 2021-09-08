@@ -17,21 +17,29 @@
 	
 	<div class="card card-round">
 		<div class="card-body p-0">
-			<div class="form-row form-inline px-3 pt-2 mt-1 float-md-left">
-				<label class="col-form-label"><b>Tahun</b></label>
+			<div class="row pt-1 my-2">
 				<div class="col">
-					<select name='tahun' class="form-control" id="tahun">
-						<?php
-							$tahun = $_SESSION['tahun'] ? $_SESSION['tahun'] : date('Y');
-							for($i=date('Y'); $i>=2010; $i--) :
-								if ($i == $tahun) {
-									$pilih="selected";
-								} else {
-									$pilih="";
-								} ?>
-						<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
-						<?php endfor ?>
-					</select>
+					<div class="form-inline">
+						<div class="form-row mx-3">
+							<label class="mr-2">Tahun</label>
+							<select name='tahun' class="form-control" id="tahun">
+								<?php
+									$tahun = $_SESSION['tahun'] ? $_SESSION['tahun'] : date('Y');
+									for($i=date('Y'); $i>=2010; $i--) :
+										if ($i == $tahun) {
+											$pilih="selected";
+										} else {
+											$pilih="";
+										} ?>
+								<option value="<?= $i ?>" <?= $pilih ?>> <?= $i ?> </option>
+								<?php endfor ?>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-auto mx-3">
+					<input type="text" class="form-control" name="akuntan" id="akuntan" placeholder="Cari Akuntan">
 				</div>
 			</div>
 			
@@ -39,9 +47,11 @@
 				<thead class="text-center">
 					<tr>
 						<th scope="col">No.</th>
-						<th scope="col">Nama Akuntan</th>
+						<th scope="col">Nama Klien</th>
 						<th scope="col">Mulai akses</th>
-						<th scope="col">Klien</th>
+						<th scope="col">PJ Akuntansi</th>
+						<th scope="col">PJ Perpajakan</th>
+						<th scope="col">PJ Lainnya</th>
 						<th scope="col">Action</th>
 					</tr>
 				</thead>
@@ -72,13 +82,26 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
+	$.fn.dataTable.ext.search.push(
+		function( settings, data, dataIndex ) {
+			var akuntan = $('#akuntan').val();
+			var col = data[3]; // use data for the age column
+			
+			if ( ( isNaN( akuntan ) && col.includes(akuntan) ) )
+			{
+				return true;
+			}
+			return false;
+		}
+	);
+	
 	$(document).ready(function() {
 		var notif = $('.notification').data('val');
 		if(notif == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
-	
+		
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
@@ -98,8 +121,9 @@
 					},
 			},
 		});
+		$('#myTable_filter').hide();
 		
-		$('#bulan').change(function() {
+		$('#akuntan').keyup(function() {
 			table.draw();
 		})
 		$('#tahun').change(function() {

@@ -1,202 +1,203 @@
-<div class="container-fluid mb-4">
+<div class="content container-fluid">
 	<!-- Trigger Modal -->
 	<?php if($this->session->flashdata('notification')) : ?>
 		<div class="notification" data-val="yes"></div>
-	<?php endif; ?>
-	<?php if($this->session->flashdata('pass')) : ?>
+	<?php endif;
+		if($this->session->flashdata('pass')) : ?>
 		<div class="passVerif" data-val="yes" data-tipe="<?=$this->session->flashdata('tipe')?>"></div>
 	<?php endif; ?>
 	
-	<h2 align="center"><?=$judul?></h2>
-	<p class="subheader mb-2 text-center">
-		Detail Info Akun, Usaha, Pimpinan dan Counterpart
-	</p>
-	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-0 px-sm-4 mb-2">
-		<div class="col px-0">
-			<!-- Header Card -->
-			<div class="row">
-				<div class="col">
-					<h5 class="card-title">Info Akun</h5>
-				</div>
-			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">ID Klien</div>
-				<div class="col id_user"><?= $user['id_user'] ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nama Klien</div>
-				<div class="col"><?= $user['nama'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="nama" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email</div>
-				<div class="col"><?= $user['email_user'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="email" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Username</div>
-				<div class="col"><?= $user['username'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="username" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Password</div>
-				<div class="col"><?= $user['passcode'] ?></div>
-				<div class="col">
-					<a href="#" type="button" class="verif float-right" data-tipe="password" data-input="user">
-						<i class="bi bi-pencil-square"></i>
-						ganti
-					</a>
-				</div>
-			</div>
+	<div class="row">
+		<div class="col">
+			<h3 class="mb-3"><?=$judul?></h3>
+		</div>
+		<div class="col-auto">
+			<a href="<?=base_url()?>admin/master/klien" class="btn btn-secondary">Kembali</a>
 		</div>
 	</div>
 	
-	<hr class="my-0 hr-profil">
+	<div class="card card-round card-shadow mb-4">
+		<div class="card-body p-4">
+			<!-- Sub-title -->
+			<h5 class="card-title">Info Akun</h5>
+			
+			<table class="table table-detail">
+				<tbody>
+					<tr>
+						<td>ID Klien</td>
+						<td class="id_user"><?= $user['id_user'] ?></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Nama Klien</td>
+						<td><?= $user['nama'] ?></td>
+						<td>
+							<a type="button" class="verif float-right" data-tipe="nama" data-input="user">
+								<i class="bi bi-pencil-square"></i>
+								ganti
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Email</td>
+						<td><?= $user['email_user'] ?></td>
+						<td>
+							<a type="button" class="verif float-right" data-tipe="email" data-input="user">
+								<i class="bi bi-pencil-square"></i>
+								ganti
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Username</td>
+						<td><?= $user['username'] ?></td>
+						<td>
+							<a type="button" class="verif float-right" data-tipe="username" data-input="user">
+								<i class="bi bi-pencil-square"></i>
+								ganti
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td><?= $user['passcode'] ?></td>
+						<td>
+							<a type="button" class="verif float-right" data-tipe="password" data-input="user">
+								<i class="bi bi-pencil-square"></i>
+								ganti
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 	
-	<div class="row row-child py-3 px-0 px-sm-4 mb-2">
-		<div class="col px-0">
-			<!-- Header Card -->
+	<div class="card card-round card-shadow mb-4">
+		<div class="card-body p-4">
 			<div class="row">
 				<div class="col"><h5 class="card-title">Info Usaha</h5></div>
-				<div class="col">
-					<a href="#" class="btn btn-sm btn-primary verif float-right" data-tipe="usaha" data-input="profil">
+				<div class="col-auto">
+					<a class="btn btn-sm btn-primary verif float-right" data-tipe="usaha" data-input="profil">
 						<i class="bi bi-pencil-square"></i>
 						ganti
 					</a>
 				</div>
 			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Usaha</div>
-				<div class="col"><?= $user['nama_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Kode KLU</div>
-				<div class="col"><?= $user['kode_klu']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Bentuk Usaha</div>
-				<div class="col"><?= $user['bentuk_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Jenis Usaha</div>
-				<div class="col"><?= $user['jenis_usaha']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Alamat</div>
-				<div class="col"><?= $user['alamat']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor Telepon</div>
-				<div class="col"><?= $user['telp']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP</div>
-				<div class="col"><?= $user['no_hp']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor Akte Terakhir</div>
-				<div class="col"><?= $user['no_akte']; ?></div>
-			</div>
+			
+			<table class="table table-detail">
+				<tbody>
+					<tr>
+						<td>Nama Usaha</td>
+						<td><?= $user['nama_usaha']; ?></td>
+					</tr>
+					<tr>
+						<td>Kode KLU</td>
+						<td><?= $user['kode_klu']; ?></td>
+					</tr>
+					<tr>
+						<td>Nama Usaha</td>
+						<td><?= $user['nama_usaha']; ?></td>
+					</tr>
+					<tr>
+						<td>Bentuk Usaha</td>
+						<td><?= $user['bentuk_usaha']; ?></td>
+					</tr>
+					<tr>
+						<td>Jenis Usaha</td>
+						<td><?= $user['jenis_usaha']; ?></td>
+					</tr>
+					<tr>
+						<td>Alamat</td>
+						<td><?= $user['alamat']; ?></td>
+					</tr>
+					<tr>
+						<td>Nomor Telepon</td>
+						<td><?= $user['telp']; ?></td>
+					</tr>
+					<tr>
+						<td>Nomor HP</td>
+						<td><?= $user['no_hp']; ?></td>
+					</tr>
+					<tr>
+						<td>Nomor Akte Terakhir</td>
+						<td><?= $user['no_akte']; ?></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	
-	<hr class="my-0 hr-profil">
-	
-	<div class="row row-child py-3 px-0 px-sm-4 mb-2">
-		<div class="col px-0">
-			<!-- Header Card -->
+	<div class="card card-round card-shadow mb-4">
+		<div class="card-body p-4">
 			<div class="row">
-				<div class="col"><h5 class="card-title">Pimpinan</h5></div>
 				<div class="col">
-					<a href="#" class="btn btn-sm btn-primary verif float-right" data-tipe="pimpinan" data-input="profil">
+					<h5 class="card-title">Pimpinan</h5>
+				</div>
+				<div class="col-auto">
+					<a class="btn btn-sm btn-primary verif float-right" data-tipe="pimpinan" data-input="profil">
 						<i class="bi bi-pencil-square"></i>
 						ganti
 					</a>
 				</div>
 			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Pimpinan</div>
-				<div class="col"><?= $user['nama_pimpinan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Jabatan</div>
-				<div class="col"><?= $user['jabatan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email Pimpinan</div>
-				<div class="col"><?= $user['email_pimpinan']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP Pimpinan</div>
-				<div class="col"><?= $user['no_hp_pimpinan']; ?></div>
-			</div>
+			
+			<table class="table table-detail">
+				<tbody>
+					<tr>
+						<td>Nama</td>
+						<td><?= $user['nama_pimpinan']; ?></td>
+					</tr>
+					<tr>
+						<td>Jabatan</td>
+						<td><?= $user['jabatan']; ?></td>
+					</tr>
+					<tr>
+						<td>Email</td>
+						<td><?= $user['email_pimpinan']; ?></td>
+					</tr>
+					<tr>
+						<td>Nomor HP</td>
+						<td><?= $user['no_hp_pimpinan']; ?></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	
-	<hr class="my-0 hr-profil">
 	
-	<div class="row row-child py-3 px-0 px-sm-4 mb-2">
-		<div class="col px-0">
-			<!-- Header Card -->
+	
+	<div class="card card-round card-shadow">
+		<div class="card-body p-4">
 			<div class="row">
-				<div class="col"><h5 class="card-title">Counterpart</h5></div>
 				<div class="col">
-					<a href="#" class="btn btn-sm btn-primary verif float-right" data-tipe="counterpart" data-input="profil">
+					<h5 class="card-title">Counterpart</h5>
+				</div>
+				
+				<div class="col-auto">
+					<a class="btn btn-sm btn-primary verif float-right" data-tipe="counterpart" data-input="profil">
 						<i class="bi bi-pencil-square"></i>
 						ganti
 					</a>
 				</div>
 			</div>
-			<!-- Isi Card -->
-			<div class="row">
-				<div class="col-4">Nama Counterpart</div>
-				<div class="col"><?= $user['nama_counterpart']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Email Counterpart</div>
-				<div class="col"><?= $user['email_counterpart']; ?></div>
-			</div>
-			<hr class="solid batas-profil">
-			<div class="row">
-				<div class="col-4">Nomor HP Counterpart</div>
-				<div class="col"><?= $user['no_hp_counterpart']; ?></div>
-			</div>
+			
+			<table class="table table-detail">
+				<tbody>
+					<tr>
+						<td>Nama</td>
+						<td><?= $user['nama_counterpart']; ?></td>
+					</tr>
+					<tr>
+						<td>Email</td>
+						<td><?= $user['email_counterpart']; ?></td>
+					</tr>
+					<tr>
+						<td>Nomor HP</td>
+						<td><?= $user['no_hp_counterpart']; ?></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>

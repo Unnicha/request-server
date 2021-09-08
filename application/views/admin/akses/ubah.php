@@ -11,8 +11,16 @@
 				<div class="card-body p-4">
 					<form action="" method="post">
 						<input type="hidden" id="id_akses" name="id_akses" value="<?=$akses['id_akses']?>">
-						<input type="hidden" id="id_akuntan" name="id_akuntan" value="<?=$akses['id_akuntan']?>">
+						<input type="hidden" id="id_klien" name="id_klien" value="<?=$akses['id_klien']?>">
 						<input type="hidden" id="masa" name="masa" value="<?=$akses['masa']?>">
+						
+						<!-- Klien -->
+						<div class="form-group row">
+							<label class="col-sm-4 col-md-3 col-form-label">Nama Klien</label>
+							<div class="col-sm">
+								<input type="text" class="form-control" name="nama" value="<?=$akses['nama_klien']?>" readonly>
+							</div>
+						</div>
 						
 						<!-- Tahun -->
 						<div class="form-group row">
@@ -30,35 +38,24 @@
 							</div>
 						</div>
 						
-						<!-- Akuntan -->
-						<div class="form-group row">
-							<label class="col-sm-4 col-md-3 col-form-label">Nama Akuntan</label>
-							<div class="col-sm">
-								<input type="text" class="form-control" name="nama" value="<?=$akses['nama']?>" readonly>
-							</div>
-						</div>
-						
 						<!-- Akses -->
 						<div class="form-group row">
 							<label class="col col-form-label">
-								<b>Akses Data Klien</b>
+								<b>Penanggung jawab</b>
 							</label>
 						</div>
 		
 						<!-- Data Akuntansi -->
 						<div class="form-group row">
-							<label class="col-md-3 col-form-label">Data Akuntansi</label>
+							<label class="col-md-3 col-form-label">PJ Akuntansi</label>
 							<div class="col-sm">
 								<select name='akuntansi[]' class="form-control select-multiple" multiple="multiple" required>
 									<?php 
 										$data1 = explode(',', $akses['akuntansi']);
-										foreach ($klien as $k) :
-											if(in_array($k['id_klien'], $data1)) {
-												$pilih = 'selected="selected"';
-											} else {
-												$pilih = '';
-											} ?>
-									<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+										foreach ($akuntan as $k) :
+											$pilih = (in_array($k['id_user'], $data1)) ? 'selected="selected"' : '';
+										?>
+									<option value="<?= $k['id_user'] ?>" <?=$pilih?>><?= $k['nama'] ?></option>
 									<?php endforeach ?>
 								</select>
 								<small class="form-text text-danger"><?= form_error('akuntansi[]', '<p class="mb-0">', '</p>') ?></small>
@@ -67,18 +64,15 @@
 		
 						<!-- Data Perpajakan -->
 						<div class="form-group row">
-							<label class="col-md-3 col-form-label">Data Perpajakan</label>
+							<label class="col-md-3 col-form-label">PJ Perpajakan</label>
 							<div class="col-sm">
 								<select name='perpajakan[]' class="form-control select-multiple" multiple="multiple" required>
 									<?php
 										$data2 = explode(',', $akses['perpajakan']);
-										foreach ($klien as $k) :
-											if(in_array($k['id_klien'], $data2)) {
-												$pilih = 'selected="selected"';
-											} else {
-												$pilih = '';
-											} ?>
-									<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+										foreach ($akuntan as $k) :
+											$pilih = (in_array($k['id_user'], $data2)) ? 'selected="selected"' : '';
+										?>
+									<option value="<?= $k['id_user'] ?>" <?=$pilih?>><?= $k['nama'] ?></option>
 									<?php endforeach ?>
 								</select>
 								<small class="form-text text-danger"><?= form_error('perpajakan[]', '<p class="mb-0">', '</p>') ?></small>
@@ -87,18 +81,15 @@
 		
 						<!-- Data Lainnya -->
 						<div class="form-group row">
-							<label class="col-md-3 col-form-label">Data Lainnya</label>
+							<label class="col-md-3 col-form-label">PJ Lainnya</label>
 							<div class="col-sm">
 								<select name='lainnya[]' class="form-control select-multiple" multiple="multiple" required>
 									<?php
 										$data3 = explode(',', $akses['lainnya']);
-										foreach ($klien as $k) :
-											if(in_array($k['id_klien'], $data3)) {
-												$pilih = 'selected="selected"';
-											} else {
-												$pilih = '';
-											} ?>
-									<option value="<?= $k['id_klien'] ?>" <?=$pilih?>><?= $k['nama_klien'] ?></option>
+										foreach ($akuntan as $k) :
+											$pilih = (in_array($k['id_user'], $data3)) ? 'selected="selected"' : '';
+										?>
+									<option value="<?= $k['id_user'] ?>" <?=$pilih?>><?= $k['nama'] ?></option>
 									<?php endforeach ?>
 								</select>
 								<small class="form-text text-danger"><?= form_error('lainnya[]', '<p class="mb-0">', '</p>') ?></small>
@@ -123,7 +114,7 @@
 <script>
 	$(document).ready(function() {
 		$('.select-multiple').select2({
-			placeholder: '--Tambahkan Klien--',
+			placeholder: '--Tambahkan Akuntan--',
 			tags: true,
 		});
 	});

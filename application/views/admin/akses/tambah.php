@@ -23,6 +23,17 @@
 			<div class="card card-round">
 				<div class="card-body p-4">
 					<form action="" method="post">
+						<!-- Klien -->
+						<div class="form-group row">
+							<label class="col-sm-4 col-form-label">Nama Klien</label>
+							<div class="col-sm">
+								<select name="id_klien" class="form-control" id="id_klien" required>
+									<option value="">--Pilih Klien--</option>
+								</select>
+								<small class="form-text text-danger"><?= form_error('id_klien', '<p class="mb-0">', '</p>') ?></small>
+							</div>
+						</div>
+						
 						<!-- Tahun -->
 						<div class="form-group row">
 							<label class="col-sm-4 col-form-label">Tahun Akses</label>
@@ -44,44 +55,29 @@
 							<label class="col-sm-4 col-form-label">Bulan Mulai</label>
 							<div class="col-sm">
 								<select name="masa" class="form-control" id="masa" required>
-									<?php
-										foreach($masa as $m) :
-											if($m['id_bulan'] == date('m')) { $pilih = "selected"; }
-											else { $pilih = ""; }
-									?>
-									<option value="<?=$m['id_bulan']?>" <?=$pilih?>>
-										<?=$m['nama_bulan'];?>
-									</option>
+									<option value="">--Pilih Bulan--</option>
+									<?php foreach($masa as $m) : ?>
+									<option value="<?=$m['id_bulan']?>"><?=$m['nama_bulan']?></option>
 									<?php endforeach ?>
 								</select>
 								<small class="form-text text-danger"><?= form_error('masa', '<p class="mb-0">', '</p>') ?></small>
 							</div>
 						</div>
 						
-						<!-- ID Akuntan -->
-						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Nama Akuntan</label>
-							<div class="col-sm">
-								<select name="id_akuntan" class="form-control" id="id_akuntan" required>
-								</select>
-								<small class="form-text text-danger"><?= form_error('id_akuntan', '<p class="mb-0">', '</p>') ?></small>
-							</div>
-						</div>
-		
 						<!-- Akses -->
 						<div class="form-group row">
 							<label for="akuntansi" class="col-sm-4 col-form-label">
-								<b>Akses Data Klien</b>
+								<b>Penanggung jawab</b>
 							</label>
 						</div>
 		
 						<!-- Data Akuntansi -->
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Data Akuntansi</label>
+							<label class="col-sm-4 col-form-label">PJ Akuntansi</label>
 							<div class="col-sm">
 								<select name='akuntansi[]' class="form-control select-multiple" multiple="multiple" required>
-									<?php foreach ($klien as $k) : ?>
-									<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+									<?php foreach ($akuntan as $k) : ?>
+									<option value="<?= $k['id_user'] ?>"><?= $k['nama'] ?></option>
 									<?php endforeach ?>
 								</select>
 								<small class="form-text text-danger"><?= form_error('akuntansi[]', '<p class="mb-0">', '</p>') ?></small>
@@ -90,12 +86,12 @@
 		
 						<!-- Data Perpajakan -->
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Data Perpajakan</label>
+							<label class="col-sm-4 col-form-label">PJ Perpajakan</label>
 							<div class="col-sm">
 								<div class="input-group">
 									<select name='perpajakan[]' class="form-control select-multiple" multiple="multiple" required>
-										<?php foreach ($klien as $k) : ?>
-										<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+										<?php foreach ($akuntan as $k) : ?>
+										<option value="<?= $k['id_user'] ?>"><?= $k['nama'] ?></option>
 										<?php endforeach ?>
 									</select>
 								</div>
@@ -105,12 +101,12 @@
 		
 						<!-- Data Lainnya -->
 						<div class="form-group row">
-							<label class="col-sm-4 col-form-label">Data Lainnya</label>
+							<label class="col-sm-4 col-form-label">PJ Lainnya</label>
 							<div class="col-sm">
 								<div class="input-group">
 									<select name='lainnya[]' class="form-control select-multiple" multiple="multiple" required>
-										<?php foreach ($klien as $k) : ?>
-										<option value="<?= $k['id_klien'] ?>"><?= $k['nama_klien'] ?></option>
+										<?php foreach ($akuntan as $k) : ?>
+										<option value="<?= $k['id_user'] ?>"><?= $k['nama'] ?></option>
 										<?php endforeach ?>
 									</select>
 								</div>
@@ -136,16 +132,16 @@
 <script>
 	$(document).ready(function() {
 		$('.select-multiple').select2({
-			placeholder: '--Tambahkan Klien--'
+			placeholder: '--Pilih Akuntan--'
 		});
 		
 		function getAkuntan() {
 			$.ajax({
 				type	: 'POST',
-				url		: '<?=base_url()?>admin/master/akses/akuntan',
+				url		: '<?=base_url()?>admin/master/akses/getKlien',
 				data	: 'tahun=' +$('#tahun').val(),
 				success	: function(e) {
-					$('#id_akuntan').html(e);
+					$('#id_klien').html(e);
 				}
 			})
 		}

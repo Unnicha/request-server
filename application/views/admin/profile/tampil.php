@@ -9,7 +9,7 @@
 	
 	<div class="row mb-2">
 		<div class="col">
-			<h2 class="text-center mb-2"><?=$judul?></h2>
+			<h2><?=$judul?></h2>
 		</div>
 	</div>
 	

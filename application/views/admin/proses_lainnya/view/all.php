@@ -53,6 +53,7 @@
 					<th scope="col">Durasi</th>
 					<th scope="col">Estimasi</th>
 					<th scope="col">Status</th>
+					<th scope="col">Action</th>
 				</tr>
 			</thead>
 
@@ -71,9 +72,10 @@
 				type	: 'POST',
 				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/gantiKlien',
 				data	: {
-					bulan	: $('#bulan_all').val(), 
-					tahun	: $('#tahun_all').val(), 
-					},
+					akuntan	: $('#akuntan_all').val(),
+					bulan	: $('#bulan_all').val(),
+					tahun	: $('#tahun_all').val(),
+				},
 				success	: function(data) {
 					$("#klien_all").html(data);
 				}
@@ -86,7 +88,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},
@@ -117,18 +119,19 @@
 		$("#klien_all").change(function() {
 			table.draw();
 		})
-
+		
 		$('.container-fluid').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		})
-
+		
 		// Detail
 		$('#myTable_all tbody').on('click', 'a.btn-detail', function() {
-			var id = $(this).data('nilai');
 			$.ajax({
 				type	: 'POST',
-				url		: '<?= base_url(); ?>akuntan/proses_data_lainnya/detail',
-				data	: 'id='+ id,
+				url		: '<?= base_url(); ?>admin/proses/proses_data_lainnya/detail',
+				data	: {
+					id_data	: $(this).data('id'),
+				},
 				success	: function(data) {
 					$(".detailProses").modal('show');
 					$(".showProses").html(data);

@@ -1,18 +1,12 @@
-<div class="container-fluid">
-	<div class="row">
-		<div class="col">
-			<h3 class="px-3"><?=$judul?></h3>
-		</div>
-	</div>
+<div class="content container-fluid">
+	<h3 class="mb-3"><?=$judul?></h3>
 	
-	<hr class="my-0">
-	
-	<div class="row mt-3">
-		<div class="col col-profile">
+	<div class="card card-round card-shadow">
+		<div class="card-body">
 			<form action="" method="post">
-				<input type="hidden" name="id_user" id="id_user" value="<?= $klien['id_user'] ?>">
-				<input type="hidden" name="tipe" id="tipe" value="password">
-				<input type="hidden" name="input" id="input" value="user">
+				<input type="hidden" name="tipe" value="<?=$tipe?>">
+				<input type="hidden" name="table" value="<?=$table?>">
+				<input type="hidden" name="id_klien" value="<?=$klien['id_klien']?>">
 				
 				<!-- Password -->
 				<div class="form-group row">

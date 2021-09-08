@@ -67,8 +67,9 @@
 				type: 'POST',
 				url: '<?= base_url(); ?>admin/proses/proses_data_lainnya/gantiKlien',
 				data: {
-					'bulan': $('#bulan_selesai').val(), 
-					'tahun': $('#tahun_selesai').val(), 
+					akuntan	: $('#akuntan_selesai').val(), 
+					bulan	: $('#bulan_selesai').val(), 
+					tahun	: $('#tahun_selesai').val(), 
 					},
 				success: function(data) {
 					$("#klien_selesai").html(data);
@@ -83,7 +84,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},

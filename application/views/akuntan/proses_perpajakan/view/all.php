@@ -1,7 +1,7 @@
 <div class="container-fluid p-0">
 	<div class="row mb-2">
 		<div class="col form-inline">
-			<select name="bulan" class="form-control mr-1" id="bulan_selesai">
+			<select name="bulan" class="form-control mr-1" id="bulan_all">
 				<?php 
 					$bulan = ($this->session->userdata('bulan')) ? $this->session->userdata('bulan') : date('m');
 					foreach ($masa as $m) :
@@ -11,7 +11,7 @@
 				<?php endforeach ?>
 			</select>
 			
-			<select name="tahun" class="form-control mr-1" id="tahun_selesai">
+			<select name="tahun" class="form-control mr-1" id="tahun_all">
 				<?php 
 					$tahun = ($this->session->userdata('tahun')) ? $this->session->userdata('tahun') : date('Y');
 					for($i=$tahun; $i>=2010; $i--) :
@@ -21,7 +21,7 @@
 				<?php endfor ?>
 			</select>
 			
-			<select name="klien" class="form-control mr-1" id="klien_selesai">
+			<select name="klien" class="form-control mr-1" id="klien_all">
 				<option value="">--Tidak Ada Klien--</option>
 			</select>
 			
@@ -32,7 +32,7 @@
 	</div>
 	
 	<div id="mb-4">
-		<table id="myTable_selesai" width=100% class="table table-striped table-responsive-sm">
+		<table id="myTable_all" width=100% class="table table-striped table-responsive-sm">
 			<thead class="text-center">
 				<tr>
 					<th scope="col">No.</th>
@@ -40,7 +40,8 @@
 					<th scope="col">Tugas</th>
 					<th scope="col">Akuntan</th>
 					<th scope="col">Durasi</th>
-					<th scope="col">Standard</th>
+					<th scope="col">Estimasi</th>
+					<th scope="col">Status</th>
 					<th scope="col">Action</th>
 				</tr>
 			</thead>
@@ -60,22 +61,22 @@
 				type	: 'POST',
 				url		: '<?= base_url(); ?>akuntan/proses_data_perpajakan/gantiKlien',
 				data	: {
-					bulan	: $('#bulan_selesai').val(), 
-					tahun	: $('#tahun_selesai').val(), 
+					bulan	: $('#bulan_all').val(), 
+					tahun	: $('#tahun_all').val(), 
 					},
 				success	: function(data) {
-					$("#klien_selesai").html(data);
+					$("#klien_all").html(data);
 				}
 			})
 		}
 		gantiKlien();
-		var table = $('#myTable_selesai').DataTable({
+		var table = $('#myTable_all').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},
@@ -83,22 +84,22 @@
 				'url'	: '<?=base_url()?>akuntan/proses_data_perpajakan/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
-					e.klien = $('#klien_selesai').val(); 
-					e.bulan = $('#bulan_selesai').val(); 
-					e.tahun = $('#tahun_selesai').val();
+					e.klien = $('#klien_all').val(); 
+					e.bulan = $('#bulan_all').val(); 
+					e.tahun = $('#tahun_all').val();
 				},
 			},
 		});
 		
-		$("#bulan_selesai").change(function() {
+		$("#bulan_all").change(function() {
 			gantiKlien();
 			table.draw();
 		});
-		$("#tahun_selesai").change(function() {
+		$("#tahun_all").change(function() {
 			gantiKlien();
 			table.draw();
 		});
-		$("#klien_selesai").change(function() {
+		$("#klien_all").change(function() {
 			table.draw();
 		})
 
@@ -107,13 +108,13 @@
 		})
 
 		// Detail
-		$('#myTable_selesai tbody').on('click', 'a.btn-detail', function() {
+		$('#myTable_all tbody').on('click', 'a.btn-detail', function() {
 			var id = $(this).data('nilai');
 			$.ajax({
-				type: 'POST',
-				url: '<?= base_url(); ?>akuntan/proses_data_perpajakan/detail',
-				data: 'id='+ id,
-				success: function(data) {
+				type	: 'POST',
+				url		: '<?= base_url(); ?>akuntan/proses_data_perpajakan/detail',
+				data	: 'id='+ id,
+				success	: function(data) {
 					$(".detailProses").modal('show');
 					$(".showProses").html(data);
 				}

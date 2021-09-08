@@ -2,69 +2,58 @@
 	
 	class Akses_model extends CI_model {
 	
-		public function getByMasa($tahun, $start='', $limit='', $kata_cari='') {
+		public function getByTahun($tahun, $start=0, $limit='', $kata_cari='') {
 			if($kata_cari) {
 				$this->db->like('nama_klien', $kata_cari)
 						->or_like('status_pekerjaan', $kata_cari)
 						->or_like('jenis_usaha', $kata_cari)
 						->or_like('nama_pimpinan', $kata_cari);
 			}
+			if($limit) $this->db->limit($limit, $start);
 			return $this->db->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
+							->join('klien', 'klien.id_klien = akses.kode_klien', 'left')
 							->where(['tahun'=>$tahun])
-							->limit($limit, $start)
 							->order_by('id_akses', 'ASC')
 							->get()->result_array();
 		}
-	
+		
 		public function countAkses($tahun) {
 			return $this->db->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
+							->join('klien', 'klien.id_klien = akses.kode_klien', 'left')
 							->where(['tahun'=>$tahun])
 							->count_all_results();
 		}
 		
 		public function getById($id_akses) {
 			return $this->db->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
+							->join('klien', 'klien.id_klien = akses.kode_klien', 'left')
 							->join('bulan', 'bulan.id_bulan = akses.masa', 'left')
 							->where(['id_akses' => $id_akses])
-							->order_by('id_akses', 'ASC')
 							->get()->row_array();
 		}
 		
-		public function getByTahun($tahun) {
-			return $this->db->select('id_akuntan, nama')
-							->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['tahun' => $tahun])
+		public function getByKlien($tahun, $id_klien) {
+			return $this->db->from('akses')
+							->join('klien', 'klien.id_klien = akses.kode_klien', 'left')
+							->where(['id_klien'=>$id_klien, 'tahun'=>$tahun])
+							->get()->row_array();
+		}
+		
+		public function getByAkuntan($tahun, $bulan, $id_akuntan, $kategori) {
+			return $this->db->from('akses')
+							->join('klien', 'klien.id_klien = akses.kode_klien', 'left')
+							->where(['tahun' => $tahun, 'masa <=' => $bulan])
+							->like($kategori, $id_akuntan)
 							->order_by('id_akses', 'ASC')
 							->get()->result_array();
 		}
 		
-		public function getByAkuntan($tahun, $id_akuntan) {
-			return $this->db->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['tahun' => $tahun, 'id_akuntan' => $id_akuntan])
-							->get()->row_array();
-		}
-		
-		//delsoon
-		public function getByKlien($id_klien, $bulan, $tahun) {
-			return $this->db->from('akses')
-							->join('user', 'user.id_user = akses.id_akuntan', 'left')
-							->where(['masa' => $bulan, 'tahun' => $tahun])
-							->like('klien', $id_klien)
-							->order_by('id_akses', 'ASC')
-							->get()->result_array();
-		}
-
 		public function tambahAkses() {
 			$data = [
-				'id_akses'		=> substr($this->input->post('tahun', true), 2, 2) . $this->input->post('id_akuntan', true),
+				'id_akses'		=> substr($this->input->post('tahun', true), 2, 2) . $this->input->post('id_klien', true),
+				'kode_klien'	=> $this->input->post('id_klien', true),
 				'masa'			=> $this->input->post('masa', true),
 				'tahun'			=> $this->input->post('tahun', true),
-				'id_akuntan'	=> $this->input->post('id_akuntan', true),
 				'akuntansi'		=> implode(',', $this->input->post('akuntansi', true)),
 				'perpajakan'	=> implode(',', $this->input->post('perpajakan', true)),
 				'lainnya'		=> implode(',', $this->input->post('lainnya', true)),
@@ -74,9 +63,9 @@
 	
 		public function ubahAkses() {
 			$data = [
+				'kode_klien'	=> $this->input->post('id_klien', true),
 				'masa'			=> $this->input->post('masa', true),
 				'tahun'			=> $this->input->post('tahun', true),
-				'id_akuntan'	=> $this->input->post('id_akuntan', true),
 				'akuntansi'		=> implode(',', $this->input->post('akuntansi', true)),
 				'perpajakan'	=> implode(',', $this->input->post('perpajakan', true)),
 				'lainnya'		=> implode(',', $this->input->post('lainnya', true)),

@@ -6,44 +6,58 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-lg-6">
-			<div class="card card-round mb-4">
+		<div class="col-lg-4">
+			<div class="card border-0">
 				<div class="card-body">
-					<h5 class="card-title">Detail Data</h5>
+					<h5 class="card-title">Overview</h5>
 					
 					<table class="table table-detail mb-0">
 						<div class="tbody">
 							<tr>
-								<td>Nama Klien</td>
+								<td class="detail-title">Nama Klien</td>
 								<td><?=$pengiriman['nama_klien']?></td>
 							</tr>
 							<tr>
-								<td>Jenis Data</td>
+								<td class="detail-title">Jenis Data</td>
 								<td><?=$pengiriman['jenis_data']?></td>
 							</tr>
 							<tr>
-								<td>Detail</td>
+								<td class="detail-title">Detail</td>
 								<td><?=$pengiriman['detail']?></td>
 							</tr>
 							<tr>
-								<td>Output</td>
+								<td class="detail-title">Output</td>
 								<td>
 									<?=$pengiriman['nama_tugas']?>
 									<small class="form-text text-danger"><?= form_error('nama_tugas', '<p class="mb-0">', '<br>Harap hubungi Admin.</p>') ?></small>
 								</td>
 							</tr>
 							<tr>
-								<td>Estimasi</td>
+								<td class="detail-title">Durasi</td>
+								<td><?=$pengiriman['durasi']?></td>
+							</tr>
+							<tr>
+								<td class="detail-title">Estimasi</td>
 								<td><?=$pengiriman['standar']?></td>
+							</tr>
+							<tr>
+								<td class="detail-title">Pengiriman Terakhir</td>
+								<td><?=$pengiriman['last']?></td>
 							</tr>
 						</div>
 					</table>
 				</div>
 			</div>
+			
+			<div class="row mt-3">
+				<div class="col">
+					<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-secondary">Kembali</a>
+				</div>
+			</div>
 		</div>
 		
-		<div class="col-lg-6">
-			<div class="card card-round mb-4">
+		<div class="col-lg">
+			<div class="card card-round card-shadow mt-4 mt-lg-0">
 				<div class="card-body px-4">
 					<h5 class="card-title mb-3">Proses Data</h5>
 					
@@ -104,18 +118,12 @@
 						<div class="row text-right">
 							<div class="col">
 								<button type="submit" class="btn btn-primary">Simpan</button>
-								<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-secondary">Batal</a>
+								<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-light">Batal</a>
 							</div>
 						</div>
 					</form>
 				</div>
 			</div>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col">
-			<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-secondary">Kembali</a>
 		</div>
 	</div>
 </div>

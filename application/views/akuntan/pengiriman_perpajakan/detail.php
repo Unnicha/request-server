@@ -25,7 +25,7 @@
 						</tr>
 						<tr>
 							<td scope="row">Jumlah data</td>
-							<td><?= $permintaan['jum_data'] ?></td>
+							<td><?= $permintaan['jumData'] ?></td>
 						</tr>
 						<tr>
 							<td scope="row">Requestor</td>

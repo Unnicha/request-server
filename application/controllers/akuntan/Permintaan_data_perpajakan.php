@@ -25,16 +25,15 @@
 			$bulan	= $_POST['bulan'];		$this->session->set_userdata('bulan', $bulan);
 			
 			if($klien == null) {
-				$id_akuntan	= $this->session->userdata('id_user');
-				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+				$klien	= [];
+				$id		= $this->session->userdata('id_user');
+				$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id, 'perpajakan');
+				$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id, 'perpajakan');
 				if( $akses ) {
-					if($bulan < $akses['masa']) {
-						$akses	= $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+					foreach($akses as $a) {
+						$klien[] = $a['kode_klien'];
 					}
-					if( $akses ) {
-						$klien	= explode(',', $akses['perpajakan']);
-					}
-				}
+				} else $klien = null;
 			}
 			
 			$limit		= $_POST['length'];
@@ -74,21 +73,16 @@
 			$tahun		= isset($_POST['tahun']) ? $_POST['tahun'] : date('Y');
 			$id_akuntan	= $this->session->userdata('id_user');
 			
-			$bulan		= $this->Klien_model->getMasa($bulan);
-			$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
-			if($bulan['id_bulan'] < $akses['masa']) {
-				$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
-			}
+			$bulan	= $this->Klien_model->getMasa($bulan)['id_bulan'];
+			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id_akuntan, 'perpajakan');
+			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id_akuntan, 'perpajakan');
 			
-			if($akses == null) {
-				$lists	= "<option value=''>--Tidak ada akses--</option>";
-			} else {
+			$lists	= "<option value=''>--Tidak ada akses--</option>";
+			if( $akses ) {
 				$lists		= "<option value=''>--".$_POST['jenis']." Klien--</option>";
-				$id_klien	= explode(",", $akses['perpajakan']);
-				foreach($id_klien as $id) {
-					$klien	= $this->Klien_model->getById($id);
-					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 
-				} 
+				foreach($akses as $a) {
+					$lists .= "<option value='".$a['id_klien']."'>".$a['nama_klien']."</option>"; 
+				}
 			}
 			echo $lists;
 		}

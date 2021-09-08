@@ -23,23 +23,38 @@
 			$offset		= $_POST['start'];
 			$cari		= $_POST['search']['value'];
 			$countData	= $this->Akses_model->countAkses($_POST['tahun'], $cari); 
-			$akses		= $this->Akses_model->getByMasa($_POST['tahun'], $offset, $limit, $cari);
+			$akses		= $this->Akses_model->getByTahun($_POST['tahun'], $offset, $limit, $cari);
 			$this->session->set_userdata('tahun', $_POST['tahun']);
 			
 			$data = [];
 			foreach($akses as $k) {
 				$bulan = $this->Klien_model->getMasa($k['masa']);
+				$akuntansi	= '';	$a	= $this->Akuntan_model->getById(explode(',', $k['akuntansi']));
+				$perpajakan	= '';	$b	= $this->Akuntan_model->getById(explode(',', $k['perpajakan']));
+				$lainnya	= '';	$c	= $this->Akuntan_model->getById(explode(',', $k['lainnya']));
+				foreach($a as $i => $val) {
+					$akuntansi .= ($i>0) ? ' - '.$val['nama'] : $val['nama'];
+				}
+				foreach($b as $i => $val) {
+					$perpajakan .= ($i>0) ? ' - '.$val['nama'] : $val['nama'];
+				}
+				foreach($c as $i => $val) {
+					$lainnya .= ($i>0) ? ' - '.$val['nama'] : $val['nama'];
+				}
 				
 				$row	= [];
 				$row[]	= ++$offset.'.';
-				$row[]	= $k['nama'];
+				$row[]	= $k['nama_klien'];
 				$row[]	= $bulan['nama_bulan'];
-				$row[]	= '<a href="#" class="btn-detail" data-nilai="'.$k['id_akses'].'">Details</a>';
+				$row[]	= $akuntansi;
+				$row[]	= $perpajakan;
+				$row[]	= $lainnya;
+				// $row[]	= '<a href="#" class="btn-detail" data-nilai="'.$k['id_akses'].'">Details</a>';
 				$row[]	= '
 					<a href="akses/ubah/'.$k['id_akses'].'" data-toggle="tooltip" data-placement="bottom" title="Ubah">
 						<i class="bi bi-pencil-square icon-medium"></i>
 					</a>
-					<a class="btn-hapus" data-id="'.$k['id_akses'].'" data-nama="'.$k['nama'].' tahun '.$k['tahun'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+					<a class="btn-hapus" data-id="'.$k['id_akses'].'" data-nama="'.$k['nama_klien'].' tahun '.$k['tahun'].'" data-toggle="tooltip" data-placement="bottom" title="Hapus">
 						<i class="bi bi-trash icon-medium"></i>
 					</a>';
 				
@@ -47,26 +62,26 @@
 			}
 			
 			$callback	= [
-				'draw'			=> $_POST['draw'], // Ini dari datatablenya
-				'recordsTotal'	=> $countData,
-				'recordsFiltered'=>$countData,
-				'data'			=> $data,
+				'draw'				=> $_POST['draw'], // Ini dari datatablenya
+				'recordsTotal'		=> $countData,
+				'recordsFiltered'	=> $countData,
+				'data'				=> $data,
 			];
 			echo json_encode($callback);
 		}
 		
-		public function akuntan() {
-			$akuntan	= $this->Akuntan_model->getAllAkuntan();
-			foreach($akuntan as $a => $val) {
-				if($this->Akses_model->getByAkuntan($_POST['tahun'], $val['id_user']))
-				unset($akuntan[$a]);
+		public function getKlien() {
+			$klien = $this->Klien_model->getAllKlien();
+			foreach($klien as $a => $val) {
+				if($this->Akses_model->getByKlien($_POST['tahun'], $val['id_klien']))
+				unset($klien[$a]);
 			}
 			
-			$lists = "<option value=''>--Tidak Ada Akuntan--</option>";
-			if($akuntan) {
-				$lists = "<option value=''>--Pilih Akuntan--</option>";
-				foreach($akuntan as $a) {
-					$lists .= "<option value='".$a['id_user']."'>".$a['nama']."</option>"; 
+			$lists = "<option value=''>--Tidak Ada Klien--</option>";
+			if($klien) {
+				$lists = "<option value=''>--Pilih Klien--</option>";
+				foreach($klien as $a) {
+					$lists .= "<option value='".$a['id_klien']."'>".$a['nama_klien']."</option>"; 
 				}
 			}
 			echo $lists;
@@ -75,12 +90,13 @@
 		public function tambah() {
 			$data['judul']		= 'Tambah Akses'; 
 			$data['masa']		= $this->Klien_model->getMasa();
-			$data['klien']		= $this->Klien_model->getAllKlien();
+			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
 			
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');
-			$this->form_validation->set_rules('id_akuntan', 'ID Akuntan', 'required');
-			$this->form_validation->set_rules('klien[]', 'Klien', '');
+			$this->form_validation->set_rules('id_klien', 'Klien', 'required');
+			$this->form_validation->set_rules('akuntansi[]', 'PJ Akuntansi', 'required');
+			$this->form_validation->set_rules('perpajakan[]', 'PJ Perpajakan', 'required');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akses/tambah', $data);
@@ -92,15 +108,17 @@
 		}
 		
 		public function ubah($id_akses) {
-			$data['judul']	= 'Ubah Akses Akuntan'; 
-			$data['akses']	= $this->Akses_model->getById($id_akses); 
-			$data['klien']	= $this->Klien_model->getAllKlien();
-			$data['bulan']	= $this->Klien_model->getMasa($data['akses']['masa'])['nama_bulan'];
+			$data['judul']		= 'Ubah Akses Klien'; 
+			$data['akses']		= $this->Akses_model->getById($id_akses); 
+			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
+			$data['bulan']		= $this->Klien_model->getMasa($data['akses']['masa'])['nama_bulan'];
 			
+			$this->form_validation->set_rules('id_akses', 'ID Akses', 'required');
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');
-			$this->form_validation->set_rules('id_akuntan', 'ID Akuntan', 'required');
-			$this->form_validation->set_rules('klien[]', 'Klien', '');
+			$this->form_validation->set_rules('id_klien', 'ID Akuntan', 'required');
+			$this->form_validation->set_rules('akuntansi[]', 'PJ Akuntansi', 'required');
+			$this->form_validation->set_rules('perpajakan[]', 'PJ Perpajakan', 'required');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akses/ubah', $data);

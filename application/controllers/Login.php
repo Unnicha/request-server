@@ -6,7 +6,7 @@
 			parent::__construct();
 			$this->load->library('form_validation');
 			$this->load->library('sendmail');
-			$this->load->model('Otoritas_model');
+			$this->load->model('Admin_model');
 		} 
 	
 		public function index() {
@@ -14,7 +14,7 @@
 				$this->load->view('login');
 			} 
 			else {
-				$cek	= $this->Otoritas_model->getByUsername($this->input->post('username', true));
+				$cek	= $this->Admin_model->getByUsername($this->input->post('username', true));
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($cek == null || $verify == false) {
@@ -29,7 +29,7 @@
 						'level' => $cek['level'],
 					];
 					$this->session->set_userdata($sess); // set ke session
-					$this->Otoritas_model->ubahPassword($this->input->post('password', true), $cek['id_user']); // update hashing password
+					$this->Admin_model->ubahPassword($this->input->post('password', true), $cek['id_user']); // update hashing password
 	
 					switch ($cek['level']) { // redirect ke home berdasarkan level user
 						case "admin"	: redirect('admin/home'); break;
@@ -46,7 +46,7 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->load->view('reset_password/forget_pass');
 			} else {
-				$cek = $this->Otoritas_model->getByEmail($this->input->post('email', true));
+				$cek = $this->Admin_model->getByEmail($this->input->post('email', true));
 				if($cek == null) {
 					$this->session->set_flashdata('flash', 'terkait');
 					redirect('login/forget_password');
@@ -54,7 +54,7 @@
 					//$this->sendmail->confirm($this->input->post('email']), true);
 					//$this->send_email($cek);
 					//$token = $this->m_account->insertToken($userInfo->id_user);
-					$token  = $this->Otoritas_model->insertToken($cek['id_user']);
+					$token  = $this->Admin_model->insertToken($cek['id_user']);
 					$code   = $this->base64url_encode($token);
 					$url    = base_url().'login/reset_password/token/'.$code;
 					$link   = '<a href="' . $url . '">' . $url . '</a>'; 
@@ -71,7 +71,7 @@
 		public function reset_password() {
 			$token		= $this->base64url_decode($this->uri->segment(4));
 			$cleanToken	= $this->security->xss_clean($token);
-			$user_info	= $this->Otoritas_model->validToken($cleanToken); 
+			$user_info	= $this->Admin_model->validToken($cleanToken); 
 	
 			if (!$user_info) {
 				$this->session->set_flashdata('sukses', 'Token tidak valid atau kadaluarsa');
@@ -84,7 +84,7 @@
 				if($this->form_validation->run() == FALSE) {
 					$this->load->view('reset_password/reset_password', $user_info);
 				} else {
-					$this->Otoritas_model->ubahPassword($this->input->post('password', true), $user_info['id_user']);
+					$this->Admin_model->ubahPassword($this->input->post('password', true), $user_info['id_user']);
 					$this->load->view('reset_password/reset_success');
 				}
 			}

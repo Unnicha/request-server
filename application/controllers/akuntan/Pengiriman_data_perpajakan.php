@@ -28,17 +28,15 @@
 			
 			// jika tidak ada klien dipilih, tampilkan data klien berdasarkan akses
 			if($klien == null) {
-				$id_akuntan	= $this->session->userdata('id_user');
-				$masa		= $this->Klien_model->getMasa($bulan);
-				$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
+				$klien	= [];
+				$id		= $this->session->userdata('id_user');
+				$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id, 'perpajakan');
+				$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id, 'perpajakan');
 				if( $akses ) {
-					if($masa['id_bulan'] < $akses['masa']) {
-						$akses = $this->Akses_model->getByAkuntan(($tahun-1), $id_akuntan);
+					foreach($akses as $a) {
+						$klien[] = $a['kode_klien'];
 					}
-					if( $akses ) {
-						$klien = explode(',', $akses['perpajakan']);
-					}
-				}
+				} else $klien = null;
 			}
 			
 			$limit		= $_POST['length'];
@@ -87,25 +85,18 @@
 			$bulan		= $this->input->post('bulan', true);
 			$tahun		= $this->input->post('tahun', true);
 			$id_akuntan	= $this->session->userdata('id_user');
-			$bulan		= $this->Klien_model->getMasa($bulan);
-			$akses		= $this->Akses_model->getByAkuntan($tahun, $id_akuntan);
 			
-			// tampilkan akses berdasarkan bulan yang dipilih
-			if($bulan['id_bulan'] < $akses['masa']) {
-				$akses = $this->Akses_model->getByAkuntan($tahun - 1, $id_akuntan);
-			}
-			// select option berdasarkan ada/tidaknya akses
-			if($akses == null) {
-				$lists = "<option value=''>--Tidak ada akses--</option>";
-			} else {
-				$lists		= "<option value=''>Semua Klien</option>";
-				$id_klien	= explode(",", $akses['perpajakan']);
-				foreach($id_klien as $id) {
-					$klien	= $this->Klien_model->getById($id);
-					$lists .= "<option value='".$klien['id_klien']."'>".$klien['nama_klien']."</option>"; 
+			$bulan	= $this->Klien_model->getMasa($bulan)['id_bulan'];
+			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id_akuntan, 'perpajakan');
+			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id_akuntan, 'perpajakan');
+			
+			$lists	= "<option value=''>--Tidak ada akses--</option>";
+			if( $akses ) {
+				$lists		= "<option value=''>--Semua Klien--</option>";
+				foreach($akses as $a) {
+					$lists .= "<option value='".$a['id_klien']."'>".$a['nama_klien']."</option>"; 
 				}
 			}
-			// return list option
 			echo $lists;
 		}
 		
@@ -151,7 +142,7 @@
 			
 			// tampilkan button berdasarkan status pengiriman
 			$button = '';
-			if(count($pengiriman) > 0) {
+			if(count($pengiriman)>0 && $detail['status_proses'] != 'done') {
 				if($detail['status_kirim'] != 'yes') {
 					$button = '<a href="#" class="btn btn-sm btn-primary btn-konfirm float-md-right" data-id="'.$detail['id_data'].'" data-status="yes" data-toggle="tooltip" data-placement="bottom" title="Konfirmasi kelengkapan data">Konfirmasi</a>';
 				} else {

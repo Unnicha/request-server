@@ -42,6 +42,7 @@
 					<th scope="col">Durasi</th>
 					<th scope="col">Estimasi</th>
 					<th scope="col">Status</th>
+					<th scope="col">Action</th>
 				</tr>
 			</thead>
 
@@ -75,7 +76,7 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},

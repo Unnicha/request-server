@@ -57,7 +57,7 @@
 		function gantiKlien() {
 			$.ajax({
 				type	: 'POST',
-				url		: '<?= base_url(); ?>akuntan/proses_data_perpajakan/gantiKlien',
+				url		: '<?= base_url(); ?>akuntan/proses_data_lainnya/gantiKlien',
 				data	: {
 					bulan	: $('#bulan_belum').val(), 
 					tahun	: $('#tahun_belum').val(), 
@@ -74,12 +74,12 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
-			'pageLength'	: 8,
+			'pageLength'	: 6,
 			'language'		: {
 				emptyTable	: "Belum ada proses"
 			},
 			'ajax'			: {
-				'url'	: '<?=base_url()?>akuntan/proses_data_perpajakan/page',
+				'url'	: '<?=base_url()?>akuntan/proses_data_lainnya/page',
 				'type'	: 'post',
 				'data'	: function (e) { 
 					e.klien = $('#klien_belum').val(); 
@@ -104,5 +104,21 @@
 		$('.container-fluid').on('mouseover', '[data-toggle="tooltip"]', function() {
 			$(this).tooltip();
 		})
+		
+		// Detail
+		$('#myTable_belum tbody').on('click', 'a.btn-detail', function() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>akuntan/proses_data_lainnya/detail',
+				data	: {
+					'id_data'	: $(this).data('id'),
+					'id_proses'	: $(this).data('proses'),
+				},
+				success	: function(data) {
+					$(".detailProses").modal('show');
+					$(".showProses").html(data);
+				}
+			})
+		});
 	});
 </script>

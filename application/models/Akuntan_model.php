@@ -27,7 +27,12 @@
 		}
 	
 		public function getById($id_user) {
-			return $this->db->get_where('user', ['id_user' => $id_user])->row_array();
+			if(is_array($id_user)) {
+				return $this->db->where_in('id_user', $id_user)
+								->get('user')->result_array();
+			} else {
+				return $this->db->get_where('user', ['id_user' => $id_user])->row_array();
+			}
 		}
 	
 		public function getMax($level) {

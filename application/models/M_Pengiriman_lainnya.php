@@ -74,18 +74,11 @@
 			return $id;
 		}
 		
-		public function getMaxProses($id_data) {
-			$pre = substr($id_data, 0, 9);
-			$max = $this->db->select_max('id_proses')
-							->like('id_proses', $pre)
-							->get('proses_lainnya')->row_array();
-			if($max['id_proses'] == null) {
-				$id_proses	= $pre.'001';
-			} else {
-				$tambah		= substr($max['id_proses'], -3);
-				$id_proses	= $pre.sprintf('%03s', ++$tambah);
-			}
-			return $id_proses;
+		public function getMax($id_data) {
+			return $this->db->where(['kode_data' => $id_data])
+							->order_by('id_pengiriman', 'DESC')
+							->get('pengiriman_lainnya', 1)
+							->row_array();
 		}
 		
 		public function kirim() {

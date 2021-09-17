@@ -20,36 +20,48 @@
 					<!-- <h5 class="card-title mb-3">Info Akun</h5> -->
 					<table class="table table-detail">
 						<tr>
-							<td>ID Akuntan</td>
-							<td><?= $akuntan['id_user'] ?></td>
+							<td class="detail-title">ID Akuntan</td>
+							<td id="id_user"><?= $akuntan['id_user'] ?></td>
 							<td></td>
 						</tr>
 						<tr>
-							<td>Nama Akuntan</td>
+							<td class="detail-title">Nama Akuntan</td>
 							<td><?= $akuntan['nama'] ?></td>
 							<td>
-								<a href="#" type="button" class="verif float-right" data-tipe="nama">ganti</a>
+								<a type="button" class="verif float-right" data-tipe="nama">
+									<i class="bi bi-pencil-square"></i>
+									ganti
+								</a>
 							</td>
 						</tr>
 						<tr>
-							<td>Email</td>
+							<td class="detail-title">Email</td>
 							<td><?= $akuntan['email_user'] ?></td>
 							<td>
-								<a href="#" type="button" class="verif float-right" data-tipe="email">ganti</a>
+								<a type="button" class="verif float-right" data-tipe="email">
+									<i class="bi bi-pencil-square"></i>
+									ganti
+								</a>
 							</td>
 						</tr>
 						<tr>
-							<td>Username</td>
+							<td class="detail-title">Username</td>
 							<td><?= $akuntan['username'] ?></td>
 							<td>
-								<a href="#" type="button" class="verif float-right" data-tipe="username">ganti</a>
+								<a type="button" class="verif float-right" data-tipe="username">
+									<i class="bi bi-pencil-square"></i>
+									ganti
+								</a>
 							</td>
 						</tr>
 						<tr>
-							<td>Password</td>
+							<td class="detail-title">Password</td>
 							<td><?= $akuntan['passcode'] ?></td>
 							<td>
-								<a href="#" type="button" class="verif float-right" data-tipe="password">ganti</a>
+								<a type="button" class="verif float-right" data-tipe="password">
+									<i class="bi bi-pencil-square"></i>
+									ganti
+								</a>
 							</td>
 						</tr>
 					</table>
@@ -78,7 +90,10 @@
 		function verif(tipe) {
 			$.ajax({
 				type	: 'POST',
-				data	: 'type='+tipe,
+				data	: {
+					type	: tipe,
+					id		: '<?=$this->session->userdata('id_user');?>',
+				},
 				url		: '<?= base_url(); ?>akuntan/profile/verification',
 				success	: function(data) {
 					$(".modalVerif").modal('show');

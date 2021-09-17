@@ -7,6 +7,9 @@
 		<div class="col">
 			<h4><?= $judul ?></h4>
 		</div>
+		<div class="col-auto">
+			<a href="<?=base_url('akuntan/pengiriman_data_lainnya')?>" class="btn btn-secondary mr-1">Kembali</a>
+		</div>
 	</div>
 	
 	<div class="card card-shadow">
@@ -84,12 +87,6 @@
 					<?php endif ?>
 				</tbody>
 			</table>
-		</div>
-	</div>
-	
-	<div class="row mt-4">
-		<div class="col">
-			<a href="<?=base_url('akuntan/pengiriman_data_lainnya')?>" class="btn btn-secondary mr-1">Kembali</a>
 		</div>
 	</div>
 </div>

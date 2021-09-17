@@ -73,7 +73,7 @@
 			$hari[1]	= floor($tugas['review'] / 8);				$jam[1] = $tugas['review'] % 8;
 			$hari[2]	= floor($tugas['semi_review'] / 8);			$jam[2] = $tugas['semi_review'] % 8;
 			
-			$data['judul']	= 'Ubah Data Tugas'; 
+			$data['judul']	= 'Ubah Tugas'; 
 			$data['tugas']	= $tugas;
 			$data['hari']	= $hari;
 			$data['jam']	= $jam;

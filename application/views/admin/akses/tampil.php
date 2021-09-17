@@ -5,7 +5,7 @@
 	
 	<div class="row mb-2">
 		<div class="col">
-			<h2><?=$judul?></h2>
+			<h3><?=$judul?></h3>
 		</div>
 		<div class="col-auto">
 			<a href="<?= base_url(); ?>admin/master/akses/tambah" class="btn btn-primary">
@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<div class="row pt-1 my-2">
 				<div class="col">
@@ -38,9 +38,9 @@
 					</div>
 				</div>
 				
-				<div class="col-auto mx-3">
+				<!-- <div class="col-auto mx-3">
 					<input type="text" class="form-control" name="akuntan" id="akuntan" placeholder="Cari Akuntan">
-				</div>
+				</div> -->
 			</div>
 			
 			<table id="myTable" width=100% class="table table-striped table-responsive-sm">
@@ -82,22 +82,8 @@
 <script type="text/javascript" src="<?=base_url()?>asset/js/datatables.min.js"></script>
 <script type="text/javascript" src="<?=base_url()?>asset/js/dataTables.bootstrap4.min.js"></script>
 <script>
-	$.fn.dataTable.ext.search.push(
-		function( settings, data, dataIndex ) {
-			var akuntan = $('#akuntan').val();
-			var col = data[3]; // use data for the age column
-			
-			if ( ( isNaN( akuntan ) && col.includes(akuntan) ) )
-			{
-				return true;
-			}
-			return false;
-		}
-	);
-	
 	$(document).ready(function() {
-		var notif = $('.notification').data('val');
-		if(notif == 'yes') {
+		if($('.notification').data('val') == 'yes') {
 			$('#modalNotif').modal('show');
 			setTimeout(function(){ $('#modalNotif').modal('hide'); },2000);
 		}
@@ -107,7 +93,7 @@
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
-			// 'searching'		: false,
+			'searching'		: false,
 			'pageLength'	: 8,
 			'language'		: {
 				emptyTable	: "Belum ada akses"
@@ -121,11 +107,7 @@
 					},
 			},
 		});
-		$('#myTable_filter').hide();
 		
-		$('#akuntan').keyup(function() {
-			table.draw();
-		})
 		$('#tahun').change(function() {
 			table.draw();
 		})

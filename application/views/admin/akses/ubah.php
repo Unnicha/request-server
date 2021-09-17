@@ -1,14 +1,14 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?=$judul?></h3>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col">
-			<div class="card card-round">
-				<div class="card-body p-4">
+	<div class="card card-round">
+		<div class="card-body p-4">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2">
+					<div class="row mb-4 text-center">
+						<div class="col">
+							<h3><?=$judul?></h3>
+						</div>
+					</div>
+					
 					<form action="" method="post">
 						<input type="hidden" id="id_akses" name="id_akses" value="<?=$akses['id_akses']?>">
 						<input type="hidden" id="id_klien" name="id_klien" value="<?=$akses['id_klien']?>">
@@ -96,7 +96,7 @@
 							</div>
 						</div>
 		
-						<div class="row mt-4">
+						<div class="row mt-4 text-right">
 							<div class="col">
 								<button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
 								<a href="javascript:history.go(-1)" class="btn btn-secondary"> Batal </a>

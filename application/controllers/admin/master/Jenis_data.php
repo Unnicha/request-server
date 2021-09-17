@@ -48,7 +48,7 @@
 		}
 
 		public function tambah() {
-			$data['judul']		= 'Form Tambah Jenis Data'; 
+			$data['judul']		= 'Tambah Jenis Data'; 
 			$data['kategori']	= $this->Jenis_data_model->kategori();
 			
 			$this->form_validation->set_rules('jenis_data', 'Jenis Data', 'required');
@@ -64,7 +64,7 @@
 		}
 		
 		public function ubah($kode_jenis) {
-			$data['judul']		= 'Form Ubah Jenis Data'; 
+			$data['judul']		= 'Ubah Jenis Data'; 
 			$data['jenis_data']	= $this->Jenis_data_model->getById($kode_jenis); 
 			$data['kategori']	= $this->Jenis_data_model->kategori();
 			

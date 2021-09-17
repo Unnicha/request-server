@@ -1,18 +1,18 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h4>Tambah Jenis Data</h4>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-lg-9">
-			<div class="card card-round">
-				<div class="card-body p-4">
+	<div class="card card-round card-shadow">
+		<div class="card-body p-4">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2">
+					<div class="row mb-4 text-center">
+						<div class="col">
+							<h3><?=$judul?></h3>
+						</div>
+					</div>
+					
 					<form action="" method="post"> 
 						<!-- Kategori -->
 						<div class="form-group row">
-							<label for="kategori" class="col-sm-3 col-form-label">Kategori</label> 
+							<label for="kategori" class="col-md-3 col-form-label">Kategori</label> 
 							<div class="col-sm">
 								<select name='kategori' class="form-control" id="kategori" required>
 									<option value="">-- Pilih Kategori --</option>
@@ -34,7 +34,7 @@
 						
 						<!-- Jenis Data -->
 						<div class="form-group row">
-							<label for="jenis_data" class="col-sm-3 col-form-label">
+							<label for="jenis_data" class="col-md-3 col-form-label">
 								Jenis Data
 							</label> 
 							<div class="col-sm">

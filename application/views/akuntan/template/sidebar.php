@@ -1,85 +1,101 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 pt-2 pt-md-5 d-md-block bg-light sidebar collapse">
-	<div class="sidebar-sticky pt-md-1">
-		<div class="">
-			<!-- Menu Permintaan Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span><?= $this->session->userdata('nama') ?></span>
-				</h6>
-				<div class="">
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/profile">
-						<i class="bi bi-person-fill sidebar-icon mr-1"></i>
-						Profile
-					</a>
-				</div>
-			</ul>
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 mt-4 mt-md-0 d-md-block p-0 sidebar collapse">
+	<div class="dashboard text-center">
+		HRW CONSULTING
+	</div>
+	
+	<div class="sidebar-sticky pt-0 pb-5">
+		<!-- Beranda -->
+		<a href="<?= base_url(); ?>akuntan/home" class="nav-item nav-link sidebar-subheading2 <?=($this->uri->segment(2) == 'home') ? 'active' : ''?>">
+			<i class="bi bi-house-door mr-1"></i>
+			Beranda
+		</a>
+		<div class=""></div>
+		
+		<!-- Menu Permintaan -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex align-items-center my-0">
+				Permintaan
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2 <?=($this->uri->segment(2) == 'permintaan_data_akuntansi') ? 'active' : ''?>" href="<?= base_url(); ?>akuntan/permintaan_data_akuntansi">
+				<i class="bi bi-cash-coin mr-1"></i>
+				Data Akuntansi
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/permintaan_data_perpajakan">
+				<i class="bi bi-receipt-cutoff mr-1"></i>
+				Data Perpajakan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/permintaan_data_lainnya">
+				<i class="bi bi-files mr-1"></i>
+				Data Lainnya
+			</a>
+		</ul>
 			
-			<!-- Menu Permintaan Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Permintaan Data</span>
-				</h6>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/permintaan_data_akuntansi">
-					<i class="bi bi-sidebar bi-journal-arrow-up sidebar-icon mr-1"></i>
-					Data Akuntansi
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/permintaan_data_perpajakan">
-					<i class="bi bi-sidebar bi-journal-arrow-up sidebar-icon mr-1"></i>
-					Data Perpajakan
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/permintaan_data_lainnya">
-					<i class="bi bi-sidebar bi-journal-arrow-up sidebar-icon mr-1"></i>
-					Data Lainnya
-				</a>
-			</ul>
-				
-			<!-- Menu Pengiriman Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Pengiriman Data</span>
-				</h6>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_akuntansi">
-					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
-					Data Akuntansi
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_perpajakan">
-					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
-					Data Perpajakan
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/pengiriman_data_lainnya">
-					<i class="bi bi-sidebar bi-journal-arrow-down sidebar-icon mr-1"></i>
-					Data Lainnya
-				</a>
-			</ul>
-				
-			<!-- Menu Pengiriman Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Proses Data</span>
-				</h6>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/proses_data_akuntansi">
-					<i class="bi bi-sidebar bi-clipboard-data sidebar-icon mr-1"></i>
-					Data Akuntansi
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/proses_data_perpajakan">
-					<i class="bi bi-sidebar bi-clipboard-data sidebar-icon mr-1"></i>
-					Data Perpajakan
-				</a>
-				<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>akuntan/proses_data_lainnya">
-					<i class="bi bi-sidebar bi-clipboard-data sidebar-icon mr-1"></i>
-					Data Lainnya
-				</a>
-			</ul>
+		<!-- Menu Pengiriman -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex align-items-center my-0">
+				Pengiriman
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/pengiriman_data_akuntansi">
+				<i class="bi bi-cash-coin mr-1"></i>
+				Data Akuntansi
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/pengiriman_data_perpajakan">
+				<i class="bi bi-receipt-cutoff mr-1"></i>
+				Data Perpajakan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/pengiriman_data_lainnya">
+				<i class="bi bi-files mr-1"></i>
+				Data Lainnya
+			</a>
+		</ul>
 			
-			<!-- Logout -->
-			<div class="row text-center my-3">
-				<div class="col">
-					<a href="#" class="btn btn-logout" data-toggle="modal" data-target="#logout">
-						Keluar
-						<i class="bi bi-box-arrow-right sidebar-icon ml-1"></i>
-					</a>
-				</div>
-			</div>
-		</div>
+		<!-- Menu Proses -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex align-items-center my-0">
+				Proses
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/proses_data_akuntansi">
+				<i class="bi bi-cash-coin mr-1"></i>
+				Data Akuntansi
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/proses_data_perpajakan">
+				<i class="bi bi-receipt-cutoff mr-1"></i>
+				Data Perpajakan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/proses_data_lainnya">
+				<i class="bi bi-files mr-1"></i>
+				Data Lainnya
+			</a>
+		</ul>
+		
+		<!-- Menu Laporan -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex align-items-center my-0">
+				Laporan
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/export_permintaan">
+				<i class="bi bi-journal mr-1"></i>
+				Laporan Permintaan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>akuntan/export_proses">
+				<i class="bi bi-bar-chart mr-1"></i>
+				Laporan Proses
+			</a>
+		</ul>
 	</div>
 </nav>
+
+<script>
+	$(document).ready(function() {
+		var path1	= window.location.pathname;
+		var arr1	= path1.split('/');
+		
+		$("#sidebarMenu .sidebar-subheading2").each(function() {
+			var path2	= $(this).attr('href');
+			var arr2	= path2.split('/');
+			if(arr2[5] == arr1[3]) {
+				$(this).addClass('active');
+			}
+		})
+	});
+</script>

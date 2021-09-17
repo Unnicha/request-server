@@ -4,11 +4,14 @@
 	<?php endif;
 		if($this->session->flashdata('warning')) : ?>
 		<div class="warning" data-val="yes"></div>
-	<?php endif; ?>
+	<?php endif;
+		if($this->session->flashdata('pass')) : ?>
+		<div class="passVerif" data-val="yes" data-id="<?=$this->session->flashdata('pass')?>"></div>
+	<?php endif ?>
 	
 	<div class="row mb-2">
 		<div class="col">
-			<h2><?= $judul ?></h2>
+			<h3><?= $judul ?></h3>
 		</div>
 		<div class="col-auto">
 			<a href="<?= base_url(); ?>admin/master/admin/tambah" class="btn btn-primary">
@@ -18,7 +21,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<table id="myTable" width=100% class="table table-striped table-responsive-sm mt-3">
 				<thead class="text-center">

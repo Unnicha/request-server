@@ -13,16 +13,16 @@
 	<div class="card card-shadow">
 		<div class="card-header">
 			<nav class="nav border-bottom" id="myTabs">
-				<a class="nav-link active" data-tab="all" style="color:black">
+				<a class="tab-proses nav-link active" data-tab="all" style="color:black">
 					Semua
 				</a>
-				<a class="nav-link" data-tab="todo" style="color:black">
+				<a class="tab-proses nav-link" data-tab="todo" style="color:black">
 					To Do
 				</a>
-				<a class="nav-link" data-tab="onproses" style="color:black">
+				<a class="tab-proses nav-link" data-tab="onproses" style="color:black">
 					On Proses
 				</a>
-				<a class="nav-link" data-tab="done" style="color:black">
+				<a class="tab-proses nav-link" data-tab="done" style="color:black">
 					Done
 				</a>
 			</nav>

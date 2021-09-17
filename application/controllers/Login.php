@@ -1,7 +1,7 @@
 <?php
-
+	
 	class Login extends CI_Controller {
-
+	
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
@@ -30,7 +30,7 @@
 					];
 					$this->session->set_userdata($sess); // set ke session
 					$this->Admin_model->ubahPassword($this->input->post('password', true), $cek['id_user']); // update hashing password
-	
+					
 					switch ($cek['level']) { // redirect ke home berdasarkan level user
 						case "admin"	: redirect('admin/home'); break;
 						case "akuntan"	: redirect('akuntan/home'); break;

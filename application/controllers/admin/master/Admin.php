@@ -98,7 +98,7 @@
 				if($verify == true) {
 					redirect('admin/master/admin/ubah/'.$_POST['id_user']);
 				} else {
-					$this->session->set_flashdata('pass', 'Password salah!');
+					$this->session->set_flashdata('pass', $this->input->post('id', true));
 					redirect('admin/master/admin');
 				}
 			}
@@ -106,7 +106,8 @@
 		
 		public function ubah($id_user) {
 			$data['admin']	= $this->Admin_model->getById($id_user);
-			$data['judul']	= 'Admin '.$data['admin']['nama'].' - Ubah Password';
+			$data['judul']	= 'Ubah Password';
+			$data['tipe']	= 'password';
 			
 			$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 			$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
@@ -118,7 +119,7 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->Admin_model->ubahAdmin();
 				$this->session->set_flashdata('notification', 'Password berhasil diubah!');
-				redirect('admin/master/admin/view/'.$_POST['id_user']);
+				redirect('admin/master/admin');
 			}
 		}
 		

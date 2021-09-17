@@ -8,7 +8,8 @@
 		</div>
 		
 		<form action="<?=base_url()?>klien/profile/verification" method="post">
-			<input type="hidden" id="tipe" name="tipe" value="<?=$tipe?>">
+			<input type="hidden" id="type" name="type" value="<?=$tipe?>">
+			<input type="hidden" id="id_user" name="id_user" value="<?=$id_user?>">
 			
 			<div class="form-group row">
 				<div class="col">

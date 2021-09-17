@@ -1,14 +1,14 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?=$judul?></h3>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-lg-8">
-			<div class="card card-round">
-				<div class="card-body p-4">
+	<div class="card card-round card-shadow">
+		<div class="card-body p-4">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2">
+					<div class="row mb-4 text-center">
+						<div class="col">
+							<h3><?=$judul?></h3>
+						</div>
+					</div>
+					
 					<form action="" method="post"> 
 						<!-- Kode KLU -->
 						<div class="form-group row">

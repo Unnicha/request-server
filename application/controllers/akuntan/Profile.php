@@ -26,6 +26,8 @@
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
 			$data['tipe']		= $this->input->post('type', true);
+			$data['id_user']	= $this->input->post('id', true);
+			$this->session->set_userdata('tipe', $data['tipe']);
 			
 			$this->form_validation->set_rules('password', 'Password', 'required');
 			
@@ -36,11 +38,9 @@
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($verify == true) {
-					redirect('akuntan/profile/ganti_'.$this->input->post('tipe', true)); 
+					redirect('akuntan/profile/ubah/'.$_POST['id_user']);
 				} else {
 					$this->session->set_flashdata('pass', 'Password salah!');
-					$this->session->set_flashdata('passVal', 'Password salah!');
-					$this->session->set_flashdata('tipe', $this->input->post('tipe', true));
 					redirect('akuntan/profile');
 				}
 			}
@@ -49,7 +49,7 @@
 		public function ubah($id_user) {
 			$type				= $this->session->userdata('tipe');
 			$data['akuntan']	= $this->Akuntan_model->getById($id_user);
-			$data['judul']		= 'Akuntan '.$data['akuntan']['nama'].' - Ubah '.ucwords($type);
+			$data['judul']		= 'Ubah '.ucwords($type);
 			
 			if($type == 'nama') {
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -66,10 +66,16 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->libtemplate->main('akuntan/profile/ganti_'.$tipe, $data);
 			} else {
-				$tipe = $this->session->userdata('tipe');
 				$this->Akuntan_model->ubahAkuntan();
+				$tipe = $this->session->userdata('tipe');
+				// update session user
+				if($tipe == 'nama') {
+					$this->session->set_userdata('nama', $this->input->post('nama', true));
+				} elseif($tipe == 'username') {
+					$this->session->set_userdata('username', $this->input->post('username', true));
+				}
 				$this->session->set_flashdata('notification', ucwords($tipe).' berhasil diubah!');
-				redirect('admin/master/akuntan/view/'.$_POST['id_user']);
+				redirect('akuntan/profile');
 			}
 		}
 	}

@@ -19,6 +19,7 @@
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/select2.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datatables.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/dataTables.bootstrap4.min.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/buttons.dataTables.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/responsive.bootstrap.min.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/datepicker.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/mdtimepicker.min.css') ?>">

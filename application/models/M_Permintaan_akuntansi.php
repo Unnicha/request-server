@@ -53,6 +53,17 @@
 							->get()->result_array();
 		}
 		
+		public function countDetail($id_permintaan) {
+			$all	= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan)';
+			$yes	= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan AND status_kirim = "yes")';
+			$no		= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan AND status_kirim = "no")';
+			$yet	= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan AND status_kirim IS NULL)';
+			return $this->db->select('('.$all.') AS jumAll, ('.$yes.') AS jumYes, ('.$no.') AS jumNo, ('.$yet.') AS jumNull')
+							->from('permintaan_akuntansi')
+							->where(['id_permintaan' => $id_permintaan])
+							->get()->row_array();
+		}
+		
 		public function getNew($id_klien, $bulan, $tahun) {
 			$pre	= substr($tahun, -2) . $bulan . $id_klien;
 			$max	= $this->db->select_max('id_permintaan')

@@ -40,9 +40,6 @@
 			<div class="col">
 				<p class="lead mb-0">
 					<b class="px-2">Detail Data</b>
-					<a href="<?=base_url('akuntan/permintaan_data_lainnya/edit/'.$permintaan['id_permintaan'])?>" class="btn-edit" data-toggle="tooltip" data-placement="right" title="Edit Permintaan">
-						<i class="bi bi-pencil-square" style="font-size:20px; line-height:80%"></i>
-					</a>
 				</p>
 			</div>
 		</div>

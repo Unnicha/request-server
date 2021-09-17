@@ -50,17 +50,6 @@
 							->get()->result_array();
 		}
 		
-		public function countDetail() {
-			$all	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan)';
-			$yes	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim = "yes")';
-			$no		= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim = "no")';
-			$yet	= '(SELECT COUNT(id_data) FROM data_lainnya WHERE id_request = id_permintaan AND status_kirim IS NULL)';
-			return $this->db->select('('.$all.') AS jumAll, ('.$yes.') AS jumYes, ('.$no.') AS jumNo, ('.$yet.') AS jumNull')
-							->from('permintaan_lainnya')
-							->group_by('id_permintaan')
-							->get()->result_array();
-		}
-		
 		public function getNew($id_data) { 
 			$max = $this->db->select_max('id_pengiriman')
 							->where(['kode_data' => $id_data])

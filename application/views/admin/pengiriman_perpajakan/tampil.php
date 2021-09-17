@@ -5,7 +5,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<form action="<?=base_url()?>admin/pengiriman/pengiriman_data_perpajakan/cetak" method="post" target="_blank">
 				<div class="row form-inline px-4 pt-3">

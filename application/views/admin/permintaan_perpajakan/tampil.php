@@ -9,7 +9,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<div class="row px-4 pt-3">
 				<div class="col col-sm">

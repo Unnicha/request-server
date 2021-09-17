@@ -9,7 +9,7 @@
 	
 	<div class="row mb-2">
 		<div class="col">
-			<h2><?=$judul?></h2>
+			<h3><?=$judul?></h3>
 		</div>
 	</div>
 	
@@ -20,13 +20,13 @@
 					<table class="table table-detail">
 						<tbody>
 							<tr>
-								<td><b>ID</b></td>
+								<td class="detail-title">ID</td>
 								<td><?= $admin['id_user'] ?></td>
 								<td></td>
 							</tr>
 							<tr>
-								<td><b>Nama Admin</b></td>
-								<td><?= $admin['id_user'] ?></td>
+								<td class="detail-title">Nama Admin</td>
+								<td><?= $admin['nama'] ?></td>
 								<td>
 									<a href="#" type="button" class="verif float-right" data-tipe="nama">
 										<i class="bi bi-pencil-square"></i>
@@ -35,7 +35,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><b>Email</b></td>
+								<td class="detail-title">Email</td>
 								<td><?= $admin['email_user'] ?></td>
 								<td>
 									<a href="#" type="button" class="verif float-right" data-tipe="email">
@@ -45,7 +45,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><b>Username</b></td>
+								<td class="detail-title">Username</td>
 								<td><?= $admin['username'] ?></td>
 								<td>
 									<a href="#" type="button" class="verif float-right" data-tipe="username">
@@ -55,7 +55,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><b>Password</b></td>
+								<td class="detail-title">Password</td>
 								<td><?= $admin['passcode'] ?></td>
 								<td>
 									<a href="#" type="button" class="verif float-right" data-tipe="password">

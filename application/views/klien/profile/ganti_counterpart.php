@@ -53,22 +53,3 @@
 		</div>
 	</div>
 </div>
-
-
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/select.min.js"></script>
-<script> 
-	$(document).on('change', '#kode_klu', function() {
-		var kode = $(this).find(':selected').val();
-		$.ajax({
-			type: 'POST',
-			url: '<?= base_url(); ?>admin/master/klien/pilih_klu',
-			data: 'action='+ kode,
-			success: function(data) {
-				var json = data,
-				obj = JSON.parse(json);
-				$('#bentuk_usaha').val(obj.bentuk_usaha);
-				$('#jenis_usaha').val(obj.jenis_usaha);
-			}
-		})
-	});
-</script>

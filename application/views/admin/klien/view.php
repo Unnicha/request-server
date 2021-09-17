@@ -7,16 +7,16 @@
 		<div class="passVerif" data-val="yes" data-tipe="<?=$this->session->flashdata('tipe')?>"></div>
 	<?php endif; ?>
 	
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col">
-			<h3 class="mb-3"><?=$judul?></h3>
+			<h3><?=$judul?></h3>
 		</div>
 		<div class="col-auto">
 			<a href="<?=base_url()?>admin/master/klien" class="btn btn-secondary">Kembali</a>
 		</div>
 	</div>
 	
-	<div class="card card-round card-shadow mb-4">
+	<div class="card card-shadow mb-4">
 		<div class="card-body p-4">
 			<!-- Sub-title -->
 			<h5 class="card-title">Info Akun</h5>
@@ -73,7 +73,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round card-shadow mb-4">
+	<div class="card card-shadow mb-4">
 		<div class="card-body p-4">
 			<div class="row">
 				<div class="col"><h5 class="card-title">Info Usaha</h5></div>
@@ -128,7 +128,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round card-shadow mb-4">
+	<div class="card card-shadow mb-4">
 		<div class="card-body p-4">
 			<div class="row">
 				<div class="col">
@@ -167,7 +167,7 @@
 	
 	
 	
-	<div class="card card-round card-shadow">
+	<div class="card card-shadow">
 		<div class="card-body p-4">
 			<div class="row">
 				<div class="col">

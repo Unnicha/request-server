@@ -49,7 +49,7 @@
 		}
 
 		public function tambah() {
-			$data['judul'] = 'Form Tambah Akuntan'; 
+			$data['judul'] = 'Tambah Akuntan'; 
 			$data['level'] = "akuntan";
 
 			$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -91,13 +91,13 @@
 		
 		public function ubah($id_user) {
 			$data['akuntan']	= $this->Akuntan_model->getById($id_user);
-			$data['judul']		= 'Ubah Password - Akuntan '.$data['akuntan']['nama'];
+			$data['judul']		= 'Ubah Password';
 			
 			$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 			$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
 			
 			if($this->form_validation->run() == FALSE) {
-				$this->libtemplate->main('akuntan/profile/ganti_password', $data);
+				$this->libtemplate->main('admin/akuntan/ganti_password', $data);
 			} else {
 				$this->Akuntan_model->ubahAkuntan();
 				$this->session->set_flashdata('notification', 'Password berhasil diubah!');

@@ -46,6 +46,7 @@
 						<th scope="col">Tanggal Permintaan</th>
 						<th scope="col">Jumlah Data</th>
 						<th scope="col">Requestor</th>
+						<th scope="col">Status</th>
 						<th scope="col">Detail</th>
 					</tr>
 				</thead>
@@ -119,7 +120,24 @@
 			$.ajax({
 				type	: 'POST',
 				url		: '<?= base_url(); ?>klien/permintaan_data_lainnya/detail',
-				data	: 'id='+ id,
+				data	: {
+					'id'	: $(this).data('nilai'),
+				},
+				success	: function(data) {
+					$(".modalDetail").modal('show');
+					$(".showDetail").html(data);
+				}
+			})
+		});
+		
+		// Kirim
+		$('#myTable tbody').on('click', 'a.btn-kirim', function() {
+			$.ajax({
+				type	: 'POST',
+				url		: '<?= base_url(); ?>klien/permintaan_data_lainnya/pilih',
+				data	: {
+					'id'	: $(this).data('nilai'),
+				},
 				success	: function(data) {
 					$(".modalDetail").modal('show');
 					$(".showDetail").html(data);

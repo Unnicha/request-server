@@ -54,7 +54,7 @@
 		}
 
 		public function tambah() {
-			$data['judul']				= 'Tambah Data Klien'; 
+			$data['judul']				= 'Tambah Klien'; 
 			$data['klu']				= $this->Klu_model->getAllKlu(); 
 			$data['status_pekerjaan']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['level']				= "klien";

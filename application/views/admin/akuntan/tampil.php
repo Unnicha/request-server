@@ -8,7 +8,7 @@
 	
 	<div class="row mb-2">
 		<div class="col">
-			<h2>Daftar Akuntan</h2>
+			<h3><?=$judul?></h3>
 		</div>
 		<div class="col-auto">
 			<a href="<?= base_url(); ?>admin/master/akuntan/tambah" class="btn btn-primary">
@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<table id="myTable" width=100% class="table table-striped table-responsive-sm mt-3">
 				<thead class="text-center">

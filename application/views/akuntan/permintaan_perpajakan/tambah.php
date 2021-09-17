@@ -5,7 +5,7 @@
 		</div>
 	</div>
 
-	<div class="card card-round">
+	<div class="card card-round card-shadow">
 		<div class="card-body">
 			<form action="" method="post">
 				<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">

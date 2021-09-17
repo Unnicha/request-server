@@ -33,15 +33,16 @@ $('.prevBtn').click(function() {
 
 function nextTab(n) {
 	$('.form-control').removeClass('has_error');
-	if(n == 1 && validation() == false) {
-		return false;
-	} else {
+	if(n == 1) {
+		if( validation() == false ) {
+			return false;
+		}
 		$('.form-group').removeClass('form-active');
 		$('.add-klien').removeClass('active');
-		currentTab = currentTab + n;
-		if(currentTab <= $('.add-klien').length) {
-			showTab(currentTab);
-		}
+	}
+	currentTab = currentTab + n;
+	if(currentTab <= $('.add-klien').length) {
+		showTab(currentTab);
 	}
 	showTab(currentTab);
 }
@@ -58,7 +59,8 @@ function showTab(n) {
 		$('.nextBtn').addClass('d-none');
 		$('.submitBtn').show().attr('type', 'submit');
 	} else {
-		$('.submitBtn').hide();
+		$('.nextBtn').removeClass('d-none')
+		$('.submitBtn').attr('type', 'button').hide();
 	}
 	indicator(n);
 }

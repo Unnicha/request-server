@@ -134,11 +134,13 @@
 		
 		// Batal
 		$('#myTable_selesai tbody').on('click', 'a.btn-batal', function() {
-			var id = $(this).data('nilai');
 			$.ajax({
 				type	: 'POST',
 				url		: '<?= base_url(); ?>admin/proses/proses_data_perpajakan/batal',
-				data	: 'id='+id,
+				data	: {
+					'id_data'	: $(this).data('id'),
+					'id_proses'	: $(this).data('proses'),
+				},
 				success	: function(data) {
 					$(".modalConfirm").modal('show');
 					$("#showConfirm").html(data);

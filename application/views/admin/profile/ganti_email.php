@@ -1,27 +1,23 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?=$judul?></h3>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-lg-8">
-			<div class="card card-round">
-				<div class="card-body p-4">
+	<div class="card card-round card-shadow">
+		<div class="card-body p-4">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2">
+					<div class="row mb-2 text-center">
+						<div class="col">
+							<h3><?=$judul?></h3>
+						</div>
+					</div>
+					
 					<form action="" method="post"> 
 						<input type="hidden" name="id_user" id="id_user" value="<?= $admin['id_user'] ?>">
 						
+						<?php $value = (set_value('email')) ? set_value('email') : $admin['email_user']; ?>
 						<div class="form-group row">
 							<div class="col">
-								<label for="email" class="form-label">Masukkan Email Baru</label>
-								<input type="text" name="email" class="form-control" id="email" placeholder="Email" required>
+								<label class="form-label">Masukkan Email</label>
+								<input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?=$value?>" required>
 								<small class="form-text text-danger"><?= form_error('email', '<p class="mb-0">', '</p>') ?></small>
-								<?php if($this->session->flashdata('email')) : ?>
-									<small class="form-text text-danger">
-										<?= $this->session->flashdata('email'); ?>
-									</small>
-								<?php endif; ?>
 							</div>
 						</div>
 						

@@ -89,7 +89,7 @@
 		}
 		
 		public function tambah() {
-			$data['judul']	= "Buat Permintaan Baru";
+			$data['judul']	= "Tambah Permintaan";
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Akuntansi');
 			

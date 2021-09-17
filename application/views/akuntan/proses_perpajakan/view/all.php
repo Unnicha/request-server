@@ -109,11 +109,12 @@
 
 		// Detail
 		$('#myTable_all tbody').on('click', 'a.btn-detail', function() {
-			var id = $(this).data('nilai');
 			$.ajax({
 				type	: 'POST',
 				url		: '<?= base_url(); ?>akuntan/proses_data_perpajakan/detail',
-				data	: 'id='+ id,
+				data	: {
+					id_data	: $(this).data('id'),
+				},
 				success	: function(data) {
 					$(".detailProses").modal('show');
 					$(".showProses").html(data);

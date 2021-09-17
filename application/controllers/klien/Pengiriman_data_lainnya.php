@@ -33,12 +33,23 @@
 			
 			$data = [];
 			foreach($pengiriman as $k) {
+				$detail	= $this->M_Permintaan_lainnya->countDetail($k['id_permintaan']);
+				$badge	= '';
+				if($detail['jumYes'] > 0)
+					$badge .= '<span class="badge badge-success mr-1" data-toggle="tooltip" data-placement="bottom" title="'.$detail['jumYes'].' Data Lengkap">'.$detail['jumYes'].'</span>';
+				if($detail['jumNo'] > 0)
+					$badge .= '<span class="badge badge-warning mr-1" data-toggle="tooltip" data-placement="bottom" title="'.$detail['jumNo'].' Data Belum Lengkap">'.$detail['jumNo'].'</span>';
+				if($detail['jumNull'] > 0)
+					$badge .= '<span class="badge badge-danger mr-1" data-toggle="tooltip" data-placement="bottom" title="'.$detail['jumNull'].' Data Belum Dikirim">'.$detail['jumNull'].'</span>';
+				
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $detail['jumAll'];
 				$row[]	= $k['nama'];
+				$row[]	= $badge;
 				$row[]	= '
 					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Detail">
 						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>

@@ -54,6 +54,9 @@
 				$row[]	= '
 					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
 						<i class="bi bi-info-circle-fill" style="font-size:20px; line-height:80%"></i>
+					</a>
+					<a href="permintaan_data_akuntansi/edit/'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Edit Permintaan">
+						<i class="bi bi-pencil-square icon-medium"></i>
 					</a>';
 				
 				$data[] = $row;

@@ -1,7 +1,13 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?= $judul ?></h3>
+	<div class="content-header">
+		<div class="row">
+			<div class="col">
+				<h4><?= $judul ?></h4>
+			</div>
+			
+			<div class="col-auto">
+				<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-secondary">Kembali</a>
+			</div>
 		</div>
 	</div>
 	
@@ -43,12 +49,6 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-			</div>
-			
-			<div class="row mt-3">
-				<div class="col">
-					<a href="<?=base_url()?>akuntan/proses_data_lainnya" class="btn btn-secondary">Kembali</a>
 				</div>
 			</div>
 		</div>

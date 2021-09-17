@@ -6,15 +6,11 @@
 		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?= $judul ?></h3>
-		</div>
-	</div>
+	<h3 class="mb-3"><?= $judul ?></h3>
 	
 	<div class="card card-shadow">
 		<div class="card-header">
-			<form action="<?=base_url()?>akuntan/pengiriman_data_akuntansi/export" method="post">
+			<form action="" method="post">
 				<div class="row">
 					<div class="col-sm">
 						<div class="row form-inline">
@@ -46,17 +42,6 @@
 									<option value=""> Semua Klien </option>
 								</select> 
 							</div>
-						</div>
-					</div>
-					
-					<div class="col-auto">
-						<div class="btn-group float-right" role="group" aria-label="Export">
-							<button type="submit" name="export" value="xls" class="btn btn-excel" data-toggle="tooltip" data-placement="bottom" title="Export Excel">
-								<i class="bi bi-file-earmark-spreadsheet" style="font-size:20px"></i>
-							</button>
-							<button type="submit" name="export" value="pdf" class="btn btn-pdf" data-toggle="tooltip" data-placement="bottom" title="Export PDF">
-								<i class="bi bi-file-earmark-pdf" style="font-size:20px"></i>
-							</button>
 						</div>
 					</div>
 				</div>

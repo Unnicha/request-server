@@ -6,9 +6,10 @@
 	<div class="content-header">
 		<div class="row">
 			<div class="col">
-				<h4><?= $judul ?></h4>
+				<h3><?= $judul ?></h3>
 			</div>
 			<div class="col-auto">
+				<a href="<?=base_url().$back?>" class="btn btn-secondary mr-1">Kembali</a>
 			</div>
 		</div>
 	</div>
@@ -18,7 +19,7 @@
 			<div class="card-deck">
 				<div class="card card-shadow">
 					<div class="card-body p-4">
-						<h5 class="card-title">Detail Permintaan</h5>
+						<h5 class="card-title">Overview</h5>
 						
 						<table class="table table-detail mb-0">
 							<tbody>
@@ -132,12 +133,6 @@
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col">
-			<a href="<?=base_url().$back?>" class="btn btn-secondary mr-1">Kembali</a>
 		</div>
 	</div>
 </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2021 at 05:24 AM
+-- Generation Time: Sep 15, 2021 at 05:58 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.4.16
 
@@ -29,22 +29,21 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `akses` (
   `id_akses` varchar(50) NOT NULL DEFAULT '',
-  `id_akuntan` varchar(255) DEFAULT NULL,
+  `kode_klien` varchar(20) DEFAULT NULL,
   `masa` varchar(255) DEFAULT NULL,
   `tahun` varchar(255) DEFAULT NULL,
-  `akuntansi` mediumtext DEFAULT NULL,
-  `perpajakan` mediumtext DEFAULT NULL,
-  `lainnya` mediumtext DEFAULT NULL
+  `akuntansi` varchar(50) DEFAULT NULL,
+  `perpajakan` varchar(50) DEFAULT NULL,
+  `lainnya` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `akses`
 --
 
-INSERT INTO `akses` (`id_akses`, `id_akuntan`, `masa`, `tahun`, `akuntansi`, `perpajakan`, `lainnya`) VALUES
-('202001', '2001', '05', '2020', '3002,3003', NULL, NULL),
-('212001', '2001', '05', '2021', '3002,3004', '3003', '3002,3003,3004'),
-('212002', '2002', '05', '2021', '3003,3004', '3002,3003', '3002,3003,3004');
+INSERT INTO `akses` (`id_akses`, `kode_klien`, `masa`, `tahun`, `akuntansi`, `perpajakan`, `lainnya`) VALUES
+('213002', '3002', '04', '2021', '2002', '2001', '2002'),
+('213003', '3003', '04', '2021', '2001', '2002', '2002,2003');
 
 -- --------------------------------------------------------
 
@@ -84,15 +83,11 @@ INSERT INTO `bulan` (`id_bulan`, `nama_bulan`) VALUES
 CREATE TABLE `data_akuntansi` (
   `id_data` varchar(50) NOT NULL,
   `id_jenis` varchar(50) DEFAULT NULL,
-  `format_data` varchar(255) DEFAULT NULL,
   `detail` varchar(255) DEFAULT NULL,
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `ket_file` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `ket_status` varchar(255) DEFAULT NULL,
+  `format_data` varchar(255) DEFAULT NULL,
+  `status_kirim` varchar(20) DEFAULT NULL,
+  `status_proses` varchar(20) DEFAULT NULL,
   `id_request` varchar(50) DEFAULT NULL,
-  `id_kirim` varchar(50) DEFAULT NULL,
   `id_kerja` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -100,13 +95,12 @@ CREATE TABLE `data_akuntansi` (
 -- Dumping data for table `data_akuntansi`
 --
 
-INSERT INTO `data_akuntansi` (`id_data`, `id_jenis`, `format_data`, `detail`, `tanggal_pengiriman`, `file`, `ket_file`, `status`, `ket_status`, `id_request`, `id_kirim`, `id_kerja`) VALUES
-('210730021001', '101', 'Softcopy', 'Jan - Juni', NULL, NULL, NULL, NULL, NULL, '21073002101', NULL, NULL),
-('210730021002', '102', 'Hardcopy', 'Juni', NULL, NULL, NULL, NULL, NULL, '21073002101', NULL, NULL),
-('210730021003', '104', 'Softcopy', 'Jan - Juni', NULL, NULL, NULL, NULL, NULL, '21073002101', NULL, NULL),
-('210730031001', '101', 'Softcopy', 'Juni', '09-07-2021 13:19', 'yosi.pdf', '', '3', '', '21073003101', '2107300310101', '210730031001'),
-('210730031002', '102', 'Softcopy', 'Juni', NULL, NULL, NULL, NULL, NULL, '21073003101', NULL, NULL),
-('210730031003', '104', 'Hardcopy', 'Juni', '09-07-2021 13:19', '12-07-2021', '', '1', NULL, '21073003101', '2107300310101', NULL);
+INSERT INTO `data_akuntansi` (`id_data`, `id_jenis`, `detail`, `format_data`, `status_kirim`, `status_proses`, `id_request`, `id_kerja`) VALUES
+('2109300210101', '101', 'Agustus', 'Softcopy', 'yes', NULL, '21093002101', NULL),
+('2109300210102', '102', 'Agustus', 'Hardcopy', 'yes', 'done', '21093002101', NULL),
+('2109300210103', '104', 'Agustus', 'Hardcopy', 'yes', NULL, '21093002101', NULL),
+('2109300510101', '101', 'Jan - Juni', 'Softcopy', NULL, NULL, '21093005101', NULL),
+('2109300210201', '101', 'Jan - Juni', 'Softcopy', 'no', NULL, '21093002102', NULL);
 
 -- --------------------------------------------------------
 
@@ -122,12 +116,19 @@ CREATE TABLE `data_lainnya` (
   `tanggal_pengiriman` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `ket_file` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `ket_status` varchar(255) DEFAULT NULL,
+  `status_kirim` varchar(20) DEFAULT NULL,
+  `status_proses` varchar(20) DEFAULT NULL,
   `id_request` varchar(50) DEFAULT NULL,
   `id_kirim` varchar(50) DEFAULT NULL,
   `id_kerja` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `data_lainnya`
+--
+
+INSERT INTO `data_lainnya` (`id_data`, `id_jenis`, `format_data`, `detail`, `tanggal_pengiriman`, `file`, `ket_file`, `status_kirim`, `status_proses`, `id_request`, `id_kirim`, `id_kerja`) VALUES
+('2109300210101', '301', 'Hardcopy', '2020', NULL, NULL, NULL, NULL, NULL, '21093002101', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -143,12 +144,22 @@ CREATE TABLE `data_perpajakan` (
   `tanggal_pengiriman` varchar(255) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `ket_file` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `ket_status` varchar(255) DEFAULT NULL,
+  `status_kirim` varchar(20) DEFAULT NULL,
+  `status_proses` varchar(20) DEFAULT NULL,
   `id_request` varchar(50) DEFAULT NULL,
   `id_kirim` varchar(50) DEFAULT NULL,
   `id_kerja` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `data_perpajakan`
+--
+
+INSERT INTO `data_perpajakan` (`id_data`, `id_jenis`, `format_data`, `detail`, `tanggal_pengiriman`, `file`, `ket_file`, `status_kirim`, `status_proses`, `id_request`, `id_kirim`, `id_kerja`) VALUES
+('2108300210101', '201', 'Hardcopy', 'Juli', NULL, NULL, NULL, NULL, NULL, '21083002101', NULL, NULL),
+('2108300210102', '203', 'Hardcopy', 'Juli', NULL, NULL, NULL, NULL, NULL, '21083002101', NULL, NULL),
+('2109300310101', '201', 'Softcopy', 'Agustus', NULL, NULL, NULL, NULL, NULL, '21093003101', NULL, NULL),
+('2109300310102', '203', 'Hardcopy', 'Agustus', NULL, NULL, NULL, NULL, NULL, '21093003101', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -169,12 +180,10 @@ CREATE TABLE `jenis_data` (
 INSERT INTO `jenis_data` (`kode_jenis`, `jenis_data`, `kategori`) VALUES
 ('101', 'Data Pembelian', 'Data Akuntansi'),
 ('102', 'Data Penjualan', 'Data Akuntansi'),
-('104', 'sdaaxas', 'Data Akuntansi'),
+('104', 'Kas', 'Data Akuntansi'),
 ('105', 'saxxaa', 'Data Akuntansi'),
 ('106', 'aaadcsaa', 'Data Akuntansi'),
 ('108', 'ssdas', 'Data Akuntansi'),
-('110', 'saxxaa', 'Data Akuntansi'),
-('111', 'aaadcsaa', 'Data Akuntansi'),
 ('201', 'Data Gaji Bulanan', 'Data Perpajakan'),
 ('202', 'Data Gaji Tahunan', 'Data Perpajakan'),
 ('203', 'BPJS', 'Data Perpajakan'),
@@ -195,7 +204,7 @@ CREATE TABLE `klien` (
   `kode_klu` varchar(255) DEFAULT NULL,
   `alamat` varchar(255) DEFAULT NULL,
   `telp` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `email_klien` varchar(255) DEFAULT NULL,
   `no_hp` varchar(255) DEFAULT NULL,
   `no_akte` varchar(255) DEFAULT NULL,
   `status_pekerjaan` varchar(255) DEFAULT NULL,
@@ -212,10 +221,11 @@ CREATE TABLE `klien` (
 -- Dumping data for table `klien`
 --
 
-INSERT INTO `klien` (`id_klien`, `nama_klien`, `nama_usaha`, `kode_klu`, `alamat`, `telp`, `email`, `no_hp`, `no_akte`, `status_pekerjaan`, `nama_pimpinan`, `no_hp_pimpinan`, `email_pimpinan`, `jabatan`, `nama_counterpart`, `no_hp_counterpart`, `email_counterpart`) VALUES
-('3002', 'PT. Dermaga Baru', 'Toko Baju Dermaga', '102', 'Jakarta', '02147239', 'admin@dermaga.com', '08322396277', '4753489230393847', 'Review', 'Mandra', '088456829832', 'mandraguna@dermaga.com', 'Founder', 'Asih', '089324723779', 'kasihan@dermaga.com'),
+INSERT INTO `klien` (`id_klien`, `nama_klien`, `nama_usaha`, `kode_klu`, `alamat`, `telp`, `email_klien`, `no_hp`, `no_akte`, `status_pekerjaan`, `nama_pimpinan`, `no_hp_pimpinan`, `email_pimpinan`, `jabatan`, `nama_counterpart`, `no_hp_counterpart`, `email_counterpart`) VALUES
+('3002', 'PT. Dermaga Asia', 'Toko Baju Dermaga', '102', 'Jakarta', '02147239', 'admin@dermagasia.com', '08322396277', '4753489230393847', 'Review', 'Mandra', '088456829832', 'mandraguna@dermaga.com', 'Founder', 'Asih', '089324723779', 'kasihan@dermaga.com'),
 ('3003', 'PT. Apa Hayoo', 'Toko Apaya', '103', 'Jakarta', '0214839237', 'tax@apahayo.com', '08977779378338', '4056964532345', 'Accounting Service', 'Andra', '0833793019380', 'andra@apahayo.com', 'Founder', 'Mina', '0897785678967', 'mina@apahayo.com'),
-('3004', 'PT. Melawai Gemilang', 'Optik Melawai', '108', 'Jakarta Selatan', '0219837412', 'optikmelawai@gmail.com', '081237463890', '8937988126739', 'Accounting Service', 'Ratna', '081265735671', 'ratna@gmail.com', 'Founder & CEO', 'Melisa', '08217391764', 'melisa@gmail.com');
+('3004', 'PT. Melawai Gemilang', 'Optik Melawai', '108', 'Jakarta Selatan', '0219837412', 'optikmelawai@gmail.com', '081237463890', '8937988126739', 'Accounting Service', 'Ratna', '081265735671', 'ratna@gmail.com', 'Founder & CEO', 'Melisa', '08217391764', 'melisa@gmail.com'),
+('3005', 'CV. Rekayasa', 'Toko Rekayasa', '101', 'Jakarta Barat', '021983741232', 'admin.rekayasa@gmail.com', '081237463890', '8937988126739', 'Review', 'Reka', '081265735671', 'reka@gmail.com', 'Founder & CEO', 'Yasa', '08217391764', 'yasa@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -264,16 +274,24 @@ INSERT INTO `klu` (`kode_klu`, `bentuk_usaha`, `jenis_usaha`) VALUES
 
 CREATE TABLE `pengiriman_akuntansi` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `id_request` varchar(50) DEFAULT NULL
+  `pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `ket_pengiriman` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `pengiriman_akuntansi`
 --
 
-INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `pembetulan`, `id_request`) VALUES
-('2107300310101', '01', '21073003101');
+INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `pengiriman`, `tanggal_pengiriman`, `file`, `ket_pengiriman`, `kode_data`) VALUES
+('210930021010101', '01', '02-09-2021 09:36', 'ESTIMASI PER DES 2019 - 24.04.2020.xlsx', 'tanggal 1-15', '2109300210101'),
+('210930021010102', '02', '02-09-2021 09:36', 'data admin(3).xlsx', 'sisanya', '2109300210101'),
+('210930021010201', '01', '02-09-2021 09:37', '06-09-2021', '', '2109300210102'),
+('210930021010202', '02', '02-09-2021 09:37', '08-09-2021', '', '2109300210102'),
+('210930021010301', '01', '02-09-2021 17:24', '02-09-2021', '', '2109300210103'),
+('210930021020101', '01', '13-09-2021 15:10', 'Permintaan Data Perpajakan April 2021 (1).xlsx', '', '2109300210201');
 
 -- --------------------------------------------------------
 
@@ -283,9 +301,12 @@ INSERT INTO `pengiriman_akuntansi` (`id_pengiriman`, `pembetulan`, `id_request`)
 
 CREATE TABLE `pengiriman_lainnya` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `id_request` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+  `pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `ket_pengiriman` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -295,9 +316,12 @@ CREATE TABLE `pengiriman_lainnya` (
 
 CREATE TABLE `pengiriman_perpajakan` (
   `id_pengiriman` varchar(50) NOT NULL DEFAULT '',
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `id_request` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+  `pengiriman` varchar(255) DEFAULT NULL,
+  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `ket_pengiriman` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -312,6 +336,7 @@ CREATE TABLE `permintaan_akuntansi` (
   `bulan` varchar(255) DEFAULT NULL,
   `tahun` varchar(255) DEFAULT NULL,
   `request` varchar(255) DEFAULT NULL,
+  `jum_data` varchar(10) DEFAULT NULL,
   `id_pengirim` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -319,9 +344,10 @@ CREATE TABLE `permintaan_akuntansi` (
 -- Dumping data for table `permintaan_akuntansi`
 --
 
-INSERT INTO `permintaan_akuntansi` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `id_pengirim`) VALUES
-('21073002101', '07-07-2021 14:11', '3002', '07', '2021', '01', '1001'),
-('21073003101', '09-07-2021 12:10', '3003', '07', '2021', '01', '2002');
+INSERT INTO `permintaan_akuntansi` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `jum_data`, `id_pengirim`) VALUES
+('21093002101', '02-09-2021 09:33', '3002', '09', '2021', '01', NULL, '2002'),
+('21093002102', '09-09-2021 16:53', '3002', '09', '2021', '02', NULL, '2002'),
+('21093005101', '09-09-2021 10:16', '3005', '09', '2021', '01', NULL, '1001');
 
 -- --------------------------------------------------------
 
@@ -336,11 +362,15 @@ CREATE TABLE `permintaan_lainnya` (
   `bulan` varchar(255) DEFAULT NULL,
   `tahun` varchar(255) DEFAULT NULL,
   `request` varchar(255) DEFAULT NULL,
-  `kode_jenis` mediumtext DEFAULT NULL,
-  `format_data` mediumtext DEFAULT NULL,
-  `detail` mediumtext DEFAULT NULL,
   `id_pengirim` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `permintaan_lainnya`
+--
+
+INSERT INTO `permintaan_lainnya` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `id_pengirim`) VALUES
+('21093002101', '09-09-2021 17:00', '3002', '09', '2021', '01', '2002');
 
 -- --------------------------------------------------------
 
@@ -355,11 +385,16 @@ CREATE TABLE `permintaan_perpajakan` (
   `bulan` varchar(255) DEFAULT NULL,
   `tahun` varchar(255) DEFAULT NULL,
   `request` varchar(255) DEFAULT NULL,
-  `kode_jenis` varchar(255) DEFAULT NULL,
-  `detail` mediumtext DEFAULT NULL,
-  `format_data` varchar(255) DEFAULT NULL,
   `id_pengirim` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `permintaan_perpajakan`
+--
+
+INSERT INTO `permintaan_perpajakan` (`id_permintaan`, `tanggal_permintaan`, `id_klien`, `bulan`, `tahun`, `request`, `id_pengirim`) VALUES
+('21083002101', '23-08-2021 11:41', '3002', '08', '2021', '01', '2002'),
+('21093003101', '01-09-2021 17:07', '3003', '09', '2021', '01', '2002');
 
 -- --------------------------------------------------------
 
@@ -372,9 +407,8 @@ CREATE TABLE `proses_akuntansi` (
   `tanggal_proses` varchar(50) DEFAULT NULL,
   `tanggal_mulai` varchar(50) DEFAULT NULL,
   `tanggal_selesai` varchar(50) DEFAULT NULL,
-  `temp_mulai` varchar(50) DEFAULT NULL,
-  `temp_selesai` varchar(50) DEFAULT NULL,
   `ket_proses` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(20) DEFAULT NULL,
   `id_akuntan` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -382,8 +416,11 @@ CREATE TABLE `proses_akuntansi` (
 -- Dumping data for table `proses_akuntansi`
 --
 
-INSERT INTO `proses_akuntansi` (`id_proses`, `tanggal_proses`, `tanggal_mulai`, `tanggal_selesai`, `temp_mulai`, `temp_selesai`, `ket_proses`, `id_akuntan`) VALUES
-('210730031001', '09-07-2021 14:27', '09/07/2021 10:30', NULL, NULL, NULL, '', '2002');
+INSERT INTO `proses_akuntansi` (`id_proses`, `tanggal_proses`, `tanggal_mulai`, `tanggal_selesai`, `ket_proses`, `kode_data`, `id_akuntan`) VALUES
+('210930021010101', '02-09-2021 10:16', '02/09/2021 10:00', '06/09/2021 17:00', NULL, '2109300210101', '2002'),
+('210930021010102', '06-09-2021 10:01', '06/09/2021 09:00', '06/09/2021 15:25', NULL, '2109300210101', '2002'),
+('210930021010201', '02-09-2021 16:40', '02/09/2021 13:00', '06/09/2021 09:23', NULL, '2109300210102', '2002'),
+('210930021010202', '06-09-2021 10:35', '06/09/2021 10:35', '10/09/2021 09:15', NULL, '2109300210102', '2002');
 
 -- --------------------------------------------------------
 
@@ -393,14 +430,13 @@ INSERT INTO `proses_akuntansi` (`id_proses`, `tanggal_proses`, `tanggal_mulai`, 
 
 CREATE TABLE `proses_lainnya` (
   `id_proses` varchar(50) NOT NULL DEFAULT '',
-  `tanggal_proses` varchar(255) DEFAULT NULL,
+  `tanggal_proses` varchar(50) DEFAULT NULL,
   `tanggal_mulai` varchar(50) DEFAULT NULL,
   `tanggal_selesai` varchar(50) DEFAULT NULL,
-  `temp_mulai` varchar(50) DEFAULT NULL,
-  `temp_selesai` varchar(50) DEFAULT NULL,
   `ket_proses` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(20) DEFAULT NULL,
   `id_akuntan` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -410,14 +446,13 @@ CREATE TABLE `proses_lainnya` (
 
 CREATE TABLE `proses_perpajakan` (
   `id_proses` varchar(50) NOT NULL DEFAULT '',
-  `tanggal_proses` varchar(255) DEFAULT NULL,
+  `tanggal_proses` varchar(50) DEFAULT NULL,
   `tanggal_mulai` varchar(50) DEFAULT NULL,
   `tanggal_selesai` varchar(50) DEFAULT NULL,
-  `temp_mulai` varchar(50) DEFAULT NULL,
-  `temp_selesai` varchar(50) DEFAULT NULL,
   `ket_proses` varchar(255) DEFAULT NULL,
+  `kode_data` varchar(20) DEFAULT NULL,
   `id_akuntan` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -454,190 +489,6 @@ CREATE TABLE `token` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `trash_pengiriman_akuntansi`
---
-
-CREATE TABLE `trash_pengiriman_akuntansi` (
-  `idt_pengiriman` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_pengiriman` varchar(255) DEFAULT NULL,
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `tanggal_ambil` varchar(255) DEFAULT NULL,
-  `keterangan2` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `id_disposer2` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_pengiriman_lainnya`
---
-
-CREATE TABLE `trash_pengiriman_lainnya` (
-  `idt_pengiriman` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_pengiriman` varchar(255) DEFAULT NULL,
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `tanggal_ambil` varchar(255) DEFAULT NULL,
-  `keterangan2` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `id_disposer2` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_pengiriman_perpajakan`
---
-
-CREATE TABLE `trash_pengiriman_perpajakan` (
-  `idt_pengiriman` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_pengiriman` varchar(255) DEFAULT NULL,
-  `tanggal_pengiriman` varchar(255) DEFAULT NULL,
-  `pembetulan` varchar(255) DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `tanggal_ambil` varchar(255) DEFAULT NULL,
-  `keterangan2` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `id_disposer2` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_permintaan_akuntansi`
---
-
-CREATE TABLE `trash_permintaan_akuntansi` (
-  `idt_permintaan` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `tanggal_permintaan` varchar(255) DEFAULT NULL,
-  `masa` varchar(255) DEFAULT NULL,
-  `tahun` varchar(255) DEFAULT NULL,
-  `format_data` varchar(255) DEFAULT NULL,
-  `request` varchar(255) DEFAULT NULL,
-  `keterangan` varchar(255) DEFAULT NULL,
-  `kode_jenis` varchar(255) DEFAULT NULL,
-  `id_klien` varchar(255) DEFAULT NULL,
-  `id_pengirim` varchar(255) DEFAULT NULL,
-  `id_disposer` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_permintaan_lainnya`
---
-
-CREATE TABLE `trash_permintaan_lainnya` (
-  `idt_permintaan` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `tanggal_permintaan` varchar(255) DEFAULT NULL,
-  `masa` varchar(255) DEFAULT NULL,
-  `tahun` varchar(255) DEFAULT NULL,
-  `format_data` varchar(255) DEFAULT NULL,
-  `request` varchar(255) DEFAULT NULL,
-  `keterangan` varchar(255) DEFAULT NULL,
-  `kode_jenis` varchar(255) DEFAULT NULL,
-  `id_klien` varchar(255) DEFAULT NULL,
-  `id_pengirim` varchar(255) DEFAULT NULL,
-  `id_disposer` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_permintaan_perpajakan`
---
-
-CREATE TABLE `trash_permintaan_perpajakan` (
-  `idt_permintaan` varchar(50) NOT NULL,
-  `tanggal_hapus` varchar(255) DEFAULT NULL,
-  `id_permintaan` varchar(255) DEFAULT NULL,
-  `tanggal_permintaan` varchar(255) DEFAULT NULL,
-  `masa` varchar(255) DEFAULT NULL,
-  `tahun` varchar(255) DEFAULT NULL,
-  `format_data` varchar(255) DEFAULT NULL,
-  `request` varchar(255) DEFAULT NULL,
-  `keterangan` varchar(255) DEFAULT NULL,
-  `kode_jenis` varchar(255) DEFAULT NULL,
-  `id_klien` varchar(255) DEFAULT NULL,
-  `id_pengirim` varchar(255) DEFAULT NULL,
-  `id_disposer` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_proses_akuntansi`
---
-
-CREATE TABLE `trash_proses_akuntansi` (
-  `idt_proses` varchar(50) NOT NULL,
-  `tanggal_cancel` varchar(255) DEFAULT NULL,
-  `id_proses` varchar(255) DEFAULT NULL,
-  `tanggal_proses` varchar(255) DEFAULT NULL,
-  `tanggal_mulai` varchar(255) DEFAULT NULL,
-  `tanggal_selesai` varchar(255) DEFAULT NULL,
-  `ket_proses` varchar(255) DEFAULT NULL,
-  `id_data` varchar(50) DEFAULT NULL,
-  `id_disposer3` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_proses_lainnya`
---
-
-CREATE TABLE `trash_proses_lainnya` (
-  `idt_proses` varchar(50) NOT NULL,
-  `tanggal_cancel` varchar(255) DEFAULT NULL,
-  `id_proses` varchar(255) DEFAULT NULL,
-  `tanggal_proses` varchar(255) DEFAULT NULL,
-  `tanggal_mulai` varchar(255) DEFAULT NULL,
-  `jam_mulai` varchar(255) DEFAULT NULL,
-  `tanggal_selesai` varchar(255) DEFAULT NULL,
-  `jam_selesai` varchar(255) DEFAULT NULL,
-  `keterangan3` varchar(255) DEFAULT NULL,
-  `id_tugas` varchar(255) DEFAULT NULL,
-  `id_kirim` varchar(255) DEFAULT NULL,
-  `id_akuntan` varchar(255) DEFAULT NULL,
-  `id_disposer3` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `trash_proses_perpajakan`
---
-
-CREATE TABLE `trash_proses_perpajakan` (
-  `idt_proses` varchar(50) NOT NULL,
-  `tanggal_cancel` varchar(255) DEFAULT NULL,
-  `id_proses` varchar(255) DEFAULT NULL,
-  `tanggal_mulai` varchar(255) DEFAULT NULL,
-  `jam_mulai` varchar(255) DEFAULT NULL,
-  `tanggal_selesai` varchar(255) DEFAULT NULL,
-  `jam_selesai` varchar(255) DEFAULT NULL,
-  `keterangan3` varchar(255) DEFAULT NULL,
-  `id_tugas` varchar(255) DEFAULT NULL,
-  `id_kirim` varchar(255) DEFAULT NULL,
-  `id_akuntan` varchar(255) DEFAULT NULL,
-  `id_disposer3` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tugas`
 --
 
@@ -656,8 +507,8 @@ CREATE TABLE `tugas` (
 
 INSERT INTO `tugas` (`kode_tugas`, `nama_tugas`, `accounting_service`, `review`, `semi_review`, `id_jenis`) VALUES
 ('10101', 'Pengeluaran', '100', '64', '82', '101'),
-('10401', 'ada', '100', '88', '72', '104'),
-('10501', 'a', '96', '64', '80', '105');
+('10201', 'Pemasukan', '160', '112', '136', '102'),
+('10401', 'ada', '100', '88', '72', '104');
 
 -- --------------------------------------------------------
 
@@ -681,14 +532,15 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `passlength`, `level`, `nama`, `email_user`, `confirmed`) VALUES
-('1001', 'adminzzz', '$2y$10$Lf.jHlbeQMn.JakyBlWwD.Bqaaj/SL34aZY6aWWSgFenQr6MYvi9W', '8', 'admin', 'Admin', 'admin@gmail.com', NULL),
-('1002', 'cacamerica', '$2y$10$9aADr4izFzt4IQVDUZ0D6u0KwG4jNGrOZ5GeVlcR72ScOHBr1Z8L.', '10', 'admin', 'Caca', 'caca2@gmail.com', NULL),
+('1001', 'admin_data', '$2y$10$rdHqMJE8/qTWvQs6ZwMBGOWwxuTBTz8a3152JfnpdN3H3VqRU6Qlm', '9', 'admin', 'Administrator', 'admin-data@gmail.com', NULL),
+('1002', 'unnicha23', '$2y$10$3TzGnvqv7YpFEz3U6vDRseOTqmwAKell5ap.AtYCXj4znuPkACY7S', '10', 'admin', 'Khansa', 'unnicha23@gmail.com', NULL),
 ('2001', 'ayularasati', '$2y$10$uq0LZMpg9ylrhkltn5gaLOE6DSQEiQym9udw/3xBiSheF2Vk8Mvwe', '8', 'akuntan', 'Ayu Kartika Putri', 'ayukartika@gmail.com', ''),
-('2002', 'iamjunet', '$2y$10$4Ob6y1I0PUhKaY9fRh6qdegxeMy85OG2OluCWhSGpwBU4sUnEcUpq', '11', 'akuntan', 'Adit Junaedi', 'junaedi.adit@gmail.com', ''),
-('2003', 'denicool', '$2y$10$s3UtGxffanpArgPV7TSJtOHeRdLiiBMY2hX/hyO4qLmqpmKqWl1.i', '8', 'akuntan', 'Deni', 'deni@gmail.com', ''),
-('3002', 'dermaga1', '$2y$10$BqMdiX95Ap/qkt9SdR2g5.1MF0SiXIFGlDFluxqCNnwxqLLlqXaCy', '8', 'klien', 'PT. Dermaga Jaya', 'admin@dermaga.com', ''),
+('2002', 'hanalestarii', '$2y$10$yvW8VeAUMcGIHGYTeT38FePlMci8FZmpf5z4g2Cd/x1ZrQAt7kzpO', '9', 'akuntan', 'Hana Lestari', 'hanalestari@gmail.com', ''),
+('2003', 'denicool', '$2y$10$/JtEhxMy6WruyVtL.x5dT.5lAFTNgjKozawkhINWkOrfnb8nSljMa', '8', 'akuntan', 'Deni', 'deni@gmail.com', ''),
+('3002', 'dermagajaya', '$2y$10$uLPpG13MhbFsyqRi7BKXSOlgtlQClpXV4iTOr7CQ1qyq2WnqyH.zy', '11', 'klien', 'PT. Dermaga Asia', 'admin@dermagasia.com', ''),
 ('3003', 'apahayoo', '$2y$10$S23m20uHdSBcOiE3thSZAeKuq3467Ni83J1s/yYP77mQJ7Be/mRt.', '10', 'klien', 'PT. Apa Aja Bole', 'accounting@apahayoo.com', ''),
-('3004', 'melawaigemilang', '$2y$10$ePhltG0wMk6xmZoVjhAmMO7UjI4vBRWvZPbYwuzJr2UyARDHh.GzO', '8', 'klien', 'PT. Melawai Gemilang', 'optikmelawai@gmail.com', '');
+('3004', 'melawaigemilang', '$2y$10$ePhltG0wMk6xmZoVjhAmMO7UjI4vBRWvZPbYwuzJr2UyARDHh.GzO', '8', 'klien', 'PT. Melawai Gemilang', 'optikmelawai@gmail.com', ''),
+('3005', 'yasareka', '$2y$10$pS5OakHjF698fEoIw2/WU.xZxCDFhae/kbjkxzcUjG9qbztSYytCm', '8', 'klien', 'CV. Rekayasa', 'admin.rekayasa@gmail.com', NULL);
 
 --
 -- Indexes for dumped tables
@@ -731,51 +583,15 @@ ALTER TABLE `pengiriman_akuntansi`
   ADD PRIMARY KEY (`id_pengiriman`);
 
 --
--- Indexes for table `pengiriman_lainnya`
---
-ALTER TABLE `pengiriman_lainnya`
-  ADD PRIMARY KEY (`id_pengiriman`);
-
---
--- Indexes for table `pengiriman_perpajakan`
---
-ALTER TABLE `pengiriman_perpajakan`
-  ADD PRIMARY KEY (`id_pengiriman`);
-
---
 -- Indexes for table `permintaan_akuntansi`
 --
 ALTER TABLE `permintaan_akuntansi`
   ADD PRIMARY KEY (`id_permintaan`);
 
 --
--- Indexes for table `permintaan_lainnya`
---
-ALTER TABLE `permintaan_lainnya`
-  ADD PRIMARY KEY (`id_permintaan`);
-
---
--- Indexes for table `permintaan_perpajakan`
---
-ALTER TABLE `permintaan_perpajakan`
-  ADD PRIMARY KEY (`id_permintaan`);
-
---
 -- Indexes for table `proses_akuntansi`
 --
 ALTER TABLE `proses_akuntansi`
-  ADD PRIMARY KEY (`id_proses`);
-
---
--- Indexes for table `proses_lainnya`
---
-ALTER TABLE `proses_lainnya`
-  ADD PRIMARY KEY (`id_proses`);
-
---
--- Indexes for table `proses_perpajakan`
---
-ALTER TABLE `proses_perpajakan`
   ADD PRIMARY KEY (`id_proses`);
 
 --
@@ -789,60 +605,6 @@ ALTER TABLE `status_pekerjaan`
 --
 ALTER TABLE `token`
   ADD PRIMARY KEY (`token`);
-
---
--- Indexes for table `trash_pengiriman_akuntansi`
---
-ALTER TABLE `trash_pengiriman_akuntansi`
-  ADD PRIMARY KEY (`idt_pengiriman`);
-
---
--- Indexes for table `trash_pengiriman_lainnya`
---
-ALTER TABLE `trash_pengiriman_lainnya`
-  ADD PRIMARY KEY (`idt_pengiriman`);
-
---
--- Indexes for table `trash_pengiriman_perpajakan`
---
-ALTER TABLE `trash_pengiriman_perpajakan`
-  ADD PRIMARY KEY (`idt_pengiriman`);
-
---
--- Indexes for table `trash_permintaan_akuntansi`
---
-ALTER TABLE `trash_permintaan_akuntansi`
-  ADD PRIMARY KEY (`idt_permintaan`);
-
---
--- Indexes for table `trash_permintaan_lainnya`
---
-ALTER TABLE `trash_permintaan_lainnya`
-  ADD PRIMARY KEY (`idt_permintaan`);
-
---
--- Indexes for table `trash_permintaan_perpajakan`
---
-ALTER TABLE `trash_permintaan_perpajakan`
-  ADD PRIMARY KEY (`idt_permintaan`);
-
---
--- Indexes for table `trash_proses_akuntansi`
---
-ALTER TABLE `trash_proses_akuntansi`
-  ADD PRIMARY KEY (`idt_proses`);
-
---
--- Indexes for table `trash_proses_lainnya`
---
-ALTER TABLE `trash_proses_lainnya`
-  ADD PRIMARY KEY (`idt_proses`);
-
---
--- Indexes for table `trash_proses_perpajakan`
---
-ALTER TABLE `trash_proses_perpajakan`
-  ADD PRIMARY KEY (`idt_proses`);
 
 --
 -- Indexes for table `tugas`

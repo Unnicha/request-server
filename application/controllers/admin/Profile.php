@@ -68,6 +68,7 @@
 			} else {
 				$this->Admin_model->ubahAdmin();
 				$tipe = $this->session->userdata('tipe');
+				// update session user
 				if($tipe == 'nama') {
 					$this->session->set_userdata('nama', $this->input->post('nama', true));
 				} elseif($tipe == 'username') {

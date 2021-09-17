@@ -25,7 +25,7 @@
 						</tr>
 						<tr>
 							<td scope="row">Jumlah data</td>
-							<td><?= $permintaan['jum_data'] ?></td>
+							<td><?= $permintaan['jumData'] ?></td>
 						</tr>
 						<tr>
 							<td scope="row">Requestor</td>
@@ -64,10 +64,12 @@
 					<td><?=$val['detail']?></td>
 					<td><?=$val['format_data']?></td>
 					<td><?=$badge[$d]?></td>
-					<td style="font-size:18px; line-height:80%">
-						<a href="<?=base_url($link.$val['id_data'])?>" data-toggle="tooltip" data-placement="bottom" title="Lihat History Pengiriman">
+					<td class="icon-medium">
+						<?php if($val['status_kirim'] != 'yes') : ?>
+						<a href="<?=base_url($link.$val['id_data'])?>" data-toggle="tooltip" data-placement="bottom" title="Kirim Data">
 							<i class="bi bi-cursor-fill"></i>
 						</a>
+						<?php endif; ?>
 					</td>
 				</tr>
 					<?php endforeach ?>

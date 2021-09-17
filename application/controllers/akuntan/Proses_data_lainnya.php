@@ -251,14 +251,14 @@
 		
 		public function detail() {
 			$pengiriman	= $this->M_Pengiriman->getById($_REQUEST['id_data']);
-			$status		= $this->session->userdata('status');
-			$stat		= strtolower($pengiriman['status_pekerjaan']);
 			$last		= $this->M_Pengiriman->getMax($_REQUEST['id_data']);
 			
 			if( $pengiriman['status_proses'] == 'done' ) {
-				$pengiriman['badge']	= '<span class="badge badge-success">Selesai</span>';
+				$pengiriman['badge'] = '<span class="badge badge-success">Selesai</span>';
+			} else if( $pengiriman['status_proses'] == 'yet' ) {
+				$pengiriman['badge'] = '<span class="badge badge-warning">On Process</span>';
 			} else {
-				$pengiriman['badge']	= '<span class="badge badge-warning">Belum Selesai</span>';
+				$pengiriman['badge'] = '<span class="badge badge-danger">Belum Selesai</span>';
 			}
 			
 			$add	= [];
@@ -279,12 +279,11 @@
 				$totalDur	= $totalDur.' jam '. $total[2].' min';
 			}
 			
-			$pengiriman['estimasi'] = ($pengiriman[$stat]) ? $pengiriman[$stat].' jam' : '';
+			$stat					= strtolower($pengiriman['status_pekerjaan']);
+			$pengiriman['estimasi']	= ($pengiriman[$stat]) ? $pengiriman[$stat].' jam' : '';
 			$pengiriman['last']		= $last['tanggal_pengiriman'];
 			$pengiriman['akuntan']	= $proses ? $proses[0]['nama'] : '';
 			
-			$stat				= str_replace(' ', '_', strtolower($pengiriman['status_pekerjaan']));
-			$add['standar']		= $pengiriman[$stat].' jam';
 			$data['judul']		= 'Proses Data';
 			$data['pengiriman']	= $pengiriman;
 			$data['proses']		= $proses ? $proses : '';

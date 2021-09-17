@@ -1,25 +1,17 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?= $judul ?></h3>
-		</div>
-	</div>
-	
-	<div class="card card-round">
+	<div class="card card-round card-shadow">
 		<div class="card-body p-4">
-			<form action="" method="post" id='myForm'>
-				<input type="hidden" name="level" id="level" value="<?=$level?>">
-				
-				<div id="tabs">
-					<div class="add-klien ">
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
-								<h5 class="mb-3">Info Akun</h5>
-							</div>
-						</div>
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2">
+					<h3 class="mb-3 text-center"><?= $judul ?></h3>
+					
+					<form action="" method="post" id='myForm'>
+						<input type="hidden" name="level" id="level" value="<?=$level?>">
 						
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
+						<div id="tabs">
+							<div class="add-klien ">
+								<h5 class="mb-3">Info Akun</h5>
+								
 								<!-- Nama Klien -->
 								<div class="form-group row">
 									<div class="col">
@@ -52,18 +44,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					
-					<div class="add-klien ">
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
+							
+							<div class="add-klien ">
 								<h5 class="mb-3">Info Perusahaan</h5>
-							</div>
-						</div>
-						
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
+								
 								<!-- Nama Usaha -->
 								<div class="form-group row">
 									<div class="col-sm">
@@ -95,7 +79,7 @@
 								<!-- Bentuk Usaha -->
 								<div class="form-group row">
 									<div class="col-sm">
-										<input type="text" name="bentuk_usaha" class="form-control" id="bentukUsaha" placeholder="Bentuk Usaha" value="<?= set_value('bentuk_usaha') ?>" data-cek="required" readonly>
+										<input type="text" name="bentuk_usaha" class="form-control" id="bentukUsaha" placeholder="Bentuk Usaha" value="<?= set_value('bentuk_usaha') ?>" data-cek="" readonly>
 										<small class="form-text text-danger" id="error_bentukUsaha"></small>
 									</div>
 								</div>
@@ -103,7 +87,7 @@
 								<!-- Jenis Usaha -->
 								<div class="form-group row">
 									<div class="col-sm">
-										<input type="text" name="jenis_usaha" class="form-control" id="jenisUsaha" placeholder="Jenis Usaha" value="<?= set_value('jenis_usaha') ?>" data-cek="required" readonly>
+										<input type="text" name="jenis_usaha" class="form-control" id="jenisUsaha" placeholder="Jenis Usaha" value="<?= set_value('jenis_usaha') ?>" data-cek="" readonly>
 										<small class="form-text text-danger" id="error_jenisUsaha"></small>
 									</div>
 								</div>
@@ -137,7 +121,7 @@
 								<!-- No. Telepon -->
 								<div class="form-group row">
 									<div class="col-sm">
-										<input type="text" name="telp" class="form-control number" id="telp" placeholder="Nomor Telepon" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('telp') ?>">
+										<input type="text" name="telp" class="form-control phone" id="telp" placeholder="Nomor Telepon" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('telp') ?>">
 										<small class="form-text text-danger" id="error_telp"></small>
 									</div>
 								</div>
@@ -145,7 +129,7 @@
 								<!-- No. HP -->
 								<div class="form-group row">
 									<div class="col-sm">
-										<input type="text" name="no_hp" class="form-control number" id="noHp" placeholder="No. HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp') ?>">
+										<input type="text" name="no_hp" class="form-control phone" id="noHp" placeholder="No. HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp') ?>">
 										<small class="form-text text-danger" id="error_noHp"></small>
 									</div>
 								</div>
@@ -166,12 +150,8 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					
-					<div class="add-klien ">
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
+							
+							<div class="add-klien ">
 								<h5 class="mb-3">Pimpinan</h5>
 								
 								<!-- Nama Pimpinan -->
@@ -193,7 +173,7 @@
 								<!-- No. HP Pimpinan -->
 								<div class="form-group row">
 									<div class="col-sm">
-										<input type="text" name="no_hp_pimpinan" id="phonePim" class="form-control number" placeholder="Nomor HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp_pimpinan') ?>">
+										<input type="text" name="no_hp_pimpinan" id="phonePim" class="form-control phone" placeholder="Nomor HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp_pimpinan') ?>">
 										<small class="form-text text-danger" id="error_phonePim"></small>
 									</div>
 								</div>
@@ -206,12 +186,8 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-					
-					<div class="add-klien ">
-						<div class="row">
-							<div class="col-lg-8 offset-lg-2">
+							
+							<div class="add-klien ">
 								<h5 class="mb-3">Counterpart</h5>
 								
 								<!-- Nama Counterpart -->
@@ -225,7 +201,7 @@
 								<!-- No. HP Counterpart -->
 								<div class="form-group row">
 									<div class="col">
-										<input type="text" name="no_hp_counterpart" id="phoneCp" class="form-control number" placeholder="Nomor HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp_counterpart') ?>">
+										<input type="text" name="no_hp_counterpart" id="phoneCp" class="form-control phone" placeholder="Nomor HP" data-cek="required|minLength-11" maxlength="13" value="<?= set_value('no_hp_counterpart') ?>">
 										<small class="form-text text-danger" id="error_phoneCp"></small>
 									</div>
 								</div>
@@ -239,31 +215,30 @@
 								</div>
 							</div>
 						</div>
-					</div>
+						
+						<div class="row">
+							<div class="col-auto">
+								<a href="<?=base_url()?>admin/master/klien" class="btn btn-secondary" tabindex="-1">Batal</a>
+							</div>
+							
+							<div class="col text-right">
+								<button type="button" class="btn btn-secondary prevBtn d-none" tabindex="-1">Kembali</button>
+								<button type="button" class="btn btn-primary nextBtn">Berikutnya</button>
+								<button type="button" class="btn btn-primary submitBtn">Simpan</button>
+							</div>
+						</div>
+						
+						<!-- Tabs Indikator -->
+						<div class="indicator text-center mt-3">
+							<span class="step"></span>
+							<span class="step"></span>
+							<span class="step"></span>
+							<span class="step"></span>
+						</div>
+					</form>
 				</div>
-				
-				<div class="row text-right">
-					<div class="col-lg-8 offset-lg-2">
-						<button type="button" class="btn btn-secondary prevBtn d-none">Kembali</button>
-						<button type="button" class="btn btn-primary nextBtn">Berikutnya</button>
-						<button type="button" class="btn btn-primary submitBtn">Simpan</button>
-					</div>
-				</div>
-				
-				<!-- Tabs Indikator -->
-				<div class="indicator text-center mt-3">
-					<span class="step"></span>
-					<span class="step"></span>
-					<span class="step"></span>
-					<span class="step"></span>
-				</div>
-			</form>
-		</div>
-	</div>
-	
-	<div class="row mt-4">
-		<div class="col">
-			<a href="<?=base_url()?>admin/master/klien" class="btn btn-secondary">Batal</a>
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -271,4 +246,180 @@
 
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/select.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>asset/js/jquery.inputmask.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>asset/js/add-klien.js"></script>
+<!-- <script type="text/javascript" src="<?= base_url(); ?>asset/js/add-klien.js"></script> -->
+<script>
+	$(document).ready(function() {
+		$('.number').inputmask({
+			mask: '9{10,20}',
+			showMaskOnHover: false,
+			showMaskOnFocus: false,
+		});
+		$('.phone').inputmask({
+			mask: '9{11,13}',
+			showMaskOnHover: false,
+			showMaskOnFocus: false,
+		});
+	})
+	
+	$('#kodeKlu').on('change', function() {
+		var kode = $(this).find(':selected').val();
+		$.ajax({
+			type: 'POST',
+			url: '<?= base_url(); ?>admin/master/klien/pilih_klu',
+			data: 'action='+ kode,
+			success: function(data) {
+				var json = data,
+				obj = JSON.parse(json);
+				$('#bentukUsaha').val(obj.bentuk_usaha);
+				$('#jenisUsaha').val(obj.jenis_usaha);
+			}
+		})
+	});
+	
+	var currentTab = 1;
+	showTab(1);
+	
+	$('.nextBtn').click(function() {
+		nextTab(1);
+	})
+	$('.prevBtn').click(function() {
+		nextTab(-1);
+	})
+	
+	function nextTab(n) {
+		$('.form-control').removeClass('has_error');
+		if(n == 1 && validation() == false ) {
+			return false;
+		} else {
+			$('.form-group').removeClass('form-active');
+			$('.add-klien').removeClass('active');
+			currentTab = currentTab + n;
+			if(currentTab <= $('.add-klien').length) {
+				showTab(currentTab);
+			}
+		}
+		showTab(currentTab);
+	}
+	
+	function showTab(n) {
+		$('.add-klien:nth-child('+n+')').addClass('active');
+		$('.add-klien.active .form-group').addClass('form-active');
+		if(currentTab > 1) {
+			$('.prevBtn').removeClass('d-none');
+		} else {
+			$('.prevBtn').addClass('d-none');
+		}
+		if(currentTab >= $('.add-klien').length) {
+			$('.nextBtn').addClass('d-none');
+			$('.submitBtn').show().attr('type', 'submit');
+		} else {
+			$('.nextBtn').removeClass('d-none')
+			$('.submitBtn').attr('type', 'button').hide();
+		}
+		indicator(n);
+	}
+	
+	function indicator(n) {
+		$('.step').removeClass('active');
+		for(var i=1; i<=n; i++) {
+			$('.step:nth-child('+i+')').addClass('active');
+		}
+	}
+	
+	function validation() {
+		var result		= true;
+		
+		for(var i=1; i <= $('.form-active').length; i++) {
+			var field	= $('.form-active:nth-of-type('+i+') .form-control');
+			var id		= field.attr('id');
+			var front	= field.attr('placeholder');
+			var cek		= field.data('cek');
+			var val		= $('#'+id).val();
+			
+			var errorMsg = '';
+			if(cek != null) {
+				cek = cek.split('|');
+				for(x=0; x<cek.length; x++) {
+					if( cek[x] == "required" ) {
+						errorMsg = valRequired( val, front );
+					} 
+					else if( cek[x].includes("minLength") ) {
+						var arr = cek[x].split("-");
+						errorMsg = valMinLength( val, arr[1], front );
+					} 
+					else if( cek[x].includes("matches") ) {
+						var arr = cek[x].split("-");
+						errorMsg = valMatches( val, arr[1], front );
+					} 
+					else if( cek[x].includes("unique") ) {
+						var arr = cek[x].split("-");
+						var result = valUnique( val, arr[1], front );
+						if(result == 'false') {
+							errorMsg = front + ' sudah digunakan!';
+						}
+					}
+					else if( cek[x] == "select" ) {
+						val = $('#'+id).find(':selected').val();
+						errorMsg = valRequired( val, front );
+					} else if( cek[x] == "email") {
+						errorMsg = valEmail( val );
+					}
+					
+					if($.trim(errorMsg) != '') {
+						field.addClass('has-error');
+						result = false;
+						break;
+					} else {
+						field.removeClass('has-error');
+					}
+				}
+				$('#error_'+id).text(errorMsg);
+			}
+		}
+		return result;
+	}
+	
+	function valRequired(val, front) {
+		if($.trim( val ).length == 0) {
+			return front +' harus diisi!';
+		}
+		return '';
+	}
+	function valMinLength(val, min, front) {
+		if( $.trim( val ).length < min ) {
+			return front + ' minimal '+ min +' karakter!';
+		}
+		return '';
+	}
+	function valMatches(val, pair, front) {
+		if( val != $('#'+pair).val() ) {
+			return front + ' tidak sesuai!';
+		}
+		return '';
+	}
+	function valEmail(val) {
+		var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if(filter.test(val) == false) {
+			return 'Format email salah!';
+		}
+		return '';
+	}
+	function valUnique(val, pair, front) {
+		pair = pair.split(".");
+		var hasil = $.ajax({
+			url		: '<?=base_url()?>admin/master/klien/cekUnique',
+			type	: 'post',
+			dataType: 'json',
+			async	: false,
+			data	: {
+				'value'	: val,
+				'table'	: pair[0],
+				'field'	: pair[1],
+			},
+			success	: function (e) {
+				
+			},
+		}).responseText;
+		return hasil;
+	}
+</script>

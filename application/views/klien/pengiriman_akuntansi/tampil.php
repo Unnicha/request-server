@@ -41,11 +41,13 @@
 				<thead class="text-center ">
 					<tr>
 						<th scope="col">No.</th>
-						<th scope="col">ID Permintaan</th>
+						<th scope="col">ID</th>
 						<th scope="col">Permintaan</th>
 						<th scope="col">Tanggal Permintaan</th>
+						<th scope="col">Jumlah Data</th>
 						<th scope="col">Requestor</th>
-						<th scope="col">Detail</th>
+						<th scope="col">Status</th>
+						<th scope="col">Action</th>
 					</tr>
 				</thead>
 	

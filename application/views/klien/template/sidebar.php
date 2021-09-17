@@ -1,97 +1,67 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 pt-2 pt-md-5 d-md-block bg-light sidebar collapse">
-	<div class="sidebar-sticky pt-md-1">
-		<div class="">
-			<!-- Menu Permintaan Data -->
-			<ul class="nav d-md-none flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span><?= $this->session->userdata('nama') ?></span>
-				</h6>
-				<div class="">
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/profile">
-						<i class="bi bi-person sidebar-icon mr-1"></i>
-						Profile
-					</a>
-				</div>
-			</ul>
-			
-			<!-- Profile -->
-			<a href="<?= base_url(); ?>klien/profile" class="nav d-none d-md-flex flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Profile</span>
-				</h6>
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 mt-4 mt-md-0 d-md-block p-0 sidebar collapse">
+	<div class="dashboard text-center">
+		HRW CONSULTING
+	</div>
+	
+	<div class="sidebar-sticky pt-0 pb-5">
+		<!-- Beranda -->
+		<a class="nav-item sidebar-subheading2 nav-link" href="<?= base_url(); ?>akuntan/home">
+			<i class="bi bi-house-door mr-1"></i>
+			Beranda
+		</a>
+		<div class=""></div>
+		
+		<!-- Menu Permintaan Data -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex justify-content-between align-items-center my-0">
+				Permintaan
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/permintaan_data_akuntansi">
+				<i class="bi bi-file-earmark-arrow-down mr-1"></i>
+				Data Akuntansi
 			</a>
-			
-			<!-- Menu Permintaan Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Permintaan Data</span>
-					<span class="badge badge-light float-right mt-1" id="notif"><?= $this->session->userdata('permintaan'); ?></span>
-				</h6>
-				<div class="">
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_akuntansi">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-arrow-down sidebar-icon mr-1"></i>
-							Data Akuntansi
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_1'); ?></span>
-						</p>
-					</a>
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_perpajakan">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-arrow-down sidebar-icon mr-1"></i>
-							Data Perpajakan
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_2'); ?></span>
-						</p>
-					</a>
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/permintaan_data_lainnya">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-arrow-down sidebar-icon mr-1"></i>
-							Data Lainnya
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_permintaan_3'); ?></span>
-						</p>
-					</a>
-				</div>
-			</ul>
-				
-			<!-- Menu Pengiriman Data -->
-			<ul class="nav flex-column">
-				<h6 class="sidebar-heading btn-block px-3 d-flex justify-content-between align-items-center my-0">
-					<span>Pengiriman Data</span>
-					<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman'); ?></span>
-				</h6>
-				<div class="">
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_akuntansi">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-check sidebar-icon mr-1"></i>
-							Data Akuntansi
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_1'); ?></span>
-						</p>
-					</a>
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_perpajakan">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-check sidebar-icon mr-1"></i>
-							Data Perpajakan
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_2'); ?></span>
-						</p>
-					</a>
-					<a class="nav-item sidebar-subheading nav-link px-3" href="<?= base_url(); ?>klien/pengiriman_data_lainnya">
-						<p class="mb-0">
-							<i class="bi bi-file-earmark-check sidebar-icon mr-1"></i>
-							Data Lainnya
-							<span class="badge badge-primary float-right mt-1" id="notif"><?= $this->session->userdata('notif_pengiriman_3'); ?></span>
-						</p>
-					</a>
-				</div>
-			</ul>
-
-			<!-- Logout -->
-			<div class="row row-child mt-3 mb-5">
-				<div class="col text-center">
-					<a href="#" class="btn btn-logout" data-toggle="modal" data-target="#logout">
-						Keluar
-						<i class="bi bi-box-arrow-right sidebar-icon ml-1"></i>
-					</a>
-				</div>
-			</div>
-		</div>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/permintaan_data_perpajakan">
+				<i class="bi bi-file-earmark-arrow-down mr-1"></i>
+				Data Perpajakan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/permintaan_data_lainnya">
+				<i class="bi bi-file-earmark-arrow-down mr-1"></i>
+				Data Lainnya
+			</a>
+		</ul>
+		
+		<!-- Menu Pengiriman Data -->
+		<ul class="nav flex-column">
+			<h6 class="sidebar-heading btn-block d-flex justify-content-between align-items-center my-0">
+				Pengiriman
+			</h6>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/pengiriman_data_akuntansi">
+				<i class="bi bi-file-earmark-check mr-1"></i>
+				Data Akuntansi
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/pengiriman_data_perpajakan">
+				<i class="bi bi-file-earmark-check mr-1"></i>
+				Data Perpajakan
+			</a>
+			<a class="nav-item nav-link sidebar-subheading2" href="<?= base_url(); ?>klien/pengiriman_data_lainnya">
+				<i class="bi bi-file-earmark-check mr-1"></i>
+				Data Lainnya
+			</a>
+		</ul>
 	</div>
 </nav>
+
+<script>
+	$(document).ready(function() {
+		var path1	= window.location.pathname;
+		var arr1	= path1.split('/');
+		
+		$("#sidebarMenu .sidebar-subheading2").each(function() {
+			var path2	= $(this).attr('href');
+			var arr2	= path2.split('/');
+			if(arr2[5] == arr1[3]) {
+				$(this).addClass('active');
+			}
+		})
+	});
+</script>

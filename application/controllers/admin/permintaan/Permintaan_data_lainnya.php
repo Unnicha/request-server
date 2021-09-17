@@ -39,6 +39,7 @@
 				$row[]	= $k['id_permintaan'];
 				$row[]	= $k['request'];
 				$row[]	= $k['tanggal_permintaan'];
+				$row[]	= $k['jumData'];
 				$row[]	= $k['nama'];
 				$row[]	= '
 					<a class="btn-detail" data-nilai="'.$k['id_permintaan'].'" data-toggle="tooltip" data-placement="bottom" title="Detail Permintaan">
@@ -88,7 +89,7 @@
 		}
 		
 		public function tambah() {
-			$data['judul']	= "Buat Permintaan Baru";
+			$data['judul']	= "Tambah Permintaan";
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			$data['jenis']	= $this->Jenis_data_model->getByKategori('Data Lainnya');
 			

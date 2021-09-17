@@ -254,9 +254,11 @@
 			$last		= $this->M_Pengiriman->getMax($_REQUEST['id_data']);
 			
 			if( $pengiriman['status_proses'] == 'done' ) {
-				$pengiriman['badge']	= '<span class="badge badge-success">Selesai</span>';
+				$pengiriman['badge'] = '<span class="badge badge-success">Selesai</span>';
+			} else if( $pengiriman['status_proses'] == 'yet' ) {
+				$pengiriman['badge'] = '<span class="badge badge-warning">On Process</span>';
 			} else {
-				$pengiriman['badge']	= '<span class="badge badge-warning">Belum Selesai</span>';
+				$pengiriman['badge'] = '<span class="badge badge-danger">Belum Selesai</span>';
 			}
 			
 			$add	= [];

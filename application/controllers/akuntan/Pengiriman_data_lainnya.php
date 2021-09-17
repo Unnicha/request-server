@@ -43,11 +43,10 @@
 			$offset		= $_POST['start'];
 			$countData	= $this->M_Pengiriman_lainnya->countPengiriman($bulan, $tahun, $klien); 
 			$pengiriman	= $this->M_Pengiriman_lainnya->getByMasa($bulan, $tahun, $klien, $offset, $limit);
-			$countDetail= $this->M_Pengiriman_lainnya->countDetail();
 			
 			$data = [];
-			foreach($pengiriman as $k => $val) {
-				$detail	= $countDetail[$k];
+			foreach($pengiriman as $val) {
+				$detail	= $this->M_Permintaan_lainnya->countDetail($val['id_permintaan']);
 				$badge	= '';
 				if($detail['jumYes'] > 0)
 					$badge .= '<span class="badge badge-success mr-1" data-toggle="tooltip" data-placement="bottom" title="Lengkap">'.$detail['jumYes'].'</span>';
@@ -180,63 +179,5 @@
 			$msg = $_POST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
 			$this->session->set_flashdata('notification', $msg);
 		}
-		
-		// public function export() {
-		// 	$masa		= $this->input->post('bulan', true);
-		// 	$tahun		= $this->input->post('tahun', true);
-		// 	$id			= $this->input->post('klien', true);
-		// 	$akuntan	= $this->session->userdata('id_user');
-			
-		// 	$bulan		= $this->Klien_model->getMasa($masa);
-		// 	$filename	= strtoupper(substr($bulan['nama_bulan'], 0, 3)).' '.substr($tahun, 2);
-		// 	$klien		= [];
-			
-		// 	if($id == null) {
-		// 		$akses		= $this->Akses_model->getByAkuntan($tahun, $akuntan);
-		// 		if($akses) {
-		// 			if($masa < $akses['masa'])
-		// 			$akses	= $this->Akses_model->getByAkuntan(($tahun - 1), $akuntan);
-		// 		}
-		// 		if($akses) {
-		// 			$filename	= $filename.' '.$akses['nama'];
-		// 			$klien		= explode(',', $akses['lainnya']);
-		// 			//implode(',', $klien);
-		// 		}
-		// 	} else {
-		// 		$klien = [$id];
-		// 	}
-			
-		// 	$isi = 0;
-		// 	foreach($klien as $id) {
-		// 		$pengiriman[$id]	= $this->M_Pengiriman_lainnya->getAllPengiriman($masa, $tahun, $id);
-		// 		if($pengiriman[$id]) {
-		// 			$isi = 1;
-		// 			foreach($pengiriman[$id] as $p) {
-		// 				$datas		= $this->M_Pengiriman_lainnya->getDetail($p['id_permintaan']);
-		// 				$p['child']	= $datas;
-		// 			}
-		// 		}
-		// 	}
-		// 	if($isi == 1) {
-		// 		$data['masa'] = [
-		// 			'bulan'	=> $bulan['nama_bulan'],
-		// 			'tahun'	=> $tahun,
-		// 		];
-		// 		$data['pengiriman']	= $pengiriman;
-		// 		$data['now']		= date('d/m/Y H:i');
-		// 		$data['filename']	= 'Pengiriman Data Lainnya '.$filename;
-		// 		$data['judul']		= 'Pengiriman Data Lainnya';
-				
-		// 		if($_POST['export'] == 'xls') {
-		// 			return $this->exportpengiriman->exportExcel($data);
-		// 		}
-		// 		elseif($_POST['export'] == 'pdf') {
-		// 			return $this->exportpengiriman->exportPdf($data);
-		// 		}
-		// 	} else {
-		// 		$this->session->set_flashdata('warning', 'Tidak ada pengiriman data!');
-		// 		redirect('akuntan/pengiriman_data_lainnya');
-		// 	}
-		// }
 	}
 ?>

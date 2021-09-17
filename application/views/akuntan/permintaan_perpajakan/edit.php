@@ -5,7 +5,7 @@
 		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-round card-shadow">
 		<div class="card-body">
 			<form action="" method="post">
 				<input type="hidden" name="id_user" value="<?=$this->session->userdata('id_user')?>">
@@ -72,7 +72,7 @@
 					<div class="col">
 						<button type="submit" name="tambah" class="btn btn-primary">Ubah</button>
 						<a href="javascript:location.reload()" class="btn btn-outline-secondary">Reset</a>
-						<a href="<?=base_url('akuntan/permintaan_data_perpajakan')?>" class="btn btn-light" style="border:1px solid #212529">Batal</a>
+						<a href="<?=base_url('akuntan/permintaan_data_perpajakan')?>" class="btn btn-light">Batal</a>
 					</div>
 				</div>
 			</form>

@@ -7,9 +7,17 @@
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
+		
+		<!-- Tombol Tambah Permintaan -->
+		<div class="col col-sm-3">
+			<a href="<?= base_url() ?>admin/permintaan/permintaan_data_akuntansi/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat permintaan baru">
+				<i class="bi-plus-circle"></i>
+				Tambah
+			</a>
+		</div>
 	</div>
 	
-	<div class="card card-round">
+	<div class="card card-shadow">
 		<div class="card-body p-0">
 			<div class="row form-inline px-4 pt-3">
 				<div class="col col-sm">
@@ -46,14 +54,6 @@
 						<option value="<?= $k['id_klien']; ?>" <?=$pilih?>> <?=$k['nama_klien']?> </option>
 							<?php endforeach ?>
 					</select>
-				</div>
-				
-				<!-- Tombol Tambah Permintaan -->
-				<div class="col col-sm-3">
-					<a href="<?= base_url() ?>admin/permintaan/permintaan_data_akuntansi/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat permintaan baru">
-						<i class="bi-plus-circle"></i>
-						Buat
-					</a>
 				</div>
 			</div>
 			

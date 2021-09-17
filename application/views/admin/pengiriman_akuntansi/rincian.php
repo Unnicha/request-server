@@ -3,9 +3,12 @@
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row mb-2">
+	<div class="row mb-3">
 		<div class="col">
-			<h4><?= $judul ?></h4>
+			<h3><?= $judul ?></h3>
+		</div>
+		<div class="col-auto">
+			<a href="<?=base_url('admin/pengiriman/pengiriman_data_akuntansi')?>" class="btn btn-secondary">Kembali</a>
 		</div>
 	</div>
 	
@@ -88,7 +91,7 @@
 				</div>
 			</div>
 			
-			<table class="table table-striped">
+			<table class="table table-striped table-responsive-sm">
 				<thead class="text-center">
 					<tr>
 						<th>Pengiriman ke</th>
@@ -119,12 +122,6 @@
 					<?php endif ?>
 				</tbody>
 			</table>
-		</div>
-	</div>
-	
-	<div class="row mt-4">
-		<div class="col">
-			<a href="<?=base_url('admin/pengiriman/pengiriman_data_akuntansi')?>" class="btn btn-secondary mr-1">Kembali</a>
 		</div>
 	</div>
 </div>

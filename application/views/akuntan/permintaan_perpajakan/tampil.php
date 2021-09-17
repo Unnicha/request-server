@@ -7,6 +7,13 @@
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
+		
+		<div class="col-auto">
+			<a href="<?= base_url(); ?>akuntan/permintaan_data_perpajakan/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Tambah Permintaan">
+				<i class="bi-plus-circle"></i>
+				Tambah
+			</a>
+		</div>
 	</div>
 	
 	<div class="card card-shadow">
@@ -43,13 +50,6 @@
 							</select> 
 						</div>
 					</div>
-				</div>
-				
-				<div class="col-auto">
-					<a href="<?= base_url(); ?>akuntan/permintaan_data_perpajakan/tambah" class="btn btn-primary float-right" data-toggle="tooltip" data-placement="bottom" title="Buat Permintaan Baru">
-						<i class="bi-plus-circle"></i>
-						Tambah
-					</a>
 				</div>
 			</div>
 		</div>

@@ -2,13 +2,11 @@
 	
 	class M_Proses_akuntansi extends CI_model {
 		
-		public function getByMasa($status, $bulan, $tahun, $klien='', $start='', $limit='') {
-			if($klien) {
-				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
-			}
-			if($limit) {
-				$this->db->limit($limit, $start);
-			}
+		public function getByMasa($status, $bulan, $tahun, $klien='', $start=0, $limit='') {
+			if($klien)
+			$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
+			if($limit)
+			$this->db->limit($limit, $start);
 			
 			if($status == 'todo') {
 				$this->db->where('status_proses', NULL);
@@ -28,9 +26,9 @@
 		}
 		
 		public function countProses($status, $bulan, $tahun, $klien='') {
-			if($klien) {
-				$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
-			}
+			if($klien)
+			$this->db->where_in('permintaan_akuntansi.id_klien', $klien);
+			
 			if($status == 'todo') {
 				$this->db->where('status_proses', NULL);
 			} elseif($status == 'onproses') {
@@ -79,43 +77,40 @@
 			return $id;
 		}
 		
-		public function tambahProses() {
-			$mulai		= $this->input->post('tanggal_mulai', true).' '.$this->input->post('jam_mulai', true);
-			$selesai	= $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true);
-			$id_data	= $this->input->post('id_data', true);
-			$id_user	= $this->input->post('id_user', true);
-			$id_proses	= $this->getNew($id_data);
-			
-			$data = [
-				'id_proses'			=> $id_proses,
+		public function simpanProses( $data ) {
+			$row1 = [
+				'id_proses'			=> $this->getNew($data['kode_data']),
 				'tanggal_proses'	=> date('d-m-Y H:i'),
-				'tanggal_mulai'		=> $mulai,
-				'tanggal_selesai'	=> (trim($selesai) == '') ? NULL : $selesai,
-				'ket_proses'		=> $this->input->post('keterangan', true),
-				'kode_data'			=> $id_data,
-				'id_akuntan'		=> $id_user,
+				'tanggal_mulai'		=> $data['tanggal_mulai'],
+				'tanggal_selesai'	=> $data['tanggal_selesai'],
+				'ket_proses'		=> $data['keterangan'],
+				'kode_data'			=> $data['kode_data'],
+				'id_akuntan'		=> $data['id_akuntan'],
 			];
-			$this->db->insert('proses_akuntansi', $data);
-			$row = [
-				'status_proses' => ($selesai==' ') ? 'yet' : 'done',
+			$this->db->insert('proses_akuntansi', $row1);
+			
+			$row2 = [
+				'status_proses' => ( $data['tanggal_selesai'] ) ? 'done' : 'yet',
+				// 'status_proses' => $data['tanggal_selesai'],
 			];
-			$this->db->update('data_akuntansi', $row, ['id_data'=>$id_data]);
+			$this->db->update('data_akuntansi', $row2, ['id_data' => $data['kode_data']]);
+			return $this->db->affected_rows();
 		}
 		
-		public function ubahProses() {
-			$id_proses	= $this->input->post('id_proses', true);
-			$id_data	= $this->input->post('id_data', true);
-			$selesai	= $this->input->post('tanggal_selesai', true).' '.$this->input->post('jam_selesai', true);
-			$data = [
-				'tanggal_selesai'	=> ($selesai == ' ') ? '' : $selesai,
-				'ket_proses'		=> $this->input->post('keterangan', true),
+		public function ubahProses( $data ) {
+			$row1 = [
+				'tanggal_selesai'	=> $data['tanggal_selesai'],
+				'ket_proses'		=> $data['keterangan'],
 			];
-			$this->db->update('proses_akuntansi', $data, ['id_proses'=>$id_proses]);
-			$this->db->update('data_akuntansi', ['status_proses'=>'done'], ['id_data'=>$id_data]);
+			$this->db->update('proses_akuntansi', $row1, ['id_proses' => $data['id_proses']]);
+			
+			$row2 = ['status_proses' => 'done'];
+			$this->db->update('data_akuntansi', $row2, ['id_data' => $data['kode_data']]);
 		}
 		
-		public function batalProses($id_data, $id_proses='') {
-			$this->db->update('data_akuntansi', ['status_proses' => NULL], ['id_data' => $id_data]);
+		public function batalProses( $data ) {
+			$row = ['status_proses' => NULL];
+			$this->db->update('data_akuntansi', $row, ['id_data' => $data['kode_data']]);
 		}
 	}
 ?>

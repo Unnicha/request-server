@@ -2,7 +2,7 @@
 	
 	class M_Permintaan_lainnya extends CI_model {
 		
-		public function getByMasa($bulan, $tahun, $klien='', $start='', $limit='') {
+		public function getByMasa($bulan, $tahun, $klien='', $start=0, $limit='') {
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
@@ -79,70 +79,56 @@
 			return $new;
 		}
 		
-		public function tambahPermintaan() {
-			$kode_jenis		= $this->input->post('kode_jenis', true);
-			$detail			= $this->input->post('detail', true);
-			$format_data	= $this->input->post('format_data', true);
-			$id_klien		= $this->input->post('id_klien', true);
-			$bulan			= date('m');
-			$tahun			= date('Y');
-			$id_permintaan	= $this->getNew($id_klien, $bulan, $tahun);
+		public function tambahPermintaan( $data ) {
+			$permintaan	= $data['permintaan'];
+			$detail		= $data['detail'];
+			$id			= $this->getNew($permintaan['id_klien'], $permintaan['bulan'], $permintaan['tahun']);
 			
 			// insert permintaan
-			$data = [
-				'id_permintaan'		=> $id_permintaan,
+			$table1 = [
+				'id_permintaan'		=> $id,
 				'tanggal_permintaan'=> date('d-m-Y H:i'),
-				'id_klien'			=> $id_klien,
-				'bulan'				=> $bulan,
-				'tahun'				=> $tahun,
-				'request'			=> substr($id_permintaan, -2),
-				// 'jum_data'			=> count($kode_jenis),
-				'id_pengirim'		=> $this->input->post('id_user', true),
+				'id_klien'			=> $permintaan['id_klien'],
+				'bulan'				=> $permintaan['bulan'],
+				'tahun'				=> $permintaan['tahun'],
+				'request'			=> substr($id, -2),
+				'id_pengirim'		=> $permintaan['id_pengirim'],
 			];
-			$this->db->insert('permintaan_lainnya', $data);
+			$this->db->insert('permintaan_lainnya', $table1);
 			
 			// insert data
-			for($i=0; $i<count($kode_jenis); $i++) {
-				$row[] = [
-					'id_data'		=> $id_permintaan . sprintf('%02s', $i+1),
-					'id_jenis'		=> $kode_jenis[$i],
-					'detail'		=> $detail[$i],
-					'format_data'	=> $format_data[$i],
-					'id_request'	=> $id_permintaan,
+			$table2 = [];
+			foreach($detail as $num => $d) {
+				$table2[] = [
+					'id_data'		=> $id . sprintf('%02s', $num+1),
+					'id_jenis'		=> $d['id_jenis'],
+					'detail'		=> $d['detail'],
+					'format_data'	=> $d['format_data'],
+					'id_request'	=> $id,
 				];
 			}
-			$this->db->insert_batch('data_lainnya', $row);
+			$this->db->insert_batch('data_lainnya', $table2);
+			return $this->db->affected_rows();
 		}
 		
-		public function ubahPermintaan() {
-			$id_permintaan	= $this->input->post('id_permintaan', true);
-			$id_data		= $this->input->post('id_data', true);
-			$detail			= $this->input->post('detail', true);
-			$format_data	= $this->input->post('format_data', true);
-			
-			foreach($id_data as $id => $val) {
-				// jika format_data ada lakukan update, jika tidak hapus data
-				if(isset($format_data[$id])) {
-					$row[] = [
-						'detail'		=> $detail[$id],
-						'format_data'	=> $format_data[$id],
-					];
-					$this->db->update('data_lainnya', $row, ['id_data' => $val]);
-				} else {
-					$this->db->delete('data_lainnya', ['id_data' => $val]);
-				}
-			}
-			
-			// update jum_data di permitaan
-			$data = [
-				'jum_data'	=> count($format_data),
+		public function ubahPermintaan( $data ) {
+			$row = [
+				'detail'		=> $data['detail'],
+				'format_data'	=> $data['format_data'],
 			];
-			$this->db->update('permintaan_lainnya', $data, ['id_permintaan' => $id_permintaan]);
+			$this->db->update('data_lainnya', $row, ['id_data' => $data['id_data']]);
+			return $this->db->affected_rows();
 		}
 		
-		public function hapusPermintaan($id_permintaan) { 
+		public function hapusPermintaan($id_permintaan) {
 			$this->db->delete('permintaan_lainnya', ['id_permintaan' => $id_permintaan]);
 			$this->db->delete('data_lainnya', ['id_request' => $id_permintaan]);
+			return $this->db->affected_rows();
+		}
+		
+		public function hapusData($id_data) {
+			$this->db->delete('data_lainnya', ['id_data' => $id_data]);
+			return $this->db->affected_rows();
 		}
 	}
 ?>

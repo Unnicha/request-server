@@ -2,19 +2,19 @@
 	
 	class M_Pengiriman_lainnya extends CI_model {
 		
-		public function getByMasa($bulan, $tahun, $klien='', $start='', $limit='') {
+		public function getByMasa($bulan, $tahun, $klien='', $start=0, $limit='') {
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
 			if($limit) {
 				$this->db->limit($limit, $start);
 			}
-			$dataSend = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
+			$dataSent = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_lainnya')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_lainnya.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where($dataSend)
+							->where($dataSent)
 							->order_by('id_permintaan', 'ASC')
 							->get()->result_array();
 		}
@@ -23,12 +23,12 @@
 			if($klien != 'all') {
 				$this->db->where_in('permintaan_lainnya.id_klien', $klien);
 			}
-			$dataSend = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
+			$dataSent = '(SELECT COUNT(id_data) FROM data_lainnya WHERE status_kirim!="NULL" AND id_request=id_permintaan) > 0';
 			return $this->db->from('permintaan_lainnya')
 							->join('klien', 'permintaan_lainnya.id_klien = klien.id_klien', 'left')
 							->join('user', 'permintaan_lainnya.id_pengirim = user.id_user', 'left')
 							->where(['bulan' => $bulan, 'tahun' => $tahun])
-							->where($dataSend)
+							->where($dataSent)
 							->count_all_results();
 		}
 		
@@ -50,7 +50,7 @@
 							->get()->result_array();
 		}
 		
-		public function getNew($id_data) { 
+		public function getNew($id_data) {
 			$max = $this->db->select_max('id_pengiriman')
 							->where(['kode_data' => $id_data])
 							->get('pengiriman_lainnya')->row_array();
@@ -70,82 +70,33 @@
 							->row_array();
 		}
 		
-		public function kirim() {
-			$id_data		= $this->input->post('id_data', true);
-			$format_data	= $this->input->post('format_data', true);
-			$keterangan		= $this->input->post('keterangan', true);
-			$exts			= ['xls', 'xlsx', 'csv', 'pdf', 'rar', 'zip'];
-			
-			if($format_data == 'Softcopy') {
-				$fileName = $_FILES['files']['name'];
-				if($fileName != null) {
-					// cek file extension
-					$targetFile	= basename($fileName);
-					$fileExt	= strtolower(pathinfo($targetFile,PATHINFO_EXTENSION));
-					if(in_array($fileExt, $exts) == false) {
-						$callback = 'ERROR';
-					} else {
-						$upload = $this->proses_file($this->session->userdata('nama'));
-					}
-				}
-			} elseif($format_data == 'Hardcopy') {
-				$upload = $this->input->post('tanggal_ambil', true);
-			}
-			
-			if(isset($callback)) {
-				return $callback;
-			} else {
-				if($upload) {
-					$id_pengiriman = $this->getNew($id_data);
-					$row[] = [
-						'id_pengiriman'			=> $id_pengiriman,
-						'pengiriman'			=> substr($id_pengiriman, -2),
-						'tanggal_pengiriman'	=> date('d-m-Y H:i'),
-						'file'					=> $upload,
-						'ket_pengiriman'		=> $keterangan,
-						'kode_data'				=> $id_data,
-					];
-					$this->db->insert_batch('pengiriman_lainnya', $row);
-					// jika ada pengiriman, status data=>'no'
-					$this->db->update('data_lainnya', ['status_kirim'=>'no'], ['id_data'=>$id_data]);
-					return 'OK';
-				}
-			}
+		public function kirim($data) {
+			$id_pengiriman = $this->getNew($data['kode_data']);
+			$row = [
+				'id_pengiriman'			=> $id_pengiriman,
+				'pengiriman'			=> substr($id_pengiriman, -2),
+				'tanggal_pengiriman'	=> date('d-m-Y H:i'),
+				'file'					=> $data['file'],
+				'ket_pengiriman'		=> $data['keterangan'],
+				'kode_data'				=> $data['kode_data'],
+			];
+			// jika ada pengiriman, status data=>'no'
+			$this->db->update('data_lainnya', ['status_kirim'=>'no'], ['id_data'=>$data['kode_data']]);
+			$this->db->insert('pengiriman_lainnya', $row);
+			return $this->db->affected_rows();
 		}
 		
-		public function konfirmasi($id_data, $status) {
-			$this->db->update('data_lainnya', ['status_kirim'=>$status], ['id_data'=>$id_data]);
+		public function konfirmasi($data) {
+			$row = [
+				'status_kirim' => $data['status'],
+			];
+			$this->db->update('data_lainnya', $row, ['id_data' => $data['id_data']]);
+			return $this->db->affected_rows();
 		}
 		
-		public function proses_file($nama_klien) {
-			$fileData		= $_FILES['files'];
-			$fileDir		= 'asset/uploads/'.$nama_klien.'/'.date('Y').'/';
-			$targetFile		= $fileDir . basename($fileData['name']);
-			$extractFile	= pathinfo($targetFile); 
-			
-			if (!is_dir($fileDir)) { # periksa apakah folder sudah ada
-				mkdir($fileDir, 0777, $rekursif = true); # jika tidak ada, buat folder
-			}
-			
-			//cek apakah nama file sudah ada
-			$sameName	= 0; // Menyimpan jumlah file dengan nama yang sama dengan file yg diupload
-			$handle		= opendir($fileDir);
-			while(false !== ($file = readdir($handle))){ // Looping isi file pada directory tujuan
-				// jika nama awalan file sama dengan nama file di uplaod
-				if(strpos($file,$extractFile['filename']) !== false)
-				$sameName++; // Tambah data file yang sama
-			}
-			// Apabila tidak ada file yang sama ($sameName masih '0') maka nama file sama dengan
-			// nama ketika diupload. Jika $sameName > 0 maka pakai format 'namafile($sameName).ext'
-			$newName	= empty($sameName) ? $fileData['name'] : $extractFile['filename'].'('.$sameName.').'.$extractFile['extension'];
-			$upload		= move_uploaded_file($fileData['tmp_name'], $fileDir.$newName);
-			
-			return $newName;
-		}
-		
-		public function hapusPengiriman($kode_data) {
-			$this->db->where('kode_data', $kode_data);
-			$this->db->delete('pengiriman_lainnya');
-		}
+		// public function hapusPengiriman($kode_data) {
+		// 	$this->db->where('kode_data', $kode_data);
+		// 	$this->db->delete('pengiriman_lainnya');
+		// }
 	}
 ?>

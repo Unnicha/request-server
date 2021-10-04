@@ -2,7 +2,7 @@
 
 	class Akuntan_model extends CI_model {
 
-		public function getAllAkuntan($start='', $limit='', $kata_cari='') {
+		public function getAllAkuntan($start=0, $limit='', $kata_cari='') {
 			if($kata_cari) {
 				$this->db->group_start()
 							->like('nama', $kata_cari)
@@ -10,11 +10,12 @@
 							->or_like('email_user', $kata_cari)
 						->group_end();
 			}
+			if($limit) $this->db->limit($limit, $start);
 			return $this->db->where('level', 'akuntan')
 							->order_by('id_user', 'ASC')
-							->get('user', $limit, $start)->result_array();
+							->get('user')->result_array();
 		}
-
+		
 		public function countAkuntan($kata_cari='') {
 			if($kata_cari) {
 				$this->db->group_start()
@@ -23,89 +24,70 @@
 							->or_like('email_user', $kata_cari)
 						->group_end();
 			}
-			return $this->db->from('user')->where('level', 'akuntan')->count_all_results();
+			return $this->db->from('user')->where('level', 'akuntan')
+							->count_all_results();
 		}
 	
-		public function getById($id_user) {
-			if(is_array($id_user)) {
-				return $this->db->where_in('id_user', $id_user)
-								->get('user')->result_array();
-			} else {
-				return $this->db->get_where('user', ['id_user' => $id_user])->row_array();
+		public function getBy($type, $key) {
+			if( $type == 'byId') {
+				if( is_array($key) )
+				return $this->db->where_in('id_user', $key)->get('user')->result_array();
+				else
+				return $this->db->where('id_user', $key)->get('user')->row_array();
+			}
+			elseif( $type == 'byEmail' ) {
+				return $this->db->where('email_user', $key)->get('user')->row_array();
+			}
+			elseif( $type == 'byUsername' ) {
+				return $this->db->where('username', $key)->get('user')->row_array();
 			}
 		}
-	
+		
 		public function getMax($level) {
-			$max = $this->db->select_max('id_user', 'maxId')
+			$max = $this->db->select_max('id_user')
 							->where('level', $level)
 							->get('user')->row_array();
-			$kodeMax = $max['maxId']; 
 			
-			//ambil kode angka => substr(dari $kodeMax, index 1, sebanyak 3 char) 
-			//jadikan integer => (int) 
-			$tambah = (int) substr($kodeMax, 1, 3);
-			$baru = sprintf('%03s', ++$tambah); 
-			$kode_baru = '2'.$baru;
-	
-			return $kode_baru;
+			$tambah	= (int) substr($max['id_user'], 1, 3);
+			$baru	= sprintf('%03s', ++$tambah); 
+			$kode	= '2'.$baru;
+			return $kode;
 		}
 	
-		public function tambahAkuntan() {
-			$id_user = $this->getMax($this->input->post('level', true));
+		public function tambahAkuntan($data) {
+			$id_user = $this->getMax( $data['level'] );
 			$data = [
-				'id_user'	=> $id_user,
-				'username'	=> $this->input->post('username', true),
-				'password'	=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
-				'level'		=> $this->input->post('level', true),
-				'nama'		=> $this->input->post('nama', true),
-				'email_user'=> $this->input->post('email', true),
+				'id_user'		=> $id_user,
+				'username'		=> $data['username'],
+				'password'		=> password_hash($data['password'], PASSWORD_DEFAULT),
+				'passlength'	=> strlen($data['password']),
+				'level'			=> $data['level'],
+				'nama'			=> $data['nama'],
+				'email_user'	=> $data['email'],
 			];
 			$this->db->insert('user', $data);
+			return $this->db->affected_rows();
 		}
-	
-		public function ubahAkuntanFull() {
-			$this->db->where('username', $this->input->post('username', true));
-			$this->db->where('id_user !=', $this->input->post('id_user', true));
-			$cek_user = $this->db->get('user')->row_array();
-			
-			if($cek_user != null) { 
-				$this->session->set_flashdata('username', 'Username sudah digunakan'); 
-				redirect('akuntan/profile/ganti_username');
-			}
-			
-			$data = [
-				'id_user'	=> $this->input->post('id_user', true),
-				'username'	=> $this->input->post('username', true),
-				'password'	=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
-				'level'		=> $this->input->post('level', true),
-				'nama'		=> $this->input->post('nama', true),
-				'email_user'=> $this->input->post('email', true),
-			];
-			$this->db->where('id_user', $this->input->post('id_user', true));
-			$this->db->update('user', $data);
-		}
-	
-		public function ubahAkuntan() {
-			$tipe = $this->input->post('tipe', true);
-			if($tipe == 'nama') {
-				$data = [ 'nama' => $this->input->post('nama', true) ];
-			} elseif($tipe == 'email') {
-				$data = [ 'email_user' => $this->input->post('email', true) ];
-			} elseif($tipe == 'username') {
-				$data = [ 'username' => $this->input->post('username', true) ];
+		
+		public function ubahAkuntan($data) {
+			if( $data['type'] == 'password' ) {
+				$row = [
+					'password'		=> password_hash($data['value'], PASSWORD_DEFAULT),
+					'passlength'	=> strlen($data['value']),
+				];
 			} else {
-				$data = [
-					'password'		=> password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
-					'passlength'	=> strlen($this->input->post('password', true)),
+				$row = [
+					$data['type'] => $data['value'],
 				];
 			}
-			$this->db->where('id_user', $this->input->post('id_user', true));
-			$this->db->update('user', $data);
+			$this->db->update('user', $row, ['id_user' => $data['id']]);
+			return $this->db->affected_rows();
 		}
 		
 		public function hapusAkuntan($id_user) {
 			$this->db->where('id_user', $id_user);
 			$this->db->delete('user');
+			return $this->db->affected_rows();
 		}
 	}
 ?>

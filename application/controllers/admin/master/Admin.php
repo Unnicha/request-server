@@ -1,11 +1,13 @@
 <?php
-
+	use GuzzleHttp\Client;
+	
 	class Admin extends CI_Controller {
 		
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
-			$this->load->model('Admin_model');
+			// $this->load->model('Admin_model');
+			$this->client = new Client([ 'base_uri' => base_url().'api/' ]);
 		}
 		
 		public function index() {
@@ -14,10 +16,10 @@
 		}
 		
 		public function page() {
-			$cari		= $_POST['search']['value'];
-			$limit		= $_POST['length'];
-			$offset 	= $_POST['start'];
-			$countData	= $this->Admin_model->countAdmin($cari); 
+			$offset	= $_POST['start'];
+			$limit	= $_POST['length'];
+			$cari	= $_POST['search']['value'];
+			$countData	= $this->Admin_model->countAdmin($cari);
 			$admin		= $this->Admin_model->getAllAdmin($offset, $limit, $cari);
 			
 			$data = [];

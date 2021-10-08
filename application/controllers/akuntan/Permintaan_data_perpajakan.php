@@ -14,7 +14,11 @@
 		
 		public function index() {
 			$data['judul']	= "Permintaan Data Perpajakan";
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$this->libtemplate->main('akuntan/permintaan_perpajakan/tampil', $data);
 		}
@@ -76,9 +80,15 @@
 			$tahun		= isset($_POST['tahun']) ? $_POST['tahun'] : date('Y');
 			$id_akuntan	= $this->session->userdata('id_user');
 			
+<<<<<<< HEAD
 			$bulan	= Globals::bulan($bulan);
 			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan['id'], $id_akuntan, 'perpajakan');
 			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan['id'], $id_akuntan, 'perpajakan');
+=======
+			$bulan	= $this->Klien_model->getMasa($bulan)['id_bulan'];
+			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id_akuntan, 'perpajakan');
+			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id_akuntan, 'perpajakan');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$lists	= "<option value=''>--Tidak ada akses--</option>";
 			if( $akses ) {

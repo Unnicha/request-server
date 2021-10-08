@@ -18,8 +18,13 @@
 			$limit	= $_POST['length'];
 			$offset = $_POST['start'];
 			
+<<<<<<< HEAD
 			$countData	= $this->Jenis_data_model->countJenis($cari); 
 			$jenis_data	= $this->Jenis_data_model->getAllJenis($offset, $limit, $cari);
+=======
+			$countData	= $this->Jenis_data_model->countJenisData($cari); 
+			$jenis_data	= $this->Jenis_data_model->getAllJenisData($offset, $limit, $cari);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$data = [];
 			foreach($jenis_data as $k) {
@@ -57,12 +62,18 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/jenis_data/tambah', $data);
 			} else {
+<<<<<<< HEAD
 				if( $this->Admin_model->tambahJenis() == true ) {
 					$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
 				} else {
 					$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
 				}
 				redirect('admin/master/jenis_data');
+=======
+				$this->Jenis_data_model->tambahJenisData();
+				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				redirect('admin/master/jenis_data'); 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 		}
 		
@@ -77,11 +88,16 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/jenis_data/ubah', $data);
 			} else {
+<<<<<<< HEAD
 				if( $this->Admin_model->ubahJenis() == true ) {
 					$this->session->set_flashdata('notification', 'Berhasil diubah!');
 				} else {
 					$this->session->set_flashdata('warning', 'Gagal diubah!');
 				}
+=======
+				$this->Jenis_data_model->ubahJenisData();
+				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				redirect('admin/master/jenis_data'); 
 			}
 		}
@@ -105,11 +121,16 @@
 		}
 		
 		public function fix_hapus($id) {
+<<<<<<< HEAD
 			if( $this->Admin_model->hapusJenis($id) == true ) {
 				$this->session->set_flashdata('notification', 'Berhasil dihapus!');
 			} else {
 				$this->session->set_flashdata('warning', 'Gagal dihapus!');
 			}
+=======
+			$this->Jenis_data_model->hapusJenisData($id);
+			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			redirect('admin/master/jenis_data'); 
 		}
 	}

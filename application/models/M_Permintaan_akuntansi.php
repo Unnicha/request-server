@@ -53,6 +53,7 @@
 							->get()->result_array();
 		}
 		
+<<<<<<< HEAD
 		public function getUnsend($id_klien) {
 			return $this->db->from('data_akuntansi')
 							->join('permintaan_akuntansi', 'permintaan_akuntansi.id_permintaan = data_akuntansi.id_request', 'left')
@@ -62,6 +63,8 @@
 							->get()->result_array();
 		}
 		
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function countDetail($id_permintaan) {
 			$all	= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan)';
 			$yes	= '(SELECT COUNT(id_data) FROM data_akuntansi WHERE id_request = id_permintaan AND status_kirim = "yes")';
@@ -81,9 +84,15 @@
 			
 			if($max['id_permintaan']) {
 				$tambah	= substr($max['id_permintaan'], -2);
+<<<<<<< HEAD
 				$new	= $pre .'10'. sprintf('%02s', ++$tambah); //kategori data
 			} else {
 				$new	= $pre .'10'.'01'; //kategori data
+=======
+				$new	= $pre .'1'. sprintf('%02s', ++$tambah); //kategori data
+			} else {
+				$new	= $pre .'1'.'01'; //kategori data
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 			return $new;
 		}
@@ -121,6 +130,7 @@
 		}
 		
 		public function ubahPermintaan( $data ) {
+<<<<<<< HEAD
 			if ($data['type'] == 'permintaan') {
 				$row = [
 					'detail'		=> $data['detail'],
@@ -132,6 +142,12 @@
 				];
 			}
 			
+=======
+			$row = [
+				'detail'		=> $data['detail'],
+				'format_data'	=> $data['format_data'],
+			];
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->db->update('data_akuntansi', $row, ['id_data' => $data['id_data']]);
 			return $this->db->affected_rows();
 		}

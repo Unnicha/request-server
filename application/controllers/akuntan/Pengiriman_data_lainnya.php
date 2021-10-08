@@ -5,9 +5,16 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
+<<<<<<< HEAD
 			
 			$this->load->model('M_Permintaan_lainnya', 'M_Permintaan');
 			$this->load->model('M_Pengiriman_lainnya', 'M_Pengiriman');
+=======
+			$this->load->library('exportpengiriman');
+			
+			$this->load->model('M_Permintaan_lainnya');
+			$this->load->model('M_Pengiriman_lainnya');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
 			$this->load->model('Jenis_data_model');
@@ -15,7 +22,11 @@
 		
 		public function index() {
 			$data['judul']	= "Pengiriman Data Lainnya";
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$this->libtemplate->main('akuntan/pengiriman_lainnya/tampil', $data);
 		}
@@ -40,12 +51,21 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+<<<<<<< HEAD
 			$countData	= $this->M_Pengiriman->countPengiriman($bulan, $tahun, $klien); 
 			$pengiriman	= $this->M_Pengiriman->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
 			$data = [];
 			foreach($pengiriman as $val) {
 				$detail	= $this->M_Permintaan->countDetail($val['id_permintaan']);
+=======
+			$countData	= $this->M_Pengiriman_lainnya->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_lainnya->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+			
+			$data = [];
+			foreach($pengiriman as $val) {
+				$detail	= $this->M_Permintaan_lainnya->countDetail($val['id_permintaan']);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				$badge	= '';
 				if($detail['jumYes'] > 0)
 					$badge .= '<span class="badge badge-success mr-1" data-toggle="tooltip" data-placement="bottom" title="Lengkap">'.$detail['jumYes'].'</span>';
@@ -84,9 +104,15 @@
 			$tahun		= $this->input->post('tahun', true);
 			$id_akuntan	= $this->session->userdata('id_user');
 			
+<<<<<<< HEAD
 			$bulan	= Globals::bulan($bulan);
 			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan['id'], $id_akuntan, 'lainnya');
 			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan['id'], $id_akuntan, 'lainnya');
+=======
+			$bulan	= $this->Klien_model->getMasa($bulan)['id_bulan'];
+			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id_akuntan, 'lainnya');
+			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id_akuntan, 'lainnya');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$lists	= "<option value=''>--Tidak ada akses--</option>";
 			if( $akses ) {
@@ -100,8 +126,13 @@
 		
 		public function detail() {
 			$id_permintaan	= $_REQUEST['id'];
+<<<<<<< HEAD
 			$permintaan		= $this->M_Permintaan->getById($id_permintaan);
 			$isi			= $this->M_Permintaan->getDetail($id_permintaan);
+=======
+			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_lainnya->getDetail($id_permintaan);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			// tampilan bagde masing2 data(isi) berdasarkan status pengiriman
 			foreach($isi as $i => $val) {
@@ -126,8 +157,13 @@
 		}
 		
 		public function detail_pengiriman($id_data) {
+<<<<<<< HEAD
 			$detail		= $this->M_Pengiriman->getById($id_data);
 			$pengiriman	= $this->M_Pengiriman->getDetail($id_data);
+=======
+			$detail		= $this->M_Pengiriman_lainnya->getById($id_data);
+			$pengiriman	= $this->M_Pengiriman_lainnya->getDetail($id_data);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			// tampilan bagde berdasarkan status pengiriman
 			if($detail['status_kirim'] == 'yes') {
@@ -157,6 +193,7 @@
 			$this->libtemplate->main('akuntan/pengiriman_lainnya/rincian', $data);
 		}
 		
+<<<<<<< HEAD
 		public function download() {
 			$klien		= $_GET['k'];
 			$year		= $_GET['y'];
@@ -188,6 +225,8 @@
 			}
 		}
 		
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function konfirmasi() {
 			$id		= $_POST['id'];
 			$status	= $_POST['status'];
@@ -205,7 +244,11 @@
 		}
 		
 		public function fix() {
+<<<<<<< HEAD
 			$this->M_Pengiriman->konfirmasi($_POST['id'], $_POST['stat']);
+=======
+			$this->M_Pengiriman_lainnya->konfirmasi($_POST['id'], $_POST['stat']);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$msg = $_POST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
 			$this->session->set_flashdata('notification', $msg);
 		}

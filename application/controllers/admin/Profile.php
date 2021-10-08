@@ -22,7 +22,10 @@
 			$this->libtemplate->main('admin/profile/tampil', $data);
 		}
 		
+<<<<<<< HEAD
 		// verifikasi admin sebelum melakukan perubahan data
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function verification() {
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
@@ -51,14 +54,23 @@
 			$type			= $this->session->userdata('tipe');
 			$data['admin']	= $this->Admin_model->getById($id_user);
 			$data['judul']	= 'Ubah '.ucwords($type);
+<<<<<<< HEAD
 			$data['back']	= 'admin/profile';
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			if($type == 'nama') {
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
 			} elseif($type == 'email') {
+<<<<<<< HEAD
 				$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 			} elseif($type == 'username') {
 				$this->form_validation->set_rules('username', 'Username', 'required|min_length[8]');
+=======
+				$this->form_validation->set_rules('email', 'Email', 'required|is_unique[user.email_user]|valid_email');
+			} elseif($type == 'username') {
+				$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[8]');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			} elseif($type == 'password') {
 				$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 				$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
@@ -68,6 +80,7 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->libtemplate->main('admin/profile/ganti_'.$tipe, $data);
 			} else {
+<<<<<<< HEAD
 				$do_update	= false;
 				$tipe		= $this->input->post('tipe', true);
 				$nama		= $this->input->post('nama', true);
@@ -106,5 +119,19 @@
 			
 			return ($result) ? false : true;
 		}
+=======
+				$this->Admin_model->ubahAdmin();
+				$tipe = $this->session->userdata('tipe');
+				// update session user
+				if($tipe == 'nama') {
+					$this->session->set_userdata('nama', $this->input->post('nama', true));
+				} elseif($tipe == 'username') {
+					$this->session->set_userdata('username', $this->input->post('username', true));
+				}
+				$this->session->set_flashdata('notification', ucwords($tipe).' berhasil diubah!');
+				redirect('admin/profile');
+			}
+		}
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 	}
 ?>

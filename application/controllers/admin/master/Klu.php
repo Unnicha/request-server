@@ -49,17 +49,26 @@
 		public function tambah() {
 			$data['judul'] = 'Tambah KLU'; 
 			
+<<<<<<< HEAD
 			$this->form_validation->set_rules('kode_klu', 'Kode KLU', 'required');
+=======
+			$this->form_validation->set_rules('kode_klu', 'Kode KLU', 'required|is_unique[klu.kode_klu]', array( 'is_unique' => '%s Sudah Ada.' ));
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->form_validation->set_rules('bentuk_usaha', 'Bentuk Usaha', 'required');
 			$this->form_validation->set_rules('jenis_usaha', 'Jenis Usaha', 'required');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klu/tambah', $data);
 			} else {
+<<<<<<< HEAD
 				if($this->Klu_model->tambahKlu() == true)
 				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
 				else
 				$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
+=======
+				$this->Klu_model->tambahDataKlu();
+				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				redirect('admin/master/klu'); 
 			}
 		}
@@ -75,10 +84,15 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klu/ubah', $data);
 			} else {
+<<<<<<< HEAD
 				if($this->Klu_model->ubahKlu() == true)
 				$this->session->set_flashdata('notification', 'Berhasil diubah!'); 
 				else
 				$this->session->set_flashdata('warning', 'Gagal diubah!'); 
+=======
+				$this->Klu_model->ubahDataKlu();
+				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				redirect('admin/master/klu'); 
 			}
 		}
@@ -95,10 +109,15 @@
 		}
 		
 		public function fix_hapus($id) {
+<<<<<<< HEAD
 			if($this->Klu_model->hapusKlu($id) == true)
 			$this->session->set_flashdata('notification', 'Berhasil dihapus!');
 			else
 			$this->session->set_flashdata('warning', 'Gagal dihapus!');
+=======
+			$this->Klu_model->hapusDataKlu($id);
+			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			redirect('admin/master/klu');
 		}
 	}

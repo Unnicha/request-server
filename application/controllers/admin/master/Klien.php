@@ -66,10 +66,15 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klien/tambah', $data);
 			} else {
+<<<<<<< HEAD
 				if($this->Klien_model->tambahKlien() == true)
 				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!'); 
 				else
 				$this->session->set_flashdata('warning', 'Gagal ditambahkan!'); 
+=======
+				$this->Klien_model->tambahKlien();
+				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				redirect('admin/master/klien'); 
 			}
 		}
@@ -86,11 +91,15 @@
 		}
 		
 		public function cekUnique() {
+<<<<<<< HEAD
 			$table	= $this->input->post('table');
 			$field	= $this->input->post('field');
 			$value	= $this->input->post('value');
 			$cek	= $this->Klien_model->cekUnique($table, $field, $value);
 			$result = ( $cek ) ? false : true;
+=======
+			$result = $this->Klien_model->cekUnique($_REQUEST['table'], $_REQUEST['field'], $_REQUEST['value']);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			echo json_encode($result);
 		}
 		
@@ -139,18 +148,30 @@
 			$data['judul']	= 'Ubah '.ucwords($type);
 			$data['klien']	= $this->Klien_model->getById($id_user);
 			$data['klu']	= $this->Klu_model->getAllKlu(); 
+<<<<<<< HEAD
 			
 			$data['table']	= $this->session->userdata('input');
 			$data['status']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['tipe']	= $type;
 			$data['back']	= 'admin/master/klien/view/'.$id_user;
+=======
+			$data['status']	= ['Accounting Service', 'Review', 'Semi Review'];
+			$data['table']	= $this->session->userdata('input');
+			$data['tipe']	= $type;
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			if($type == 'nama') {
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
 			} elseif($type == 'email') {
+<<<<<<< HEAD
 				$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 			} elseif($type == 'username') {
 				$this->form_validation->set_rules('username', 'Username', 'required|min_length[8]');
+=======
+				$this->form_validation->set_rules('email', 'Email', 'required|is_unique[user.email_user]|valid_email');
+			} elseif($type == 'username') {
+				$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[8]');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			} elseif($type == 'password') {
 				$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 				$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
@@ -173,6 +194,7 @@
 			}
 			
 			if($this->form_validation->run() == FALSE) {
+<<<<<<< HEAD
 				$type = $this->session->userdata('tipe');
 				$this->libtemplate->main('klien/profile/ganti_'.$type, $data);
 			} else {
@@ -207,6 +229,17 @@
 					$this->session->set_flashdata('used', $type.' sudah digunakan');
 					$this->libtemplate->main('klien/profile/ganti_'.$type, $data);
 				}
+=======
+				$this->libtemplate->main('klien/profile/ganti_'.$type, $data);
+			} else {
+				if($this->input->post('table') == 'user') {
+					$this->Klien_model->ubahAkun();
+				} elseif($this->input->post('table') == 'profil') {
+					$this->Klien_model->ubahProfile();
+				}
+				$this->session->set_flashdata('notification', ucwords($type).' berhasil diubah!');
+				redirect('admin/master/klien/view/'.$this->input->post('id_klien'));
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 		}
 		

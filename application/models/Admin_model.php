@@ -39,6 +39,7 @@
 		}
 		
 		// delsoon
+<<<<<<< HEAD
 		// public function getById($id_user) {
 		// 	return $this->db->where('id_user', $id_user)->get('user')->row_array();
 		// }
@@ -50,6 +51,19 @@
 		// public function getByEmail($email) {
 		// 	return $this->db->get_where('user', ['email_user'=>$email])->row_array();
 		// }
+=======
+		public function getById($id_user) {
+			return $this->db->where('id_user', $id_user)->get('user')->row_array();
+		}
+		// delsoon
+		public function getByUsername($username) {
+			return $this->db->where('username', $username)->get('user')->row_array();
+		}
+		// delsoon
+		public function getByEmail($email) {
+			return $this->db->get_where('user', ['email_user'=>$email])->row_array();
+		}
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		
 		public function getMax($level) {
 			$max = $this->db->select_max('id_user')
@@ -86,9 +100,14 @@
 					'passlength'	=> strlen($data['value']),
 				];
 			} else {
+<<<<<<< HEAD
 				$field	= ($data['type'] == 'email') ? 'email_user' : $data['type'];
 				$row	= [
 					$field => $data['value'],
+=======
+				$row = [
+					$data['type'] => $data['value'],
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				];
 			}
 			$this->db->update('user', $row, ['id_user' => $data['id']]);
@@ -111,22 +130,39 @@
 		public function insertToken($id_user) {
 			$token	= substr(sha1(rand()), 0, 30);
 			$date	= date('d-m-Y');
+<<<<<<< HEAD
 			$data	= [
 				'token'		=> $token,
 				'id_user'	=> $id_user,
 				'date'		=> $date
 			];
+=======
+			$data	= array(
+				'token'		=> $token,
+				'id_user'	=> $id_user,
+				'date'		=> $date
+			);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->db->insert('token', $data);
 			
 			return $token.$id_user;
 		}
 		
 		public function validToken($token) {
+<<<<<<< HEAD
 			$data = [
 				'token'		=> substr($token, 0, 30),
 				'id_user'	=> substr($token, 30),
 			];
 			$cekToken = $this->db->get_where('token', $data, 1)->row_array();
+=======
+			$tkn		= substr($token, 0, 30);
+			$uid		= substr($token, 30);
+			$cekToken	= $this->db->get_where('token', [
+				'token'		=> $tkn,
+				'id_user'	=> $uid
+			], 1)->row_array();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			if($cekToken == null) {
 				return false;
@@ -137,7 +173,11 @@
 				if($tokenDate != $todayDate) {
 					return false;
 				} else {
+<<<<<<< HEAD
 					$user = $this->getBy('byId', $cekToken['id_user']);
+=======
+					$user = $this->getById($cekToken['id_user']);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 					return $user;
 				}
 			}

@@ -6,15 +6,24 @@
 			parent::__construct();
 			$this->load->library('form_validation');
 			
+<<<<<<< HEAD
 			$this->load->model('M_Permintaan_lainnya', 'M_Permintaan');
 			$this->load->model('M_Pengiriman_lainnya', 'M_Pengiriman');
+=======
+			$this->load->model('M_Permintaan_lainnya');
+			$this->load->model('M_Pengiriman_lainnya');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->load->model('Klien_model');
 			$this->load->model('Jenis_data_model');
 		} 
 		
 		public function index() {
 			$data['judul']	= "Permintaan Data Lainnya";
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->libtemplate->main('klien/permintaan_lainnya/tampil', $data);
 		}
 		
@@ -25,12 +34,21 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
+<<<<<<< HEAD
 			$countData	= $this->M_Permintaan->countPermintaan($bulan, $tahun, $klien); 
 			$permintaan	= $this->M_Permintaan->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
 			$data = [];
 			foreach($permintaan as $k) {
 				$detail	= $this->M_Permintaan->countDetail($k['id_permintaan']);
+=======
+			$countData	= $this->M_Permintaan_lainnya->countPermintaan($bulan, $tahun, $klien); 
+			$permintaan	= $this->M_Permintaan_lainnya->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+			
+			$data = [];
+			foreach($permintaan as $k) {
+				$detail	= $this->M_Permintaan_lainnya->countDetail($k['id_permintaan']);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				$badge	= '';
 				if($detail['jumYes'] > 0)
 					$badge .= '<span class="badge badge-success mr-1" data-toggle="tooltip" data-placement="bottom" title="'.$detail['jumYes'].' Data Lengkap">'.$detail['jumYes'].'</span>';
@@ -68,11 +86,26 @@
 		
 		public function detail() {
 			$id			= $_REQUEST['id'];
+<<<<<<< HEAD
 			$permintaan	= $this->M_Permintaan->getById($id);
 			$isi		= $this->M_Permintaan->getDetail($id);
 			
 			foreach($isi as $i => $val) {
 				$add[$i] = $this->badge($val['status_kirim']);
+=======
+			$permintaan	= $this->M_Permintaan_lainnya->getById($id);
+			$isi		= $this->M_Permintaan_lainnya->getDetail($id);
+			
+			foreach($isi as $i => $val) {
+				if($val['status_kirim'] == 'yes') {
+					$badge	= '<span class="badge badge-success">Lengkap</span>';
+				} elseif($val['status_kirim'] == 'no') {
+					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
+				} else {
+					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
+				}
+				$add[$i] = $badge;
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 			$data['judul']		= 'Detail Permintaan';
 			$data['permintaan']	= $permintaan;
@@ -84,11 +117,25 @@
 		}
 		
 		public function pilih() {
+<<<<<<< HEAD
 			$isi = $this->M_Permintaan->getDetail($_REQUEST['id']);
 			foreach($isi as $i => $val) {
 				$add[$i] = $this->badge($val['status_kirim']);
 			}
 			
+=======
+			$isi = $this->M_Permintaan_lainnya->getDetail($_REQUEST['id']);
+			foreach($isi as $i => $val) {
+				if($val['status_kirim'] == 'yes') {
+					$badge	= '<span class="badge badge-success">Lengkap</span>';
+				} elseif($val['status_kirim'] == 'no') {
+					$badge	= '<span class="badge badge-warning">Belum Lengkap</span>';
+				} else {
+					$badge	= '<span class="badge badge-danger">Belum Dikirim</span>';
+				}
+				$add[$i] = $badge;
+			}
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['judul']		= 'Pilih Data';
 			$data['detail']		= $isi;
 			$data['badge']		= $add;
@@ -98,6 +145,7 @@
 		}
 		
 		public function kirim($id_data) {
+<<<<<<< HEAD
 			$detail		= $this->M_Pengiriman->getById($id_data);
 			$pengiriman	= $this->M_Pengiriman->getDetail($id_data);
 			
@@ -105,6 +153,20 @@
 			$data['judul']		= "Kirim Data";
 			$data['detail']		= $detail;
 			$data['pengiriman']	= $pengiriman;
+=======
+			$detail = $this->M_Pengiriman_lainnya->getById($id_data);
+			if($detail['status_kirim'] == 'yes') {
+				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
+			} elseif($detail['status_kirim'] == 'no') {
+				$detail['badge'] = '<span class="badge badge-warning">Belum Lengkap</span>';
+			} else {
+				$detail['badge'] = '<span class="badge badge-danger">Belum Dikirim</span>';
+			}
+			
+			$data['judul']		= "Kirim Data";
+			$data['detail']		= $detail;
+			$data['pengiriman']	= $this->M_Pengiriman_lainnya->getDetail($id_data);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['back']		= 'klien/permintaan_data_lainnya';
 			
 			$this->form_validation->set_rules('id_data', 'ID Data', 'required');
@@ -115,15 +177,23 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('klien/permintaan_lainnya/kirim', $data);
 			} else {
+<<<<<<< HEAD
 				$send = $this->M_Pengiriman->kirim();
 				if($send == false) {
 					$this->session->set_flashdata('flash', 'Format file tidak sesuai!');
 				} elseif($send == true) {
+=======
+				$send = $this->M_Pengiriman_lainnya->kirim();
+				if($send == 'ERROR') {
+					$this->session->set_flashdata('flash', 'Format file tidak sesuai!');
+				} elseif($send == 'OK') {
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 					$this->session->set_flashdata('notification', 'Data berhasil dikirim!');
 				}
 				redirect('klien/permintaan_data_lainnya/kirim/'.$id_data);
 			}
 		}
+<<<<<<< HEAD
 		
 		public function download() {
 			$year		= $_GET['y'];
@@ -166,5 +236,7 @@
 			}
 			return $badge;
 		}
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 	}
 ?>

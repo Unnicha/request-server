@@ -93,5 +93,9 @@ $db['default'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE, 
+<<<<<<< HEAD
 	// 'port' => '3308',
+=======
+	'port' => '3308',
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 );

@@ -34,6 +34,7 @@
 		}
 		
 		public function index_post() {
+<<<<<<< HEAD
 			if($this->post('type') == 'data') {
 				$data = [
 					'level'		=> $this->post('level'),
@@ -69,6 +70,26 @@
 						'message'	=> 'Gagal menambahkan data',
 					], RestController::HTTP_BAD_REQUEST);
 				}
+=======
+			$data = [
+				'level'		=> $this->post('level'),
+				'username'	=> $this->post('username'),
+				'password'	=> $this->post('password'),
+				'nama'		=> $this->post('nama'),
+				'email'		=> $this->post('email'),
+			];
+			
+			if ($this->Admin_model->tambahAdmin($data) > 0) {
+				$this->response([
+					'status' => true,
+					'message' => 'Berhasil menambahkan data',
+				], RestController::HTTP_CREATED);
+			} else {
+				$this->response([
+					'status' => false,
+					'message' => 'Gagal menambahkan data',
+				], RestController::HTTP_BAD_REQUEST);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 		}
 		

@@ -14,7 +14,11 @@
 		 
 		public function index() {
 			$data['judul']	= "Permintaan Data Lainnya";
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			
 			$this->libtemplate->main('admin/permintaan_lainnya/tampil', $data);
@@ -58,7 +62,11 @@
 			$callback	= [
 				'draw'				=> $_REQUEST['draw'], // Ini dari datatablenya
 				'recordsTotal'		=> $countData,
+<<<<<<< HEAD
 				'recordsFiltered'	=> $countData,
+=======
+				'recordsFiltered'	=>$countData,
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				'data'				=> $data,
 			];
 			echo json_encode($callback);

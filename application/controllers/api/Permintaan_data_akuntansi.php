@@ -34,9 +34,12 @@
 			elseif( $type == 'countDetail' ) {
 				$result	= $this->M_Permintaan_akuntansi->countDetail($key);
 			}
+<<<<<<< HEAD
 			elseif( $type == 'unsend' ) {
 				$result	= $this->M_Permintaan_akuntansi->getUnsend($key);
 			}
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			// result
 			$this->response( [

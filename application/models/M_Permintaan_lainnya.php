@@ -48,7 +48,10 @@
 		
 		public function getDetail($id_permintaan) {
 			return $this->db->from('data_lainnya')
+<<<<<<< HEAD
 							->join('permintaan_lainnya', 'permintaan_lainnya.id_permintaan = data_lainnya.id_request', 'left')
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 							->join('jenis_data', 'jenis_data.kode_jenis = data_lainnya.id_jenis', 'left')
 							->where(['id_request' => $id_permintaan])
 							->get()->result_array();
@@ -73,9 +76,15 @@
 			
 			if($max['id_permintaan']) {
 				$tambah	= substr($max['id_permintaan'], -2);
+<<<<<<< HEAD
 				$new	= $pre .'30'. sprintf('%02s', ++$tambah); //kategori data
 			} else {
 				$new	= $pre .'30'.'01'; //kategori data
+=======
+				$new	= $pre .'1'. sprintf('%02s', ++$tambah); //kategori data
+			} else {
+				$new	= $pre .'1'.'01'; //kategori data
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 			return $new;
 		}
@@ -113,6 +122,7 @@
 		}
 		
 		public function ubahPermintaan( $data ) {
+<<<<<<< HEAD
 			if ($data['type'] == 'permintaan') {
 				$row = [
 					'detail'		=> $data['detail'],
@@ -124,6 +134,12 @@
 				];
 			}
 			
+=======
+			$row = [
+				'detail'		=> $data['detail'],
+				'format_data'	=> $data['format_data'],
+			];
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->db->update('data_lainnya', $row, ['id_data' => $data['id_data']]);
 			return $this->db->affected_rows();
 		}

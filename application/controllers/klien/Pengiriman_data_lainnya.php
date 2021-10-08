@@ -14,7 +14,11 @@
 		
 		public function index() {
 			$data['judul']	= "Pengiriman Data Lainnya"; 
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$this->libtemplate->main('klien/pengiriman_lainnya/tampil', $data);
 		}

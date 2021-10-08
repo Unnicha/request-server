@@ -9,8 +9,13 @@
 			$this->load->model('Akses_model');
 			$this->load->model('Akuntan_model');
 			$this->load->model('Klien_model');
+<<<<<<< HEAD
 		}
 		
+=======
+		} 
+		 
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function index() {
 			$data['judul']	= "Akses Klien";
 			$data['klien']	= $this->Klien_model->getAllKlien();
@@ -19,6 +24,7 @@
 		}
 		
 		public function page() {
+<<<<<<< HEAD
 			$tahun		= $_POST['tahun'];
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
@@ -38,6 +44,21 @@
 				$b			= $this->Akuntan_model->getBy('byId', explode(',', $k['perpajakan']));
 				$c			= $this->Akuntan_model->getBy('byId', explode(',', $k['lainnya']));
 				
+=======
+			$limit		= $_POST['length'];
+			$offset		= $_POST['start'];
+			$cari		= $_POST['search']['value'];
+			$countData	= $this->Akses_model->countAkses($_POST['tahun'], $cari); 
+			$akses		= $this->Akses_model->getByTahun($_POST['tahun'], $offset, $limit, $cari);
+			$this->session->set_userdata('tahun', $_POST['tahun']);
+			
+			$data = [];
+			foreach($akses as $k) {
+				$bulan = $this->Klien_model->getMasa($k['masa']);
+				$akuntansi	= '';	$a	= $this->Akuntan_model->getById(explode(',', $k['akuntansi']));
+				$perpajakan	= '';	$b	= $this->Akuntan_model->getById(explode(',', $k['perpajakan']));
+				$lainnya	= '';	$c	= $this->Akuntan_model->getById(explode(',', $k['lainnya']));
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				foreach($a as $i => $val) {
 					$akuntansi .= ($i>0) ? ' - '.$val['nama'] : $val['nama'];
 				}
@@ -51,7 +72,11 @@
 				$row	= [];
 				$row[]	= ++$offset.'.';
 				$row[]	= $k['nama_klien'];
+<<<<<<< HEAD
 				$row[]	= $bulan['nama'];
+=======
+				$row[]	= $bulan['nama_bulan'];
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				$row[]	= $akuntansi;
 				$row[]	= $perpajakan;
 				$row[]	= $lainnya;
@@ -95,7 +120,11 @@
 
 		public function tambah() {
 			$data['judul']		= 'Tambah Akses'; 
+<<<<<<< HEAD
 			$data['masa']		= Globals::bulan();
+=======
+			$data['masa']		= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
 			
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
@@ -107,15 +136,22 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akses/tambah', $data);
 			} else {
+<<<<<<< HEAD
 				if($this->Akses_model->tambahAkses() == true)
 				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!'); 
 				else
 				$this->session->set_flashdata('warning', 'Gagal ditambahkan!'); 
 				redirect('admin/master/akses');
+=======
+				$this->Akses_model->tambahAkses();
+				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				redirect('admin/master/akses');  
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			}
 		}
 		
 		public function ubah($id_akses) {
+<<<<<<< HEAD
 			$akses	= $this->Akses_model->getById($id_akses);
 			$bulan	= Globals::bulan($akses['masa']);
 			
@@ -123,6 +159,12 @@
 			$data['akses']		= $akses; 
 			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
 			$data['bulan']		= $bulan['nama'];
+=======
+			$data['judul']		= 'Ubah Akses Klien'; 
+			$data['akses']		= $this->Akses_model->getById($id_akses); 
+			$data['akuntan']	= $this->Akuntan_model->getAllAkuntan();
+			$data['bulan']		= $this->Klien_model->getMasa($data['akses']['masa'])['nama_bulan'];
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$this->form_validation->set_rules('id_akses', 'ID Akses', 'required');
 			$this->form_validation->set_rules('masa', 'Masa', 'required');
@@ -134,6 +176,7 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akses/ubah', $data);
 			} else {
+<<<<<<< HEAD
 				if($this->Akses_model->ubahAkses() == true)
 				$this->session->set_flashdata('notification', 'Berhasil diubah!');
 				else
@@ -142,6 +185,14 @@
 			}
 		}
 		
+=======
+				$this->Akses_model->ubahAkses();
+				$this->session->set_flashdata('notification', 'Data berhasil diubah!');
+				redirect('admin/master/akses');
+			}
+		}
+
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function detail() {
 			$akses		= $this->Akses_model->getById($_POST['action']);
 			$akuntansi	= explode(',', $akses['akuntansi']);
@@ -171,10 +222,15 @@
 		}
 		
 		public function fix_hapus($id) {
+<<<<<<< HEAD
 			if($this->Admin_model->hapusAkses($id) == true)
 			$this->session->set_flashdata('notification', 'Berhasil dihapus!');
 			else
 			$this->session->set_flashdata('warning', 'Gagal dihapus!');
+=======
+			$this->Admin_model->hapusAkses($id);
+			$this->session->set_flashdata('notification', 'Akses berhasil dihapus!');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			redirect('admin/master/akses');
 		}
 	}

@@ -4,15 +4,26 @@
 		
 		public function __construct() {
 			parent::__construct();
+<<<<<<< HEAD
 			$this->load->model('M_Pengiriman_akuntansi', 'M_Pengiriman');
 			$this->load->model('M_Permintaan_akuntansi', 'M_Permintaan');
+=======
+			$this->load->library('exportpengiriman');
+			
+			$this->load->model('M_Pengiriman_akuntansi');
+			$this->load->model('M_Permintaan_akuntansi');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$this->load->model('Jenis_data_model');
 			$this->load->model('Klien_model');
 		}
 		
 		public function index() {
 			$data['judul']	= "Pengiriman Data Akuntansi";
+<<<<<<< HEAD
 			$data['masa']	= Globals::bulan();
+=======
+			$data['masa']	= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['klien']	= $this->Klien_model->getAllKlien();
 			
 			$this->libtemplate->main('admin/pengiriman_akuntansi/tampil', $data);
@@ -26,8 +37,13 @@
 			$limit		= $_REQUEST['length'];
 			$offset		= $_REQUEST['start'];
 			$klien		= ($klien == null) ? 'all' : $klien;
+<<<<<<< HEAD
 			$countData	= $this->M_Pengiriman->countPengiriman($bulan, $tahun, $klien); 
 			$pengiriman	= $this->M_Pengiriman->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+=======
+			$countData	= $this->M_Pengiriman_akuntansi->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman_akuntansi->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$data = [];
 			foreach($pengiriman as $k) {
@@ -57,8 +73,13 @@
 		
 		public function detail() {
 			$id_permintaan	= $_REQUEST['id'];
+<<<<<<< HEAD
 			$permintaan		= $this->M_Permintaan->getById($id_permintaan);
 			$isi			= $this->M_Permintaan->getDetail($id_permintaan);
+=======
+			$permintaan		= $this->M_Permintaan_akuntansi->getById($id_permintaan);
+			$isi			= $this->M_Permintaan_akuntansi->getDetail($id_permintaan);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			foreach($isi as $i => $val) {
 				if($val['status_kirim'] == 'yes') {
@@ -80,8 +101,13 @@
 		}
 		
 		public function rincian($id_data) {
+<<<<<<< HEAD
 			$detail			= $this->M_Pengiriman->getById($id_data);
 			$pengiriman		= $this->M_Pengiriman->getDetail($id_data);
+=======
+			$detail			= $this->M_Pengiriman_akuntansi->getById($id_data);
+			$pengiriman		= $this->M_Pengiriman_akuntansi->getDetail($id_data);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			if($detail['status_kirim'] == 'yes') {
 				$detail['badge'] = '<span class="badge badge-success">Lengkap</span>';
@@ -109,6 +135,7 @@
 			$this->libtemplate->main('admin/pengiriman_akuntansi/rincian', $data);
 		}
 		
+<<<<<<< HEAD
 		public function download() {
 			$klien		= $_GET['k'];
 			$year		= $_GET['y'];
@@ -140,6 +167,8 @@
 			}
 		}
 		
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		// public function konfirmasi() {
 		// 	$id		= $_REQUEST['id'];
 		// 	$status	= $_REQUEST['status'];
@@ -157,9 +186,36 @@
 		// }
 		
 		// public function fix() {
+<<<<<<< HEAD
 		// 	$this->M_Pengiriman->konfirmasi($_REQUEST['id'], $_REQUEST['stat']);
 		// 	$msg = $_REQUEST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
 		// 	$this->session->set_flashdata('notification', $msg);
 		// }
+=======
+		// 	$this->M_Pengiriman_akuntansi->konfirmasi($_REQUEST['id'], $_REQUEST['stat']);
+		// 	$msg = $_REQUEST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
+		// 	$this->session->set_flashdata('notification', $msg);
+		// }
+		
+		public function cetak() {
+			$data['bulan']	= $this->input->post('bulan', true);
+			$data['tahun']	= $this->input->post('tahun', true);
+			$data['klien']	= $this->input->post('klien', true);
+			
+			$data['filename']	= "Permintaan Data Akuntansi ".$data['bulan']." ".$data['tahun'];
+			$data['judul']		= "Permintaan Data Akuntansi";
+			$data['klien']		= $this->Klien_model->getAllKlien();
+			foreach($data['klien'] as $k) {
+				$perklien	= $this->M_Permintaan_akuntansi->getReqByKlien($data['bulan'], $data['tahun'], $k['id_klien']);
+				$permintaan[$k['id_klien']] = $perklien;
+			}
+			$data['permintaan'] = $permintaan;
+			
+			if($this->input->post('xls', true))
+				return $this->exportpengiriman->exportExcel($data);
+			elseif($this->input->post('pdf', true))
+				return $this->exportpengiriman->exportPdf($data);
+		}
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 	}
 ?>

@@ -1,11 +1,20 @@
 <?php
+<<<<<<< HEAD
+=======
+	use GuzzleHttp\Client;
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 	
 	class Admin extends CI_Controller {
 		
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
+<<<<<<< HEAD
 			$this->load->model('Admin_model');
+=======
+			// $this->load->model('Admin_model');
+			$this->client = new Client([ 'base_uri' => base_url().'api/' ]);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		}
 		
 		public function index() {
@@ -13,6 +22,7 @@
 			$this->libtemplate->main('admin/admin/tampil', $data);
 		}
 		
+<<<<<<< HEAD
 		// menampilkan dataTables
 		public function page() {
 			$offset		= $_POST['start'];
@@ -20,6 +30,14 @@
 			$cari		= $_POST['search']['value'];
 			$admin		= $this->Admin_model->getAllAdmin($offset, $limit, $cari);
 			$countData	= $this->Admin_model->countAdmin($cari);
+=======
+		public function page() {
+			$offset	= $_POST['start'];
+			$limit	= $_POST['length'];
+			$cari	= $_POST['search']['value'];
+			$countData	= $this->Admin_model->countAdmin($cari);
+			$admin		= $this->Admin_model->getAllAdmin($offset, $limit, $cari);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$data = [];
 			foreach($admin as $k) {
@@ -54,6 +72,7 @@
 			$data['judul']	= 'Tambah Admin';
 			$data['level']	= 'admin';
 			
+<<<<<<< HEAD
 			$this->session->unset_userdata([
 				'emailValid', 'emailMsg',
 				'usernameValid', 'usernameMsg',
@@ -108,6 +127,37 @@
 		}
 		
 		// verifikasi admin sebelum melakukan perubahan data
+=======
+			$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[5]|max_length[12]');
+			$this->form_validation->set_rules('nama', 'Nama', 'required');
+			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[user.email_user]');
+			$this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+			$this->form_validation->set_rules('passconf', 'Password', 'required|matches[password]');
+
+			if($this->form_validation->run() == FALSE) {
+				$this->libtemplate->main('admin/admin/tambah', $data);
+			} else {
+				$this->Admin_model->tambahAdmin();
+				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!');
+				redirect('admin/master/admin');
+			}
+		}
+		
+		public function view($id_user) {
+			$user		= $this->Admin_model->getById($id_user);
+			$passcode	= '';
+			for($i=0; $i<$user['passlength']; $i++) {
+				$passcode .= '&bull;';
+			}
+			$user['passcode'] = $passcode;
+			
+			$data['judul']	= "Profile Admin";
+			$data['user']	= $user;
+			
+			$this->libtemplate->main('admin/admin/view', $data);
+		}
+		
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 		public function verif() {
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
@@ -124,8 +174,12 @@
 				if($verify == true) {
 					redirect('admin/master/admin/ubah/'.$_POST['id_user']);
 				} else {
+<<<<<<< HEAD
 					$this->session->set_flashdata('pass', $this->input->post('id_user', true));
 					// $this->session->set_flashdata('msg', 'Password salah!');
+=======
+					$this->session->set_flashdata('pass', $this->input->post('id', true));
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 					redirect('admin/master/admin');
 				}
 			}
@@ -135,7 +189,10 @@
 			$data['admin']	= $this->Admin_model->getById($id_user);
 			$data['judul']	= 'Ubah Password';
 			$data['tipe']	= 'password';
+<<<<<<< HEAD
 			$data['back']	= 'admin/master/admin';
+=======
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 			$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
@@ -144,11 +201,17 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->libtemplate->main('admin/profile/ganti_password', $data);
 			} else {
+<<<<<<< HEAD
 				if( $this->Admin_model->ubahAdmin() == true ) {
 					$this->session->set_flashdata('notification', 'Berhasil diubah!');
 				} else {
 					$this->session->set_flashdata('warning', 'Gagal diubah!');
 				}
+=======
+				$tipe = $this->session->userdata('tipe');
+				$this->Admin_model->ubahAdmin();
+				$this->session->set_flashdata('notification', 'Password berhasil diubah!');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 				redirect('admin/master/admin');
 			}
 		}
@@ -165,11 +228,16 @@
 		}
 		
 		public function fix_hapus($id) {
+<<<<<<< HEAD
 			if( $this->Admin_model->hapusAdmin($id) == true ) {
 				$this->session->set_flashdata('notification', 'Berhasil dihapus!');
 			} else {
 				$this->session->set_flashdata('warning', 'Gagal dihapus!');
 			}
+=======
+			$this->Admin_model->hapusAdmin($id);
+			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			redirect('admin/master/admin');
 		}
 	}

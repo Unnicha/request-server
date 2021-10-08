@@ -12,7 +12,11 @@
 		
 		public function index() {
 			$data['judul']		= 'Laporan Permintaan Data';
+<<<<<<< HEAD
 			$data['bulan']		= Globals::bulan();
+=======
+			$data['bulan']		= $this->Klien_model->getMasa();
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$data['kategori']	= ['Akuntansi', 'Perpajakan', 'Lainnya'];
 			
 			$this->form_validation->set_rules('tahun', 'Tahun', 'required');
@@ -23,14 +27,24 @@
 		}
 		
 		public function getKlien() {
+<<<<<<< HEAD
 			$masa		= $this->input->post('bulan', true);
+=======
+			$bulan		= $this->input->post('bulan', true);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$tahun		= $this->input->post('tahun', true);
 			$kategori	= $this->input->post('kategori', true);
 			$id_akuntan	= $this->session->userdata('id_user');
 			
+<<<<<<< HEAD
 			$bulan	= Globals::bulan($masa);
 			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan['id'], $id_akuntan, $kategori);
 			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan['id'], $id_akuntan, $kategori);
+=======
+			$bulan	= $this->Klien_model->getMasa($bulan)['id_bulan'];
+			$akses	= $this->Akses_model->getByAkuntan($tahun, $bulan, $id_akuntan, $kategori);
+			$akses	= ($akses) ? $akses : $this->Akses_model->getByAkuntan(($tahun-1), $bulan, $id_akuntan, $kategori);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			
 			$lists	= "<option value=''>--Tidak ada akses--</option>";
 			if( $akses ) {
@@ -100,8 +114,13 @@
 		}
 		
 		public function filename() {
+<<<<<<< HEAD
 			$bulan		= Globals::bulan($_REQUEST['bulan']);
 			$bulan		= substr($bulan['nama'], 0, 3);
+=======
+			$bulan		= $this->Klien_model->getMasa($_REQUEST['bulan']);
+			$bulan		= substr($bulan['nama_bulan'], 0, 3);
+>>>>>>> 71b3ac856dc6eb0d4274e4826fabc8425989f9c5
 			$tahun		= $_REQUEST['tahun'];
 			$kategori	= ucwords($_REQUEST['kategori']);
 			$akuntan	= $this->session->userdata('nama');
